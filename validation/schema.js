@@ -56,20 +56,16 @@ module.exports = {
         reps: validate.reqstring,
         volume: validate.reqstring
     }),
-    bodyWeightSchema: joi.object().keys({
-        date: validate.date,
-        bodyWeight: validate.reqstring
+    unitSchema: joi.object().keys({
+        unit: validate.reqstring,
     }),
-    waistSchema: joi.object().keys({
-        date: validate.date,
-        waist: validate.reqstring
+    bodyPartSchema: joi.object().keys({
+        unitId: validate.id,
+        bodyPart: validate.reqstring,
     }),
-    bodyFatSchema: joi.object().keys({
+    measurmentSchema: joi.object().keys({
+        bodyPartId: validate.id,
         date: validate.date,
-        bodyFat: validate.reqstring
-    }),
-    shoulderSchema: joi.object().keys({
-        date: validate.date,
-        shoulder: validate.reqstring
-    }),
+        unitValue:validate.number
+    })
 }

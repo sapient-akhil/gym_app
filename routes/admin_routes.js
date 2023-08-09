@@ -60,40 +60,21 @@ router.get("/oneWorkOut/:id", workOutController.oneWorkOut);
 router.delete("/deleteWorkOut/:id", workOutController.deleteWorkOut);
 router.put("/updateWorkOut/:id", Validators(Schema.workOutSchema), workOutController.updateWorkOut);
 
-//bodyWeight routes
-const bodyWeightController = require("../controller/admin/bodyWeight_controller")
+//unit routes
+const unitController = require("../controller/admin/unit_controller")
 
-router.post("/bodyWeight", Validators(Schema.bodyWeightSchema), bodyWeightController.bodyWeightCreate);
-router.get("/getAllBodyWeight", bodyWeightController.getAllBodyWeight);
-router.post("/findWeightByDateRang", bodyWeightController.findWeightByDateRang);
-router.post("/deleteBodyWeight", bodyWeightController.deleteBodyWeight);
-router.post("/updateBodyWeight", Validators(Schema.bodyWeightSchema), bodyWeightController.updateBodyWeight);
+router.post("/unitCreate", Validators(Schema.unitSchema), unitController.unitCreate);
 
-//waist routes
-const waistController = require("../controller/admin/waist_controller")
+//bodyPart routes
+const bodyPartController = require("../controller/admin/bodyPart_controller")
 
-router.post("/waistCreate", Validators(Schema.waistSchema), waistController.waistCreate);
-router.get("/getAllWaistData", waistController.getAllWaistData);
-router.post("/findWaistByDateRang", waistController.findWaistByDateRang);
-router.delete("/deleteWaistPlan/:id", waistController.deleteWaistPlan);
-router.put("/updateWaistPlan/:id", Validators(Schema.waistSchema), waistController.updateWaistPlan);
+router.post("/bodyPartCreate", Validators(Schema.bodyPartSchema), bodyPartController.bodyPartCreate);
+router.get("/getBodyPart", bodyPartController.getBodyPart);
 
-//bodyFat routes
-const bodyFatController = require("../controller/admin/bodyFat_controller")
+//measurment routes
+const measurmentController = require("../controller/admin/measurment_controller")
 
-router.post("/bodyFatCreate", Validators(Schema.bodyFatSchema), bodyFatController.bodyFatCreate);
-router.get("/getAllBodyFat", bodyFatController.getAllBodyFat);
-router.post("/findFatByDateRang", bodyFatController.findFatByDateRang);
-router.delete("/deleteBodyFat/:id", bodyFatController.deleteBodyFat);
-router.put("/updateBodyFat/:id", Validators(Schema.bodyFatSchema), bodyFatController.updateBodyFat);
-
-//shoulder routes
-const shoulderController = require("../controller/admin/shoulder_controller")
-
-router.post("/shoulderCreate", Validators(Schema.shoulderSchema), shoulderController.shoulderCreate);
-router.get("/getAllshoulderData", shoulderController.getAllshoulderData);
-router.post("/findshoulderByDateRang", shoulderController.findshoulderByDateRang);
-router.delete("/deleteshoulder", shoulderController.deleteshoulder);
-router.put("/updateshoulder", Validators(Schema.shoulderSchema), shoulderController.updateshoulder);
+router.post("/measurmentCreate", Validators(Schema.measurmentSchema), measurmentController.measurmentCreate);
+router.get("/getMeasurmentData", measurmentController.getMeasurmentData);
 
 module.exports = router;
