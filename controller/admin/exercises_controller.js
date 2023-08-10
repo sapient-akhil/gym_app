@@ -33,15 +33,28 @@ exports.exercisesCreate = async (req, res, next) => {
 
 exports.allExercises = async (req, res, next) => {
     try {
-        const allExerciseData = await exercisesModel.find({active:true})
+        const page = parseInt(req.query.page || 1);
+        const perPage = 2
+
+        const exercises = await exercisesModel.find({ active: true }, req.query.search ? {
+            $or: [
+                { $and: [{ name: { $regex: req.query.search } }] },
+                { $and: [{ email: { $regex: req.query.search } }] },
+                { $and: [{ address: { $regex: req.query.search } }] },
+            ],
+        } : {})
+            .limit(perPage * 1)
+            .skip((page - 1) * perPage)
+            .exec();
 
         res.status(201).send({
             success: true,
-            message: "get all exercises",
-            data: allExerciseData
+            message: "get Exercises",
+            data: exercises
         })
 
     } catch (error) {
+
         next(error)
     }
 }

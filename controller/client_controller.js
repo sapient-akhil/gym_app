@@ -76,9 +76,22 @@ exports.deleteClient = async (req, res, next) => {
 }
 
 exports.allClient = async (req, res, next) => {
-    try {
 
-        const client = await clientModel.find({active:true})
+        try {
+            const page = parseInt(req.query.page || 1);
+            const perPage = 2
+
+            const client = await clientModel.find({ active: true },req.query.search ? {
+                $or: [
+                    { $and: [{ name: { $regex: req.query.search } }] },
+                    { $and: [{ email: { $regex: req.query.search } }] },
+                    { $and: [{ address: { $regex: req.query.search } }] },
+                ],
+            } : {})
+                .limit(perPage * 1)
+                .skip((page - 1) * perPage)
+                .exec()
+                
 
         res.status(201).send({
             success: true,

@@ -5,16 +5,16 @@ const path = require("path")
 
 exports.workOutCreate = async (req, res, next) => {
     try {
-        const { exercises_id, workOutName, time, reps, set, volume } = req.body
+        const { exercises_id, workOutName, time, reps, set, volume, date } = req.body
         const array = JSON.parse(exercises_id);
 
-        const workOut = new workOutModel({ exercises_id: array, workOutName, time, reps, set, volume })
+        const workOut = new workOutModel({ exercises_id: array, workOutName, time, reps, set, volume, date })
 
         const workOutData = await workOutModel.create(workOut)
 
         res.status(201).send({
             success: true,
-            message: "mealPlan is created...",
+            message: "workOut is created...",
             data: workOutData
         })
     } catch (error) {
@@ -24,12 +24,14 @@ exports.workOutCreate = async (req, res, next) => {
 
 exports.allWorkOut = async (req, res, next) => {
     try {
+        const startDate = req.body.startDate;
+        const endDate = req.body.endDate;
 
-        const allWorkOut = await workOutModel.find({active:true}).populate("exercises_id")
+        const allWorkOut = await workOutModel.find({active:true, date: { $gte: startDate, $lt: endDate } }).populate("exercises_id")
 
         res.status(201).send({
             success: true,
-            message: "get all mealItems",
+            message: "get all allWorkOut",
             data: allWorkOut
         })
 
@@ -87,11 +89,11 @@ exports.updateWorkOut = async (req, res, next) => {
         const result = await params.validateAsync({ id });
         console.log(result)
 
-        const { exercises_id, workOutName, time, reps, set, volume } = req.body
+        const { exercises_id, workOutName, time, reps, set, volume, date } = req.body
 
         const array = JSON.parse(exercises_id)
 
-        const workOutData = await workOutModel.findByIdAndUpdate(id, { $set: { exercises_id: array, workOutName, time, reps, set, volume } })
+        const workOutData = await workOutModel.findByIdAndUpdate(id, { $set: { exercises_id: array, workOutName, time, reps, set, volume, date } })
 
         if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
 

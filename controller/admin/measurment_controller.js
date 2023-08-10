@@ -32,13 +32,81 @@ exports.getMeasurmentData = async (req, res, next) => {
                 select: { _id: 0, active: 0, __v: 0 }
             })
 
-        // {}, { date: 1, waist: 1, _id: 0 }).sort({ createdAt: -1 }
+        res.status(200).send({
+            success: true,
+            message: "Measurment Data...",
+            data: measurmentData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.oneBodyPartData = async (req, res, next) => {
+    try {
+        const bodyPartId = req.params
+
+        const measurmentData = await measurmentModel.find(bodyPartId)
+            .populate({
+                path: "bodyPartId",
+                populate: {
+                    path: "unitId",
+                    model: "unitModel",
+                    select: { _id: 0, active: 0, __v: 0 }
+                },
+                select: { _id: 0, active: 0, __v: 0 }
+            })
 
         res.status(200).send({
             success: true,
             message: "Measurment Data...",
             data: measurmentData
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.deleteMeasurmentData = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+        const data = await params.validateAsync({ id });
+        console.log(data)
+        const measurmentData = await measurmentModel.findByIdAndUpdate(id, { active: false })
+
+        if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: " Measurment Data deleted successfully",
+            data: itemData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.updateMeasurmentData = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const result = await params.validateAsync({ id });
+        console.log(result)
+
+        const { bodyPartId, date, unitValue } = req.body
+
+        const measurmentData = await mealItemsModel.findByIdAndUpdate(id, { $set: { bodyPartId, date, unitValue } })
+
+        if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: "mealItems update successfully",
+            data: measurmentData
+        })
+
     } catch (error) {
         next(error)
     }

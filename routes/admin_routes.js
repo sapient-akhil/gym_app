@@ -55,7 +55,7 @@ router.put("/updateExercise/:id", Validators(Schema.exercisesSchema), exercisesC
 const workOutController = require("../controller/admin/workOut_controller")
 
 router.post("/workOutCreate", Validators(Schema.workOutSchema), workOutController.workOutCreate);
-router.get("/allWorkOut", workOutController.allWorkOut);
+router.post("/allWorkOut", workOutController.allWorkOut);
 router.get("/oneWorkOut/:id", workOutController.oneWorkOut);
 router.delete("/deleteWorkOut/:id", workOutController.deleteWorkOut);
 router.put("/updateWorkOut/:id", Validators(Schema.workOutSchema), workOutController.updateWorkOut);
@@ -64,17 +64,28 @@ router.put("/updateWorkOut/:id", Validators(Schema.workOutSchema), workOutContro
 const unitController = require("../controller/admin/unit_controller")
 
 router.post("/unitCreate", Validators(Schema.unitSchema), unitController.unitCreate);
+router.post("/allUnit", unitController.allUnit);
+router.post("/getOneUnit", unitController.getOneUnit);
+router.delete("/deleteUnit", unitController.deleteUnit);
+router.put("/updateUnit", Validators(Schema.unitSchema), unitController.updateUnit);
+
 
 //bodyPart routes
 const bodyPartController = require("../controller/admin/bodyPart_controller")
 
 router.post("/bodyPartCreate", Validators(Schema.bodyPartSchema), bodyPartController.bodyPartCreate);
 router.get("/getBodyPart", bodyPartController.getBodyPart);
+router.get("/getBodyPart", bodyPartController.oneBodyPart);
+router.delete("/deleteBodyPart/:id", bodyPartController.deleteBodyPart);
+router.put("/updateBodyPart/:id", Validators(Schema.bodyPartSchema), bodyPartController.updateBodyPart);
 
 //measurment routes
 const measurmentController = require("../controller/admin/measurment_controller")
 
 router.post("/measurmentCreate", Validators(Schema.measurmentSchema), measurmentController.measurmentCreate);
 router.get("/getMeasurmentData", measurmentController.getMeasurmentData);
+router.get("/oneBodyPart/:bodyPartId", measurmentController.oneBodyPartData);
+router.delete("/deleteMeasurmentData/:id", measurmentController.deleteMeasurmentData);
+router.put("/updateMeasurmentData/:id",Validators(Schema.measurmentSchema), measurmentController.updateMeasurmentData);
 
 module.exports = router;

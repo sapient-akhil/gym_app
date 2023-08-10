@@ -3,21 +3,16 @@ const mongoose = require("mongoose")
 const measurmentModel = new mongoose.Schema({
     date: {
         type: Date,
-        require: [true, "date is require"]
+        require: [true, "date is required"]
     },
     bodyPartId: {
         type: mongoose.Types.ObjectId,
-        require: [true, "bodyPartId is require"],
-        ref:"bodyPart"
-    },
-    bodyPartId: {
-        type: mongoose.Types.ObjectId,
-        require: [true, "bodyPartId is require"],
+        require: [true, "bodyPartId is required"],
         ref:"bodyPart"
     },
     unitValue:{
         type:Number,
-        require : [true,"weight is require"]
+        require : [true,"unitValue is required"]
     },
     active: {
         type: Boolean,

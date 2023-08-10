@@ -117,7 +117,7 @@ exports.updateMealPlan = async (req, res, next) => {
         const array3 = JSON.parse(eveningSnack);
         const array4 = JSON.parse(dinner);
 
-        const itemData = await trainerModel.findByIdAndUpdate(id, { $set: { breakFast: array, morningSnack: array1, lunch: array2, eveningSnack: array3, dinner: array4 } })
+        const itemData = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast: array, morningSnack: array1, lunch: array2, eveningSnack: array3, dinner: array4 } })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
 

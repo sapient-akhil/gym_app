@@ -54,7 +54,8 @@ module.exports = {
         reps: validate.reqstring,
         set: validate.reqstring,
         reps: validate.reqstring,
-        volume: validate.reqstring
+        volume: validate.reqstring,
+        date: validate.date
     }),
     unitSchema: joi.object().keys({
         unit: validate.reqstring,

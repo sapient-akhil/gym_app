@@ -7,11 +7,15 @@ exports.unitCreate = async (req, res, next) => {
         const { unit } = req.body
 
         const unitCreate = new unitModel({ unit })
+
+        const existUnit = await unitModel.findOne({ unit })
+        if (existUnit) throw createError.NotFound("this unit is already exist")
+
         const unitData = await unitModel.create(unitCreate)
 
         res.status(201).send({
             success: true,
-            message: "waistData is created...",
+            message: "unitData is created...",
             data: unitData
         })
     } catch (error) {
@@ -19,81 +23,84 @@ exports.unitCreate = async (req, res, next) => {
     }
 }
 
-// exports.getAllWaistData = async (req, res, next) => {
-//     try {
-//         const getWaistData = await waistModel.find({}, { date: 1, waist: 1, _id: 0 }).sort({ createdAt: -1 })
+exports.allUnit = async (req, res, next) => {
+    try {
 
-//         res.status(200).send({
-//             success: true,
-//             message: "history of bodyWeight data...",
-//             data: getWaistData
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+        const allUnit = await unitModel.find()
 
-// exports.findWaistByDateRang = async (req, res, next) => {
-//     try {
+        res.status(201).send({
+            success: true,
+            message: "get all Unit",
+            data: allUnit
+        })
 
-//         const startDate = req.body.startDate;
-//         if (!startDate) throw createError.NotFound("enter the start date")
-//         const endDate = req.body.endDate;
-//         if (!endDate) throw createError.NotFound("enter the end date")
+    } catch (error) {
 
-//         const dateRange = await waistModel.find({ date: { $gte: startDate, $lt: endDate } }, { date: 1, waist: 1, _id: 0 }).sort({ createdAt: -1 })
+        next(error)
+    }
+}
 
-//         res.status(201).send({
-//             success: true,
-//             message: "Get selected waist by date",
-//             data: dateRange
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+exports.getOneUnit = async (req, res, next) => {
+    try {
 
-// exports.deleteWaistPlan = async (req, res, next) => {
-//     try {
+        const { id } = req.params
 
-//         const { id } = req.params
-//         const waist = await params.validateAsync({ id });
-//         console.log(waist)
+        const unit = await params.validateAsync({ id });
+        console.log(unit)
 
-//         const waistData = await waistModel.findByIdAndUpdate(id, { active: false })
-//         if (!waistData) throw createError.NotFound("ENTER VALID ID..")
+        const unitMData = await unitModel.findById(id)
 
-//         res.status(201).send({
-//             success: true,
-//             message: "waistData delete successfully",
-//             data: waistData
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+        res.status(201).send({
+            success: true,
+            message: "get one unitMData",
+            data: unitMData
+        })
 
-// exports.updateWaistPlan = async (req, res, next) => {
-//     try {
+    } catch (error) {
+        next(error)
+    }
+}
+exports.deleteUnit = async (req, res, next) => {
+    try {
 
-//         const { id } = req.params
+        const { id } = req.params
+        const unit = await params.validateAsync({ id });
+        console.log(unit)
+        const unitData = await unitModel.findByIdAndUpdate(id, { active: false })
 
-//         const result = await params.validateAsync({ id });
-//         console.log(result)
+        if (!unitData) throw createError.NotFound("ENTER VALID ID..")
 
-//         const { date, waist } = req.body
+        res.status(201).send({
+            success: true,
+            message: "unitData delete successfully",
+            data: unitData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
-//         const waistData = await waistModel.findByIdAndUpdate(id, { $set: { date, waist } })
-//         if (!waistData) throw createError.NotFound("ENTER VALID ID..")
+exports.updateUnit = async (req, res, next) => {
+    try {
 
-//         res.status(201).send({
-//             success: true,
-//             message: "waistData update successfully",
-//             data: waistData
-//         })
+        const { id } = req.params
 
-//     } catch (error) {
-//         next(error)
-//     }
-// }
+        const result = await params.validateAsync({ id });
+        console.log(result)
 
+        const { unit } = req.body
+
+        const unitData = await unitModel.findByIdAndUpdate(id, { $set: { unit } })
+
+        if (!unitData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: "unitData update successfully",
+            data: unitData
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}

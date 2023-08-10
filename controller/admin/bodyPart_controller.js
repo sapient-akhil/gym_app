@@ -21,7 +21,7 @@ exports.bodyPartCreate = async (req, res, next) => {
 
 exports.getBodyPart = async (req, res, next) => {
     try {
-        const getBodyPartData = await bodyPartModel.find().populate("unitId")
+        const getBodyPartData = await bodyPartModel.find({active:true}).populate("unitId")
 
         // {}, { date: 1, waist: 1, _id: 0 }).sort({ createdAt: -1 }
 
@@ -30,6 +30,72 @@ exports.getBodyPart = async (req, res, next) => {
             message: "get BodyPart Data...",
             data: getBodyPartData
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.oneBodyPart = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const bodyPart = await params.validateAsync({ id });
+        console.log(bodyPart)
+
+        const bodyPartData = await bodyPartModel.findById(id)
+
+        res.status(201).send({
+            success: true,
+            message: "get one bodyPartData",
+            data: bodyPartData
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.deleteBodyPart = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+        const bodyPart = await params.validateAsync({ id });
+        console.log(bodyPart)
+        const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { active: false })
+
+        if (!bodyPartData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: "bodyPart Data delete successfully",
+            data: bodyPartData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.updateBodyPart = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const result = await params.validateAsync({ id });
+        console.log(result)
+
+        const { unitId, bodyPart } = req.body
+
+        const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { $set: { unitId, bodyPart } })
+
+        if (!bodyPartData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: "bodyPartData update successfully",
+            data: bodyPartData
+        })
+
     } catch (error) {
         next(error)
     }

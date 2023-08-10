@@ -30,6 +30,10 @@ const workOutModel = new mongoose.Schema({
         type: String,
         require: [true, "volume are require"]
     },
+    date:{
+        type:Date,
+        require: [true, "date are require"]
+    },
     active: {
         type: Boolean,
         default: "true"
