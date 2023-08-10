@@ -48,11 +48,10 @@ exports.adminLogin = async (req, res, next) => {
         const user = await trainerModel.findOne({ "contactdetails.email": email });
         if (!user) throw createError.NotFound("mobilenumber or email is wrong")
 
-        if (user.role === "admin") throw createError.NotFound("This is a admin data, User cann't get....")
+        // if (user.role === "admin") throw createError.NotFound("This is a admin data, User cann't get....")
 
         const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber })
         if (!existMobileNumber) throw createError.NotFound("mobilenumber or email is wrong")
-
 
         const accessToken = await signAccessTokenforAdmin(user);
 
@@ -72,9 +71,7 @@ exports.deleteTrainerByAdmin = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const result = await params.validateAsync({ id });
-        console.log(result)
-
+    
         const trainer = await trainerModel.findByIdAndUpdate(id, { active: false })
         if (!trainer) throw createError.NotFound("ENTER VALID ID..")
 
@@ -110,9 +107,6 @@ exports.oneTrainer = async (req, res, next) => {
 
         const { id } = req.params
 
-        const trainer = await params.validateAsync({ id });
-        console.log(trainer)
-
         const trainerData = await trainerModel.findById(id)
 
         res.status(201).send({
@@ -130,11 +124,6 @@ exports.updateTrainerByAdmin = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
-
-        if (!req.body) throw createError.NotFound("enter update field")
 
         const { name, qualifications, certifications, mobilenumber, email } = req.body
 

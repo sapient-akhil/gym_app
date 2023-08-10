@@ -59,8 +59,6 @@ exports.deleteClient = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         const client = await clientModel.findByIdAndUpdate(id, { active: false })
         if (!client) throw createError.NotFound("ENTER VALID ID..")
@@ -110,9 +108,6 @@ exports.oneClient = async (req, res, next) => {
 
         const { id } = req.params
 
-        const client = await params.validateAsync({ id });
-        console.log(client)
-
         const clientData = await clientModel.findById(id)
 
         res.status(201).send({
@@ -130,9 +125,6 @@ exports.updateClient = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         if (!req.body) throw createError.NotFound("enter update field")
 

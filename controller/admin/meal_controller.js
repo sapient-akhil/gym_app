@@ -66,9 +66,6 @@ exports.oneMealplan = async (req, res, next) => {
 
         const { id } = req.params
 
-        const item = await params.validateAsync({ id });
-        console.log(item)
-
         const itemData = await mealPlanModel.findById(id)
 
         res.status(201).send({
@@ -85,8 +82,7 @@ exports.deleteMealPlan = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const item = await params.validateAsync({ id });
-        console.log(item)
+       
         const itemData = await mealPlanModel.findByIdAndUpdate(id, { active: false })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
@@ -105,9 +101,6 @@ exports.updateMealPlan = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         const { breakFast, morningSnack, lunch, eveningSnack, dinner } = req.body
 

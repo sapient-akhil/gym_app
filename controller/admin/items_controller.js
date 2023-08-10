@@ -55,9 +55,6 @@ exports.oneMealItems = async (req, res, next) => {
 
         const { id } = req.params
 
-        const item = await params.validateAsync({ id });
-        console.log(item)
-
         const itemData = await mealItemsModel.findById(id)
 
         res.status(201).send({
@@ -74,8 +71,7 @@ exports.deleteMealItems = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const item = await params.validateAsync({ id });
-        console.log(item)
+    
         const itemData = await mealItemsModel.findByIdAndUpdate(id, { active: false })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
@@ -94,9 +90,6 @@ exports.updateMealItems = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         const { mealItem, calary, quantityUnits, description, ingredients } = req.body
 

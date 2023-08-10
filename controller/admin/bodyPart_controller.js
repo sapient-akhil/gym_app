@@ -23,8 +23,6 @@ exports.getBodyPart = async (req, res, next) => {
     try {
         const getBodyPartData = await bodyPartModel.find({active:true}).populate("unitId")
 
-        // {}, { date: 1, waist: 1, _id: 0 }).sort({ createdAt: -1 }
-
         res.status(200).send({
             success: true,
             message: "get BodyPart Data...",
@@ -60,8 +58,7 @@ exports.deleteBodyPart = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const bodyPart = await params.validateAsync({ id });
-        console.log(bodyPart)
+        
         const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { active: false })
 
         if (!bodyPartData) throw createError.NotFound("ENTER VALID ID..")
@@ -80,9 +77,6 @@ exports.updateBodyPart = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         const { unitId, bodyPart } = req.body
 

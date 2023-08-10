@@ -45,15 +45,12 @@ exports.getOneUnit = async (req, res, next) => {
 
         const { id } = req.params
 
-        const unit = await params.validateAsync({ id });
-        console.log(unit)
-
-        const unitMData = await unitModel.findById(id)
+        const unitData = await unitModel.findById(id)
 
         res.status(201).send({
             success: true,
             message: "get one unitMData",
-            data: unitMData
+            data: unitData
         })
 
     } catch (error) {
@@ -64,8 +61,7 @@ exports.deleteUnit = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const unit = await params.validateAsync({ id });
-        console.log(unit)
+        
         const unitData = await unitModel.findByIdAndUpdate(id, { active: false })
 
         if (!unitData) throw createError.NotFound("ENTER VALID ID..")
@@ -84,9 +80,6 @@ exports.updateUnit = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         const { unit } = req.body
 

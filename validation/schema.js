@@ -10,6 +10,9 @@ module.exports = {
         mobilenumber: validate.reqstring,
         email: validate.email
     }),
+    params: joi.object().keys({
+        id: validate.id
+    }),
     loginSchema: joi.object().keys({
         mobilenumber: validate.reqstring,
         email: validate.email
@@ -58,6 +61,7 @@ module.exports = {
         date: validate.date
     }),
     unitSchema: joi.object().keys({
+        id:validate.id,
         unit: validate.reqstring,
     }),
     bodyPartSchema: joi.object().keys({
@@ -67,6 +71,6 @@ module.exports = {
     measurmentSchema: joi.object().keys({
         bodyPartId: validate.id,
         date: validate.date,
-        unitValue:validate.number
+        unitValue: validate.number
     })
 }

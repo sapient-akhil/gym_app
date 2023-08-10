@@ -83,9 +83,7 @@ exports.deleteExercise = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const exercise = await params.validateAsync({ id });
-        console.log(exercise)
-
+        
         const exerciseData = await exercisesModel.findByIdAndUpdate(id, { active: false })
         if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
 
@@ -103,12 +101,7 @@ exports.updateExercise = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const exercise = await params.validateAsync({ id });
-        console.log(exercise)
-
-        if (!req.body) throw createError.NotFound("enter update field")
-
+        
         const { exercisesName, muscles, description, videoLink } = req.body
 
         const file = req.files.photo

@@ -71,8 +71,7 @@ exports.deleteMeasurmentData = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const data = await params.validateAsync({ id });
-        console.log(data)
+       
         const measurmentData = await measurmentModel.findByIdAndUpdate(id, { active: false })
 
         if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
@@ -91,9 +90,6 @@ exports.updateMeasurmentData = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
-        const result = await params.validateAsync({ id });
-        console.log(result)
 
         const { bodyPartId, date, unitValue } = req.body
 

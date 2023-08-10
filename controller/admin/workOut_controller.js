@@ -27,7 +27,7 @@ exports.allWorkOut = async (req, res, next) => {
         const startDate = req.body.startDate;
         const endDate = req.body.endDate;
 
-        const allWorkOut = await workOutModel.find({active:true, date: { $gte: startDate, $lt: endDate } }).populate("exercises_id")
+        const allWorkOut = await workOutModel.find({ active: true, date: { $gte: startDate, $lt: endDate } }).populate("exercises_id")
 
         res.status(201).send({
             success: true,
@@ -46,9 +46,6 @@ exports.oneWorkOut = async (req, res, next) => {
 
         const { id } = req.params
 
-        const workOut = await params.validateAsync({ id });
-        console.log(workOut)
-
         const workOutData = await workOutModel.findById(id)
 
         res.status(201).send({
@@ -65,10 +62,8 @@ exports.deleteWorkOut = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const workOut = await params.validateAsync({ id });
-        console.log(workOut)
-        const workOutData = await workOutModel.findByIdAndUpdate(id, { active: false })
 
+        const workOutData = await workOutModel.findByIdAndUpdate(id, { active: false })
         if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
@@ -94,7 +89,6 @@ exports.updateWorkOut = async (req, res, next) => {
         const array = JSON.parse(exercises_id)
 
         const workOutData = await workOutModel.findByIdAndUpdate(id, { $set: { exercises_id: array, workOutName, time, reps, set, volume, date } })
-
         if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
