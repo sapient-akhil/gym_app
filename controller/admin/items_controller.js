@@ -4,11 +4,12 @@ const params = require("../../validation/paramsjoi")
 
 exports.mealItemCreate = async (req, res, next) => {
     try {
-        const { mealItem, calary, quantityUnits, description, ingredients } = req.body
+        const { trainer_id, mealItem, calary, quantityUnits, description, ingredients } = req.body
 
         const array = JSON.parse(ingredients);
+        const array1 = JSON.parse(mealItem);
 
-        const item = new mealItemsModel({ mealItem, calary, quantityUnits, description, ingredients: array })
+        const item = new mealItemsModel({ trainer_id, mealItem: array1, calary, quantityUnits, description, ingredients: array })
 
         const itemData = await mealItemsModel.create(item)
 
@@ -24,10 +25,10 @@ exports.mealItemCreate = async (req, res, next) => {
 
 exports.allMealItem = async (req, res, next) => {
     try {
-        const page = parseInt({ active: true },req.query.page || 1);
-        const perPage = 3
+        const page = parseInt({ active: true }, req.query.page || 1);
+        const perPage = 7
 
-        const mealItems = await mealItemsModel.find({active:true},req.query.search ? {
+        const mealItems = await mealItemsModel.find({ active: true }, req.query.search ? {
             $or: [
                 { $and: [{ mealItem: { $regex: req.query.search } }] },
                 { $and: [{ calary: { $regex: req.query.search } }] },
@@ -45,7 +46,24 @@ exports.allMealItem = async (req, res, next) => {
         })
 
     } catch (error) {
+        next(error)
+    }
+}
 
+exports.trainerMealItems = async (req, res, next) => {
+    try {
+
+        const { trainer_id } = req.params
+
+        const itemData = await mealItemsModel.findOne({trainer_id})
+
+        res.status(201).send({
+            success: true,
+            message: "get all mealItems",
+            data: itemData
+        })
+
+    } catch (error) {
         next(error)
     }
 }
@@ -71,7 +89,7 @@ exports.deleteMealItems = async (req, res, next) => {
     try {
 
         const { id } = req.params
-    
+
         const itemData = await mealItemsModel.findByIdAndUpdate(id, { active: false })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")

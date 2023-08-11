@@ -3,7 +3,7 @@ const validate = require("../validation/joivalidation")
 
 module.exports = {
     trainerSchema: joi.object().keys({
-        id: validate.id,
+        id: validate.reqId,
         name: validate.reqstring,
         qualifications: validate.reqstring,
         certifications: validate.reqstring,
@@ -11,7 +11,7 @@ module.exports = {
         email: validate.email
     }),
     params: joi.object().keys({
-        id: validate.id
+        id: validate.reqId
     }),
     loginSchema: joi.object().keys({
         mobilenumber: validate.reqstring,
@@ -29,6 +29,7 @@ module.exports = {
         password: validate.password,
     }),
     mealItemSchema: joi.object().keys({
+        trainer_id: validate.id,
         mealItem: validate.reqstring,
         calary: validate.reqstring,
         quantityUnits: validate.reqstring,
@@ -36,7 +37,7 @@ module.exports = {
         ingredients: validate.reqstring
     }),
     mealPlanSchema: joi.object().keys({
-        clientId: validate.id,
+        clientId: validate.reqId,
         breakFast: validate.reqstring,
         morningSnack: validate.reqstring,
         lunch: validate.reqstring,
@@ -61,15 +62,15 @@ module.exports = {
         date: validate.date
     }),
     unitSchema: joi.object().keys({
-        id:validate.id,
+        id: validate.reqId,
         unit: validate.reqstring,
     }),
     bodyPartSchema: joi.object().keys({
-        unitId: validate.id,
+        unitId: validate.reqId,
         bodyPart: validate.reqstring,
     }),
     measurmentSchema: joi.object().keys({
-        bodyPartId: validate.id,
+        bodyPartId: validate.reqId,
         date: validate.date,
         unitValue: validate.number
     })

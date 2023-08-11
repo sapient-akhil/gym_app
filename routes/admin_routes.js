@@ -4,15 +4,20 @@ const Schema = require("../validation/schema")
 const Validators = require("../validation/validation")
 const { verifyAccessTokenforAdmin, verifyAccessTokenforTrainer } = require("../helper/token")
 
-// trainer routes
-const adminController = require("../controller/admin/trainer_controller")
+//admin routes
+const adminController = require("../controller/admin/admin_controller")
 
-router.post("/createTrainerByAdmin",verifyAccessTokenforAdmin, Validators.forReqBody(Schema.trainerSchema), adminController.createTrainerByAdmin)
 router.post("/adminLogin", Validators.forReqBody(Schema.loginSchema), adminController.adminLogin)
-router.get("/allTrainer", verifyAccessTokenforAdmin, adminController.allTrainer)
-router.get("/oneTrainer/:id", Validators.forParams(Schema.params), adminController.oneTrainer)
-router.delete("/deleteTrainerByAdmin/:id", verifyAccessTokenforAdmin,Validators.forParams(Schema.params), adminController.deleteTrainerByAdmin)
-router.put("/updateTrainerByAdmin/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), Validators.forReqBody(Schema.trainerSchema), adminController.updateTrainerByAdmin)
+
+// trainer routes
+const trainerController = require("../controller/admin/trainer_controller")
+
+router.post("/createTrainerByAdmin", verifyAccessTokenforAdmin, Validators.forReqBody(Schema.trainerSchema), trainerController.createTrainerByAdmin)
+router.get("/allTrainer", verifyAccessTokenforAdmin, trainerController.allTrainer)
+router.get("/oneTrainer/:id", Validators.forParams(Schema.params), trainerController.oneTrainer)
+router.delete("/deleteTrainerByAdmin/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), trainerController.deleteTrainerByAdmin)
+router.put("/updateTrainerByAdmin/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), Validators.forReqBody(Schema.trainerSchema), trainerController.updateTrainerByAdmin)
+router.post("/trainerLogin", Validators.forReqBody(Schema.loginSchema), trainerController.trainerLogin)
 
 // router.get("/createMealPlanForClient", adminController.getClientMeal)
 
@@ -32,6 +37,7 @@ const mealController = require("../controller/admin/items_controller")
 router.post("/mealItemCreate", Validators.forReqBody(Schema.mealItemSchema), mealController.mealItemCreate);
 router.get("/allMealItem", mealController.allMealItem);
 router.get("/oneMealItems/:id", Validators.forParams(Schema.params), mealController.oneMealItems);
+router.get("/trainerMealItems/:trainer_id", mealController.trainerMealItems)
 router.delete("/deleteMealItems/:id", Validators.forParams(Schema.params), mealController.deleteMealItems)
 router.put("/updateMealItems/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.mealItemSchema), mealController.updateMealItems)
 

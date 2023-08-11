@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
 
 const mealItemsModel = new mongoose.Schema({
+    trainer_id: {
+        type: mongoose.Types.ObjectId,
+        require: [true, "trainer_id is require"],
+    },
     mealItem: {
-        type: String,
+        type: Array,
         require: [true, "mealItems are require"],
         // ref:"mealplans"
     },

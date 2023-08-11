@@ -1,8 +1,7 @@
 const trainerModel = require("../../model/trainer_model");
 const path = require("path")
 const createError = require("http-errors")
-const params = require("../../validation/paramsjoi")
-const { signAccessTokenforAdmin } = require("../../helper/token")
+const { signAccessTokenforTrainer } = require("../../helper/token")
 const fs = require("fs")
 
 exports.createTrainerByAdmin = async (req, res, next) => {
@@ -39,8 +38,7 @@ exports.createTrainerByAdmin = async (req, res, next) => {
     }
 }
 
-exports.adminLogin = async (req, res, next) => {
-
+exports.trainerLogin = async (req, res, next) => {
     try {
         const { email, mobilenumber } = req.body;
         console.log("email password", req.body)
@@ -48,17 +46,15 @@ exports.adminLogin = async (req, res, next) => {
         const user = await trainerModel.findOne({ "contactdetails.email": email });
         if (!user) throw createError.NotFound("mobilenumber or email is wrong")
 
-        // if (user.role === "admin") throw createError.NotFound("This is a admin data, User cann't get....")
-
         const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber })
         if (!existMobileNumber) throw createError.NotFound("mobilenumber or email is wrong")
 
-        const accessToken = await signAccessTokenforAdmin(user);
+        const accessToken = await signAccessTokenforTrainer(user);
 
         res.status(201).send({
             success: true,
-            message: "admin is login...",
-            data:user,
+            message: "trainer is login...",
+            data: user,
             accessToken
         })
 
