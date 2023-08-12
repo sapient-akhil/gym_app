@@ -4,7 +4,6 @@ const mealItemsModel = new mongoose.Schema({
     clientId: {
         type: mongoose.Types.ObjectId,
         require: [true, "clientId is require"],
-        // ref: "mealItems"
     },
     breakFast: [
         {

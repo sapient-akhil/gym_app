@@ -21,10 +21,11 @@ exports.createClient = async (req, res, next) => {
         const user = new clientModel({ trainer_id: id, name, mobilenumber, email, address, password: hash })
 
         const clientData = await clientModel.create(user)
+        if (!clientData) throw createError.NotFound("client not create");
 
         res.status(201).send({
             success: true,
-            message: "trainer is created...",
+            message: "client is created...",
             data: clientData
         })
     } catch (error) {
@@ -65,7 +66,7 @@ exports.deleteClient = async (req, res, next) => {
 
         res.status(201).send({
             success: true,
-            message: "trainer delete successfully",
+            message: "client delete successfully",
             data: client
         })
     } catch (error) {
@@ -75,21 +76,21 @@ exports.deleteClient = async (req, res, next) => {
 
 exports.allClient = async (req, res, next) => {
 
-        try {
-            const page = parseInt(req.query.page || 1);
-            const perPage = 2
+    try {
+        const page = parseInt(req.query.page || 1);
+        const perPage = 2
 
-            const client = await clientModel.find({ active: true },req.query.search ? {
-                $or: [
-                    { $and: [{ name: { $regex: req.query.search } }] },
-                    { $and: [{ email: { $regex: req.query.search } }] },
-                    { $and: [{ address: { $regex: req.query.search } }] },
-                ],
-            } : {})
-                .limit(perPage * 1)
-                .skip((page - 1) * perPage)
-                .exec()
-                
+        const client = await clientModel.find({ active: true }, req.query.search ? {
+            $or: [
+                { $and: [{ name: { $regex: req.query.search } }] },
+                { $and: [{ email: { $regex: req.query.search } }] },
+                { $and: [{ address: { $regex: req.query.search } }] },
+            ],
+        } : {})
+            .limit(perPage * 1)
+            .skip((page - 1) * perPage)
+            .exec()
+        if (!client) throw createError.NotFound("not found client..")
 
         res.status(201).send({
             success: true,
@@ -109,6 +110,7 @@ exports.oneClient = async (req, res, next) => {
         const { id } = req.params
 
         const clientData = await clientModel.findById(id)
+        if (!clientData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,

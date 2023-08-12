@@ -20,6 +20,7 @@ exports.exercisesCreate = async (req, res, next) => {
         const exercise = new exercisesModel({ exercisesName, muscles: array, description, videoLink, photo: filePath })
 
         const exerciseData = await exercisesModel.create(exercise)
+        if (!exerciseData) throw createError.NotFound("Not create exercises..")
 
         res.status(201).send({
             success: true,
@@ -47,6 +48,8 @@ exports.allExercises = async (req, res, next) => {
             .skip((page - 1) * perPage)
             .exec();
 
+            if (!exercises) throw createError.NotFound("Not found exercises..")
+
         res.status(201).send({
             success: true,
             message: "get Exercises",
@@ -65,6 +68,7 @@ exports.oneExercise = async (req, res, next) => {
         const { id } = req.params
 
         const exerciseData = await exercisesModel.findById(id)
+        if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,

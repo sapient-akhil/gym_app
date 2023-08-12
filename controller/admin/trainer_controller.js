@@ -85,6 +85,7 @@ exports.allTrainer = async (req, res, next) => {
     try {
 
         const trainer = await trainerModel.find({active:true})
+        if(!trainer) throw createError.NotFound("not found trainer...")
 
         res.status(201).send({
             success: true,
@@ -108,7 +109,7 @@ exports.oneTrainer = async (req, res, next) => {
 
         res.status(201).send({
             success: true,
-            message: "get ane trainer",
+            message: "get one trainer",
             data: trainerData
         })
 
@@ -150,7 +151,7 @@ exports.updateTrainerByAdmin = async (req, res, next) => {
 
         res.status(201).send({
             success: true,
-            message: "user update successfully",
+            message: "trainer update successfully",
             data: trainer
         })
 

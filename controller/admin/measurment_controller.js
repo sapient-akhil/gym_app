@@ -7,7 +7,9 @@ exports.measurmentCreate = async (req, res, next) => {
         const { bodyPartId, date, unitValue } = req.body
 
         const measurment = new measurmentModel({ bodyPartId, date, unitValue })
+
         const measurmentData = await measurmentModel.create(measurment)
+        if (!measurmentData) throw createError.NotFound("not create measurmentData..")
 
         res.status(201).send({
             success: true,
@@ -31,6 +33,7 @@ exports.allMeasurmentData = async (req, res, next) => {
                 },
                 select: { _id: 0, active: 0, __v: 0 }
             })
+            if (!measurmentData) throw createError.NotFound("not found measurmentData..")
 
         res.status(200).send({
             success: true,
@@ -56,6 +59,8 @@ exports.oneBodyPartData = async (req, res, next) => {
                 },
                 select: { _id: 0, active: 0, __v: 0 }
             })
+        if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+
 
         res.status(200).send({
             success: true,
@@ -73,12 +78,11 @@ exports.deleteMeasurmentData = async (req, res, next) => {
         const { id } = req.params
 
         const measurmentData = await measurmentModel.findByIdAndUpdate(id, { active: false })
-
         if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,
-            message: " Measurment Data deleted successfully",
+            message: " Measurment data deleted successfully",
             data: measurmentData
         })
     } catch (error) {
@@ -94,12 +98,11 @@ exports.updateMeasurmentData = async (req, res, next) => {
         const { bodyPartId, date, unitValue } = req.body
 
         const measurmentData = await measurmentModel.findByIdAndUpdate(id, { $set: { bodyPartId, date, unitValue } })
-
         if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,
-            message: "mealItems update successfully",
+            message: "measurment data update successfully",
             data: measurmentData
         })
 

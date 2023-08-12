@@ -13,14 +13,15 @@ exports.mealPlanCreate = async (req, res, next) => {
         // const array3 = JSON.parse(eveningSnack);
         // const array4 = JSON.parse(dinner);
 
-        const item = new mealPlanModel(mealPlanData)
+        const meal = new mealPlanModel(mealPlanData)
+        if (!meal) throw createError.NotFound("mealPlan is not created...")
 
-        const itemData = await mealPlanModel.create(item)
+        const mealPlan = await mealPlanModel.create(meal)
 
         res.status(201).send({
             success: true,
             message: "mealPlan is created...",
-            data: itemData
+            data: mealPlan
         })
     } catch (error) {
         next(error)
@@ -42,17 +43,19 @@ exports.allMealPlan = async (req, res, next) => {
         // })
         // const allitems = await mealPlanModel.aggregate(pipeline)
 
-        const allitems = await mealPlanModel.find({ active: true })
+        const mealPlans = await mealPlanModel.find({ active: true })
             .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
             .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
             .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
             .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
             .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
 
+        if (!mealPlans) throw createError.NotFound("not found all mealPlans..")
+
         res.status(201).send({
             success: true,
-            message: "get all mealItems",
-            data: allitems
+            message: "get all mealPlans",
+            data: mealPlans
         })
 
     } catch (error) {
@@ -66,12 +69,13 @@ exports.oneMealplan = async (req, res, next) => {
 
         const { id } = req.params
 
-        const itemData = await mealPlanModel.findById(id)
+        const mealPlan = await mealPlanModel.findById(id)
+        if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,
-            message: "get all mealItems",
-            data: itemData
+            message: "get one mealPlan",
+            data: mealPlan
         })
 
     } catch (error) {
@@ -83,14 +87,14 @@ exports.deleteMealPlan = async (req, res, next) => {
 
         const { id } = req.params
 
-        const itemData = await mealPlanModel.findByIdAndUpdate(id, { active: false })
+        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { active: false })
 
-        if (!itemData) throw createError.NotFound("ENTER VALID ID..")
+        if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,
-            message: "user delete successfully",
-            data: itemData
+            message: "mealPlan delete successfully",
+            data: mealPlan
         })
     } catch (error) {
         next(error)
@@ -110,14 +114,14 @@ exports.updateMealPlan = async (req, res, next) => {
         const array3 = JSON.parse(eveningSnack);
         const array4 = JSON.parse(dinner);
 
-        const itemData = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast: array, morningSnack: array1, lunch: array2, eveningSnack: array3, dinner: array4 } })
+        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast: array, morningSnack: array1, lunch: array2, eveningSnack: array3, dinner: array4 } })
 
-        if (!itemData) throw createError.NotFound("ENTER VALID ID..")
+        if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,
-            message: "mealItems update successfully",
-            data: itemData
+            message: "mealPlan update successfully",
+            data: mealPlan
         })
 
     } catch (error) {
