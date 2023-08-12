@@ -40,7 +40,7 @@ exports.allUnit = async (req, res, next) => {
     }
 }
 
-exports.getOneUnit = async (req, res, next) => {
+exports.oneUnit = async (req, res, next) => {
     try {
 
         const { id } = req.params

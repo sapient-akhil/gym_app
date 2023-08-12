@@ -6,7 +6,7 @@ const mealItemsModel = new mongoose.Schema({
         require: [true, "trainer_id is require"],
     },
     mealItem: {
-        type: Array,
+        type: String,
         require: [true, "mealItems are require"],
         // ref:"mealplans"
     },
@@ -14,10 +14,10 @@ const mealItemsModel = new mongoose.Schema({
         type: String,
         require: [true, "calary are require"]
     },
-    quantityUnits: {
-        type: String,
-        require: [true, "quantityUnits are require"]
-    },
+    // quantityUnits: {
+    //     type: String,
+    //     require: [true, "quantityUnits are require"]
+    // },
     description: {
         type: String,
         require: [true, "description are require"]

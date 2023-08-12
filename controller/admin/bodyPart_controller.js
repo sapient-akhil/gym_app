@@ -19,7 +19,7 @@ exports.bodyPartCreate = async (req, res, next) => {
     }
 }
 
-exports.getBodyPart = async (req, res, next) => {
+exports.allBodyPart = async (req, res, next) => {
     try {
         const getBodyPartData = await bodyPartModel.find({active:true}).populate("unitId")
 
@@ -38,10 +38,8 @@ exports.oneBodyPart = async (req, res, next) => {
 
         const { id } = req.params
 
-        const bodyPart = await params.validateAsync({ id });
-        console.log(bodyPart)
-
-        const bodyPartData = await bodyPartModel.findById(id)
+        const bodyPartData = await bodyPartModel.findById(id).populate("unitId")
+        if(!bodyPartData) throw createError.NotFound("ENTER VALID ID...")
 
         res.status(201).send({
             success: true,

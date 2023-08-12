@@ -19,7 +19,7 @@ exports.measurmentCreate = async (req, res, next) => {
     }
 }
 
-exports.getMeasurmentData = async (req, res, next) => {
+exports.allMeasurmentData = async (req, res, next) => {
     try {
         const measurmentData = await measurmentModel.find()
             .populate({
@@ -44,9 +44,9 @@ exports.getMeasurmentData = async (req, res, next) => {
 
 exports.oneBodyPartData = async (req, res, next) => {
     try {
-        const bodyPartId = req.params
+        const { id } = req.params
 
-        const measurmentData = await measurmentModel.find(bodyPartId)
+        const measurmentData = await measurmentModel.findById(id)
             .populate({
                 path: "bodyPartId",
                 populate: {
@@ -71,7 +71,7 @@ exports.deleteMeasurmentData = async (req, res, next) => {
     try {
 
         const { id } = req.params
-       
+
         const measurmentData = await measurmentModel.findByIdAndUpdate(id, { active: false })
 
         if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
@@ -79,7 +79,7 @@ exports.deleteMeasurmentData = async (req, res, next) => {
         res.status(201).send({
             success: true,
             message: " Measurment Data deleted successfully",
-            data: itemData
+            data: measurmentData
         })
     } catch (error) {
         next(error)
@@ -93,7 +93,7 @@ exports.updateMeasurmentData = async (req, res, next) => {
 
         const { bodyPartId, date, unitValue } = req.body
 
-        const measurmentData = await mealItemsModel.findByIdAndUpdate(id, { $set: { bodyPartId, date, unitValue } })
+        const measurmentData = await measurmentModel.findByIdAndUpdate(id, { $set: { bodyPartId, date, unitValue } })
 
         if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
 

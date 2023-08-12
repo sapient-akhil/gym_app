@@ -104,6 +104,7 @@ exports.oneTrainer = async (req, res, next) => {
         const { id } = req.params
 
         const trainerData = await trainerModel.findById(id)
+        if(!trainerData) throw createError.NotFound("ENTER VALID ID...")
 
         res.status(201).send({
             success: true,

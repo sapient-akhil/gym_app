@@ -4,12 +4,12 @@ const params = require("../../validation/paramsjoi")
 
 exports.mealItemCreate = async (req, res, next) => {
     try {
-        const { trainer_id, mealItem, calary, quantityUnits, description, ingredients } = req.body
+        const { trainer_id, mealItem, calary, description, ingredients } = req.body
 
         const array = JSON.parse(ingredients);
-        const array1 = JSON.parse(mealItem);
+        // const array1 = JSON.parse(mealItem);
 
-        const item = new mealItemsModel({ trainer_id, mealItem: array1, calary, quantityUnits, description, ingredients: array })
+        const item = new mealItemsModel({ trainer_id, mealItem, calary, description, ingredients: array })
 
         const itemData = await mealItemsModel.create(item)
 

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const workOutModel = new mongoose.Schema({
-    clientId:{
-        type: mongoose.Types.ObjectId,
-        require: [true, "clientId is require"],
-    },
+    // clientId:{
+    //     type: mongoose.Types.ObjectId,
+    //     require: [true, "clientId is require"],
+    // },
     exercises_id: {
         type: Array,
         require: [true, "exercises_id are require"],

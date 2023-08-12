@@ -3,7 +3,6 @@ const validate = require("../validation/joivalidation")
 
 module.exports = {
     trainerSchema: joi.object().keys({
-        id: validate.reqId,
         name: validate.reqstring,
         qualifications: validate.reqstring,
         certifications: validate.reqstring,
@@ -32,7 +31,7 @@ module.exports = {
         trainer_id: validate.id,
         mealItem: validate.reqstring,
         calary: validate.reqstring,
-        quantityUnits: validate.reqstring,
+        // quantityUnits: validate.reqstring,
         description: validate.reqstring,
         ingredients: validate.reqstring
     }),
@@ -62,7 +61,7 @@ module.exports = {
         date: validate.date
     }),
     unitSchema: joi.object().keys({
-        id: validate.reqId,
+        // id: validate.reqId,
         unit: validate.reqstring,
     }),
     bodyPartSchema: joi.object().keys({

@@ -46,7 +46,7 @@ exports.oneWorkOut = async (req, res, next) => {
 
         const { id } = req.params
 
-        const workOutData = await workOutModel.findById(id)
+        const workOutData = await workOutModel.findById(id).populate("exercises_id")
 
         res.status(201).send({
             success: true,

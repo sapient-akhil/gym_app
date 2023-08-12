@@ -64,9 +64,6 @@ exports.oneExercise = async (req, res, next) => {
 
         const { id } = req.params
 
-        const exercise = await params.validateAsync({ id });
-        console.log(exercise)
-
         const exerciseData = await exercisesModel.findById(id)
 
         res.status(201).send({
@@ -90,7 +87,7 @@ exports.deleteExercise = async (req, res, next) => {
         res.status(201).send({
             success: true,
             message: "exercise delete successfully",
-            data: itemData
+            data: exerciseData
         })
     } catch (error) {
         next(error)
@@ -131,7 +128,7 @@ exports.updateExercise = async (req, res, next) => {
         res.status(201).send({
             success: true,
             message: "exercise update successfully",
-            data: itemData
+            data: exerciseData
         })
 
     } catch (error) {

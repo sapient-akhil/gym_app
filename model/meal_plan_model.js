@@ -6,34 +6,96 @@ const mealItemsModel = new mongoose.Schema({
         require: [true, "clientId is require"],
         // ref: "mealItems"
     },
-    breakFast:{
-        type: Array,
-        require: [true, "breakFast is require"],
-        ref: "mealItems"
-    },
-    morningSnack: {
-        type: Array,
-        require: [true, "morningSnack are require"],
-        ref: "mealItems"
-    },
-    lunch: {
-        type: Array,
-        require: [true, "lunch are require"],
-        ref: "mealItems"
-
-    },
-    eveningSnack: {
-        type: Array,
-        require: [true, "eveningSnack are require"],
-        ref: "mealItems"
-
-    },
-    dinner: {
-        type: Array,
-        require: [true, "dinner are require"],
-        ref: "mealItems"
-
-    },
+    breakFast: [
+        {
+            mealItemsId: {
+                type: mongoose.Types.ObjectId,
+                required: true,
+                ref: "mealItems"
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            unit: {
+                type: String,
+                required: true
+            },
+            _id: false
+        }
+    ],
+    morningSnack: [
+        {
+            mealItemsId: {
+                type: mongoose.Types.ObjectId,
+                required: true,
+                ref: "mealItems"
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            unit: {
+                type: String,
+                required: true
+            },
+            _id: false
+        }
+    ],
+    lunch: [
+        {
+            mealItemsId: {
+                type: mongoose.Types.ObjectId,
+                required: true,
+                ref: "mealItems"
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            unit: {
+                type: String,
+                required: true
+            },
+            _id: false
+        }
+    ],
+    eveningSnack: [
+        {
+            mealItemsId: {
+                type: mongoose.Types.ObjectId,
+                required: true,
+                ref: "mealItems"
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            unit: {
+                type: String,
+                required: true
+            },
+            _id: false
+        }
+    ],
+    dinner: [
+        {
+            mealItemsId: {
+                type: mongoose.Types.ObjectId,
+                required: true,
+                ref: "mealItems"
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            unit: {
+                type: String,
+                required: true
+            },
+            _id: false
+        }
+    ],
     active: {
         type: Boolean,
         default: "true"
