@@ -24,7 +24,7 @@ router.put("/updateTrainerByAdmin/:id", verifyAccessTokenforAdmin, Validators.fo
 // client routes
 const clientController = require("../controller/client_controller")
 
-router.post("/createClient", Validators.forReqBody(Schema.clientSchema), clientController.createClient)
+router.post("/createClient",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientSchema), clientController.createClient)
 router.post("/clientLogin", Validators.forReqBody(Schema.clientLoginSchema), clientController.clientLogin)
 router.get("/allClient", clientController.allClient)
 router.get("/oneClient/:id", Validators.forParams(Schema.params), clientController.oneClient)
@@ -34,7 +34,7 @@ router.put("/updateClient/:id", Validators.forParams(Schema.params), Validators.
 // meal items routes
 const mealController = require("../controller/admin/items_controller")
 
-router.post("/mealItemCreate", mealController.mealItemCreate);
+router.post("/mealItemCreate",Validators.forReqBody(Schema.mealItemSchema), mealController.mealItemCreate);
 router.get("/allMealItem", mealController.allMealItem);
 router.get("/oneMealItem/:id", Validators.forParams(Schema.params), mealController.oneMealItems);
 router.get("/trainerMealItems/:trainer_id", mealController.trainerMealItems)
@@ -44,7 +44,7 @@ router.put("/updateMealItems/:id", Validators.forParams(Schema.params), Validato
 // meal plan routes
 const mealPlanController = require("../controller/admin/meal_controller");
 
-router.post("/mealPlanCreate", mealPlanController.mealPlanCreate);
+router.post("/mealPlanCreate",Validators.forReqBody(Schema.mealPlanSchema), mealPlanController.mealPlanCreate);
 router.get("/allMealPlan", mealPlanController.allMealPlan);
 router.get("/oneMealplan/:id", Validators.forParams(Schema.params), mealPlanController.oneMealplan);
 router.delete("/deleteMealPlan/:id", Validators.forParams(Schema.params), mealPlanController.deleteMealPlan);

@@ -67,7 +67,7 @@ exports.deleteTrainerByAdmin = async (req, res, next) => {
     try {
 
         const { id } = req.params
-    
+
         const trainer = await trainerModel.findByIdAndUpdate(id, { active: false })
         if (!trainer) throw createError.NotFound("ENTER VALID ID..")
 
@@ -84,8 +84,8 @@ exports.deleteTrainerByAdmin = async (req, res, next) => {
 exports.allTrainer = async (req, res, next) => {
     try {
 
-        const trainer = await trainerModel.find({active:true})
-        if(!trainer) throw createError.NotFound("not found trainer...")
+        const trainer = await trainerModel.find({ active: true })
+        if (!trainer) throw createError.NotFound("not found trainer...")
 
         res.status(201).send({
             success: true,
@@ -105,7 +105,7 @@ exports.oneTrainer = async (req, res, next) => {
         const { id } = req.params
 
         const trainerData = await trainerModel.findById(id)
-        if(!trainerData) throw createError.NotFound("ENTER VALID ID...")
+        if (!trainerData) throw createError.NotFound("ENTER VALID ID...")
 
         res.status(201).send({
             success: true,
@@ -124,6 +124,25 @@ exports.updateTrainerByAdmin = async (req, res, next) => {
         const { id } = req.params
 
         const { name, qualifications, certifications, mobilenumber, email } = req.body
+
+        const existingClient = await trainerModel.findById(id)
+        if (!existingClient) {
+            throw createError.NotFound("ENTER VALID ID..");
+        }
+
+        if (email !== existingClient.contactdetails.email) {
+            const existEmail = await trainerModel.findOne({ "contactdetails.email": email });
+            if (existEmail) {
+                throw createError.Conflict("Email already exists");
+            }
+        }
+
+        if (mobilenumber !== existingClient.contactdetails.mobilenumber) {
+            const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber });
+            if (existMobileNumber) {
+                throw createError.Conflict("existMobileNumber already exists");
+            }
+        }
 
         const file = req.files.profilePhoto
         const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
@@ -145,7 +164,8 @@ exports.updateTrainerByAdmin = async (req, res, next) => {
         })
         const array = JSON.parse(certifications)
 
-        const trainer = await trainerModel.findByIdAndUpdate(id, { $set: { name, qualifications, certifications: array, "contactdetails.mobilenumber": mobilenumber, "contactdetails.email": email, profilePhoto: filePath } })
+        const trainer = await trainerModel.findByIdAndUpdate(id,
+            { $set: { name, qualifications, certifications: array, "contactdetails.mobilenumber": mobilenumber, "contactdetails.email": email, profilePhoto: filePath } })
 
         if (!trainer) throw createError.NotFound("ENTER VALID ID..")
 

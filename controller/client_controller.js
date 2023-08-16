@@ -14,7 +14,7 @@ exports.createClient = async (req, res, next) => {
         if (existMobileNumber) throw createError.NotFound("this mobilenumber is already exist..")
 
         const payload = req.payload;
-        const id = payload.user._id
+        const id = payload.aud[0]._id
 
         const hash = await bcrypt.hash(password, 10);
 
@@ -80,7 +80,7 @@ exports.allClient = async (req, res, next) => {
         const page = parseInt(req.query.page || 1);
         const perPage = 2
 
-        const client = await clientModel.find({ active: true }, req.query.search ? {
+        const client = await clientModel.find(req.query.search ? {
             $or: [
                 { $and: [{ name: { $regex: req.query.search } }] },
                 { $and: [{ email: { $regex: req.query.search } }] },
@@ -90,7 +90,8 @@ exports.allClient = async (req, res, next) => {
             .limit(perPage * 1)
             .skip((page - 1) * perPage)
             .exec()
-        if (!client) throw createError.NotFound("not found client..")
+
+        if (client.length === 0) throw createError.NotFound("No clients found")
 
         res.status(201).send({
             success: true,
@@ -128,17 +129,36 @@ exports.updateClient = async (req, res, next) => {
 
         const { id } = req.params
 
-        if (!req.body) throw createError.NotFound("enter update field")
 
         const { name, mobilenumber, email, address, password } = req.body
+        const hash = await bcrypt.hash(password, 10);
 
-        const trainer = await clientModel.findByIdAndUpdate(id, { $set: { name, mobilenumber, email, address, password } })
+        const existingClient = await clientModel.findById(id);
+        if (!existingClient) {
+            throw createError.NotFound("ENTER VALID ID..");
+        }
+
+        if (email !== existingClient.email) {
+            const existEmail = await clientModel.findOne({ email });
+            if (existEmail) {
+                throw createError.Conflict("Email already exists");
+            }
+        }
+
+        if (mobilenumber !== existingClient.mobilenumber) {
+            const existEmail = await clientModel.findOne({ mobilenumber });
+            if (existEmail) {
+                throw createError.Conflict("existMobileNumber already exists");
+            }
+        }
+
+        const trainer = await clientModel.findByIdAndUpdate(id, { $set: { name, address, password: hash } })
 
         if (!trainer) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
             success: true,
-            message: "user update successfully",
+            message: "trainer update successfully",
             data: trainer
         })
 

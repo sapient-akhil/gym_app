@@ -12,7 +12,6 @@ exports.mealItemCreate = async (req, res, next) => {
         const item = new mealItemsModel({ trainer_id, mealItem, calary, description, ingredients: array })
 
         const itemData = await mealItemsModel.create(item)
-        if (!itemData) throw createError.NotFound("Not create mealItem..")
 
         res.status(201).send({
             success: true,
@@ -40,7 +39,7 @@ exports.allMealItem = async (req, res, next) => {
             .skip((page - 1) * perPage)
             .exec();
 
-            if (!mealItems) throw createError.NotFound("Not found mealItem..")
+        if (mealItems.length === 0) throw createError.NotFound("Not found mealItems..")
 
         res.status(201).send({
             success: true,
@@ -58,7 +57,7 @@ exports.trainerMealItems = async (req, res, next) => {
 
         const { trainer_id } = req.params
 
-        const itemData = await mealItemsModel.findOne({trainer_id})
+        const itemData = await mealItemsModel.findOne({ trainer_id })
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({

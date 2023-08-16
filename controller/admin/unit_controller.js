@@ -12,7 +12,6 @@ exports.unitCreate = async (req, res, next) => {
         if (existUnit) throw createError.NotFound("This unit is already exist")
 
         const unitData = await unitModel.create(unitCreate)
-        if (!unitData) throw createError.NotFound("unitData not create..")
 
         res.status(201).send({
             success: true,
@@ -28,7 +27,6 @@ exports.allUnit = async (req, res, next) => {
     try {
 
         const allUnit = await unitModel.find()
-        if (!allUnit) throw createError.NotFound("not found unitdata..")
 
         res.status(201).send({
             success: true,

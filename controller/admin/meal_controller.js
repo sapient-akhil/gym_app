@@ -5,23 +5,42 @@ const params = require("../../validation/paramsjoi")
 
 exports.mealPlanCreate = async (req, res, next) => {
     try {
-        const mealPlanData = req.body;
+        const { clientId, breakFast, morningSnack, lunch, eveningSnack, dinner } = req.body;
 
-        // const array = JSON.parse(breakFast);
-        // const array1 = JSON.parse(morningSnack);
-        // const array2 = JSON.parse(lunch);
-        // const array3 = JSON.parse(eveningSnack);
-        // const array4 = JSON.parse(dinner);
+        // Check for duplicate mealItemsId within each meal category
 
-        const meal = new mealPlanModel(mealPlanData)
-        if (!meal) throw createError.NotFound("mealPlan is not created...")
+        const checkDuplicates = mealCategory => {
+            const mealItemsIdsSet = new Set();
+            for (const item of mealCategory) {
+                if (mealItemsIdsSet.has(item.mealItemsId.toString())) {
+                    throw createError.Conflict("Duplicate mealItemsId found in meal category");
+                }
+                mealItemsIdsSet.add(item.mealItemsId.toString());
+            }
+        };
 
-        const mealPlan = await mealPlanModel.create(meal)
+        // Check for duplicates within each meal category
+        checkDuplicates(breakFast);
+        checkDuplicates(morningSnack);
+        checkDuplicates(lunch);
+        checkDuplicates(eveningSnack);
+        checkDuplicates(dinner);
+        // Create the meal plan
+        const newMealPlan = new mealPlanModel({
+            clientId,
+            breakFast,
+            morningSnack,
+            lunch,
+            eveningSnack,
+            dinner
+        });
+
+        const savedMealPlan = await mealPlanModel.create(newMealPlan);
 
         res.status(201).send({
             success: true,
             message: "mealPlan is created...",
-            data: mealPlan
+            data: savedMealPlan
         })
     } catch (error) {
         next(error)
@@ -49,8 +68,6 @@ exports.allMealPlan = async (req, res, next) => {
             .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
             .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
             .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-
-        if (!mealPlans) throw createError.NotFound("not found all mealPlans..")
 
         res.status(201).send({
             success: true,
@@ -108,13 +125,13 @@ exports.updateMealPlan = async (req, res, next) => {
 
         const { breakFast, morningSnack, lunch, eveningSnack, dinner } = req.body
 
-        const array = JSON.parse(breakFast);
-        const array1 = JSON.parse(morningSnack);
-        const array2 = JSON.parse(lunch);
-        const array3 = JSON.parse(eveningSnack);
-        const array4 = JSON.parse(dinner);
+        // const array = JSON.parse(breakFast);
+        // const array1 = JSON.parse(morningSnack);
+        // const array2 = JSON.parse(lunch);
+        // const array3 = JSON.parse(eveningSnack);
+        // const array4 = JSON.parse(dinner);
 
-        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast: array, morningSnack: array1, lunch: array2, eveningSnack: array3, dinner: array4 } })
+        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast, morningSnack, lunch, eveningSnack, dinner } })
 
         if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 

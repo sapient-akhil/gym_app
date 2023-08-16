@@ -11,7 +11,6 @@ exports.workOutCreate = async (req, res, next) => {
         const workOut = new workOutModel({ exercises_id: array, workOutName, time, reps, set, volume, date })
 
         const workOutData = await workOutModel.create(workOut)
-        if (!workOutData) throw createError.NotFound("workOut not Create..")
 
         res.status(201).send({
             success: true,
@@ -29,7 +28,6 @@ exports.allWorkOut = async (req, res, next) => {
         const endDate = req.body.endDate;
 
         const allWorkOut = await workOutModel.find({ active: true, date: { $gte: startDate, $lt: endDate } }).populate("exercises_id")
-        if (!allWorkOut) throw createError.NotFound("not found workOut..")
 
         res.status(201).send({
             success: true,

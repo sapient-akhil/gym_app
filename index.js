@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
     res.send("gym is open...")
 });
 
-app.all('/', (req, res) => { return res.status(200).send("mongodb Connected...") })
+// app.all('/', (req, res) => { return res.status(200).send("mongodb Connected...") })
 
 app.use("/admin", require("./routes/admin_routes"));
 // app.use("/trainer", require("./routes/trainer_routes"));

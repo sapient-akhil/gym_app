@@ -9,8 +9,7 @@ exports.bodyPartCreate = async (req, res, next) => {
         const bodyPartCreate = new bodyPartModel({ unitId, bodyPart })
 
         const bodyPartData = await bodyPartModel.create(bodyPartCreate)
-        if (!bodyPartData) throw createError.NotFound("bodyPart is not created...")
-
+        
         res.status(201).send({
             success: true,
             message: "bodyPart is created...",
@@ -24,7 +23,6 @@ exports.bodyPartCreate = async (req, res, next) => {
 exports.allBodyPart = async (req, res, next) => {
     try {
         const getBodyPartData = await bodyPartModel.find({active:true}).populate("unitId")
-        if (!getBodyPartData) throw createError.NotFound("not found bodyPart data...")
 
         res.status(200).send({
             success: true,

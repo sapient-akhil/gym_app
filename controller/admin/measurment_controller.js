@@ -9,7 +9,6 @@ exports.measurmentCreate = async (req, res, next) => {
         const measurment = new measurmentModel({ bodyPartId, date, unitValue })
 
         const measurmentData = await measurmentModel.create(measurment)
-        if (!measurmentData) throw createError.NotFound("not create measurmentData..")
 
         res.status(201).send({
             success: true,
@@ -33,7 +32,6 @@ exports.allMeasurmentData = async (req, res, next) => {
                 },
                 select: { _id: 0, active: 0, __v: 0 }
             })
-            if (!measurmentData) throw createError.NotFound("not found measurmentData..")
 
         res.status(200).send({
             success: true,
