@@ -1,7 +1,6 @@
 const mealPlanModel = require("../../model/meal_plan_model")
 const mealItemsModel = require("../../model/meal_items_model")
 const createError = require("http-errors")
-const params = require("../../validation/paramsjoi")
 
 exports.mealPlanCreate = async (req, res, next) => {
     try {
@@ -74,9 +73,7 @@ exports.allMealPlan = async (req, res, next) => {
             message: "get all mealPlans",
             data: mealPlans
         })
-
     } catch (error) {
-
         next(error)
     }
 }
@@ -88,13 +85,13 @@ exports.oneMealplan = async (req, res, next) => {
 
         const mealPlan = await mealPlanModel.findById(id)
         if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
+        if (mealPlan.active === false) throw createError.NotFound("mealPlan not found...")
 
         res.status(201).send({
             success: true,
             message: "get one mealPlan",
             data: mealPlan
         })
-
     } catch (error) {
         next(error)
     }
@@ -140,7 +137,6 @@ exports.updateMealPlan = async (req, res, next) => {
             message: "mealPlan update successfully",
             data: mealPlan
         })
-
     } catch (error) {
         next(error)
     }

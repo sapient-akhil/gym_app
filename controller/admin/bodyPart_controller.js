@@ -1,6 +1,5 @@
 const bodyPartModel = require("../../model/bodyPart_model")
 const createError = require("http-errors")
-const params = require("../../validation/paramsjoi")
 
 exports.bodyPartCreate = async (req, res, next) => {
     try {
@@ -9,7 +8,7 @@ exports.bodyPartCreate = async (req, res, next) => {
         const bodyPartCreate = new bodyPartModel({ unitId, bodyPart })
 
         const bodyPartData = await bodyPartModel.create(bodyPartCreate)
-        
+
         res.status(201).send({
             success: true,
             message: "bodyPart is created...",
@@ -22,7 +21,7 @@ exports.bodyPartCreate = async (req, res, next) => {
 
 exports.allBodyPart = async (req, res, next) => {
     try {
-        const getBodyPartData = await bodyPartModel.find({active:true}).populate("unitId")
+        const getBodyPartData = await bodyPartModel.find({ active: true }).populate("unitId")
 
         res.status(200).send({
             success: true,
@@ -40,14 +39,15 @@ exports.oneBodyPart = async (req, res, next) => {
         const { id } = req.params
 
         const bodyPartData = await bodyPartModel.findById(id).populate("unitId")
-        if(!bodyPartData) throw createError.NotFound("ENTER VALID ID...")
+        if (!bodyPartData) throw createError.NotFound("ENTER VALID ID...")
+        if (bodyPartData.active === false) throw createError.NotFound("bodyPart not found...")
 
+        console.log(bodyPartData)
         res.status(201).send({
             success: true,
             message: "get one bodyPartData",
             data: bodyPartData
         })
-
     } catch (error) {
         next(error)
     }
@@ -57,7 +57,7 @@ exports.deleteBodyPart = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        
+
         const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { active: false })
 
         if (!bodyPartData) throw createError.NotFound("ENTER VALID ID..")
@@ -88,7 +88,6 @@ exports.updateBodyPart = async (req, res, next) => {
             message: "bodyPartData update successfully",
             data: bodyPartData
         })
-
     } catch (error) {
         next(error)
     }

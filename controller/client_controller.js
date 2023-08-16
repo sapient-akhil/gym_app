@@ -1,6 +1,5 @@
 const clientModel = require("../model/client_model");
 const bcrypt = require("bcrypt");
-const params = require("../validation/paramsjoi")
 const createError = require("http-errors")
 
 exports.createClient = async (req, res, next) => {
@@ -51,7 +50,6 @@ exports.clientLogin = async (req, res, next) => {
             data: client,
             // accessToken,
         })
-
     } catch (error) {
         next(error)
     }
@@ -78,15 +76,17 @@ exports.allClient = async (req, res, next) => {
 
     try {
         const page = parseInt(req.query.page || 1);
-        const perPage = 2
+        const perPage = 8
 
         const client = await clientModel.find(req.query.search ? {
-            $or: [
-                { $and: [{ name: { $regex: req.query.search } }] },
-                { $and: [{ email: { $regex: req.query.search } }] },
-                { $and: [{ address: { $regex: req.query.search } }] },
-            ],
-        } : {})
+            active: true,
+            $or:
+                [
+                    { name: { $regex: req.query.search, $options: 'i' } },
+                    { email: { $regex: req.query.search, $options: 'i' } },
+                    { address: { $regex: req.query.search, $options: 'i' } }
+                ]
+        } : { active: true })
             .limit(perPage * 1)
             .skip((page - 1) * perPage)
             .exec()
@@ -98,9 +98,7 @@ exports.allClient = async (req, res, next) => {
             message: "get all client",
             data: client
         })
-
     } catch (error) {
-
         next(error)
     }
 }
@@ -112,13 +110,13 @@ exports.oneClient = async (req, res, next) => {
 
         const clientData = await clientModel.findById(id)
         if (!clientData) throw createError.NotFound("ENTER VALID ID..")
+        if (clientData.active === false) throw createError.NotFound("client not found...")
 
         res.status(201).send({
             success: true,
             message: "get one Client",
             data: clientData
         })
-
     } catch (error) {
         next(error)
     }
@@ -161,7 +159,6 @@ exports.updateClient = async (req, res, next) => {
             message: "trainer update successfully",
             data: trainer
         })
-
     } catch (error) {
         next(error)
     }

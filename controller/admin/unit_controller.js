@@ -1,6 +1,5 @@
 const unitModel = require("../../model/unit_model")
 const createError = require("http-errors")
-const params = require("../../validation/paramsjoi")
 
 exports.unitCreate = async (req, res, next) => {
     try {
@@ -33,9 +32,7 @@ exports.allUnit = async (req, res, next) => {
             message: "get all Unit",
             data: allUnit
         })
-
     } catch (error) {
-
         next(error)
     }
 }
@@ -47,13 +44,13 @@ exports.oneUnit = async (req, res, next) => {
 
         const unitData = await unitModel.findById(id)
         if (!unitData) throw createError.NotFound("ENTER VALID ID..")
+        if (unitData.active === false) throw createError.NotFound("unit not found...")
 
         res.status(201).send({
             success: true,
             message: "get one unitMData",
             data: unitData
         })
-
     } catch (error) {
         next(error)
     }
@@ -93,7 +90,6 @@ exports.updateUnit = async (req, res, next) => {
             message: "unitData update successfully",
             data: unitData
         })
-
     } catch (error) {
         next(error)
     }

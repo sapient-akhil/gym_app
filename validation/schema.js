@@ -12,6 +12,9 @@ module.exports = {
     params: joi.object().keys({
         id: validate.reqId
     }),
+    bodyPartId: joi.object().keys({
+        bodyPartId: validate.reqId
+    }), 
     loginSchema: joi.object().keys({
         mobilenumber: validate.reqstring,
         email: validate.email

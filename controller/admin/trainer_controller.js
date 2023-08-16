@@ -57,7 +57,6 @@ exports.trainerLogin = async (req, res, next) => {
             data: user,
             accessToken
         })
-
     } catch (error) {
         next(error)
     }
@@ -92,9 +91,7 @@ exports.allTrainer = async (req, res, next) => {
             message: "get all trainer",
             data: trainer
         })
-
     } catch (error) {
-
         next(error)
     }
 }
@@ -106,13 +103,13 @@ exports.oneTrainer = async (req, res, next) => {
 
         const trainerData = await trainerModel.findById(id)
         if (!trainerData) throw createError.NotFound("ENTER VALID ID...")
+        if (trainerData.active === false) throw createError.NotFound("trainer not found...")
 
         res.status(201).send({
             success: true,
             message: "get one trainer",
             data: trainerData
         })
-
     } catch (error) {
         next(error)
     }
@@ -174,7 +171,6 @@ exports.updateTrainerByAdmin = async (req, res, next) => {
             message: "trainer update successfully",
             data: trainer
         })
-
     } catch (error) {
         next(error)
     }

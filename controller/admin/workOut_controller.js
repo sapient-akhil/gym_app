@@ -1,6 +1,5 @@
 const workOutModel = require("../../model/workOut_model")
 const createError = require("http-errors")
-const params = require("../../validation/paramsjoi")
 const path = require("path")
 
 exports.workOutCreate = async (req, res, next) => {
@@ -24,19 +23,17 @@ exports.workOutCreate = async (req, res, next) => {
 
 exports.allWorkOut = async (req, res, next) => {
     try {
-        const startDate = req.body.startDate;
-        const endDate = req.body.endDate;
+        // const startDate = req.body.startDate;
+        // const endDate = req.body.endDate;
 
-        const allWorkOut = await workOutModel.find({ active: true, date: { $gte: startDate, $lt: endDate } }).populate("exercises_id")
+        const allWorkOut = await workOutModel.find({ active: true }).populate("exercises_id")
 
         res.status(201).send({
             success: true,
             message: "get all allWorkOut",
             data: allWorkOut
         })
-
     } catch (error) {
-
         next(error)
     }
 }
@@ -48,13 +45,13 @@ exports.oneWorkOut = async (req, res, next) => {
 
         const workOutData = await workOutModel.findById(id).populate("exercises_id")
         if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
+        if (workOutData.active === false) throw createError.NotFound("workOut not found...")
 
         res.status(201).send({
             success: true,
             message: "get one workout",
             data: workOutData
         })
-
     } catch (error) {
         next(error)
     }
@@ -82,9 +79,6 @@ exports.updateWorkOut = async (req, res, next) => {
 
         const { id } = req.params
 
-        const result = await params.validateAsync({ id });
-        console.log(result)
-
         const { exercises_id, workOutName, time, reps, set, volume, date } = req.body
 
         const array = JSON.parse(exercises_id)
@@ -97,7 +91,6 @@ exports.updateWorkOut = async (req, res, next) => {
             message: "workout update successfully",
             data: workOutData
         })
-
     } catch (error) {
         next(error)
     }
