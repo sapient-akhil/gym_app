@@ -3,23 +3,23 @@ const mongoose = require("mongoose");
 const exercisesModel = new mongoose.Schema({
     exercisesName: {
         type: String,
-        require: [true, "exercisesName are require"],
+        required: [true, "exercisesName are require"],
     },
     muscles: {
         type: Array,
-        require: [true, "muscles are require"]
+        required: [true, "muscles are require"]
     },
     photo: {
         type: String,
-        require: [true, "photo are require"]
+        required: [true, "photo are require"]
     },
     description: {
         type: String,
-        require: [true, "description are require"]
+        required: [true, "description are require"]
     },
     videoLink: {
         type: String,
-        require: [true, "videoLink are require"]
+        required: [true, "videoLink are require"]
     },
     active: {
         type: Boolean,

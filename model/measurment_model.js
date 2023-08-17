@@ -3,21 +3,21 @@ const mongoose = require("mongoose")
 const measurmentModel = new mongoose.Schema({
     date: {
         type: Date,
-        require: [true, "date is required"]
+        required: [true, "date is required"]
     },
     bodyPartId: {
         type: mongoose.Types.ObjectId,
-        require: [true, "bodyPartId is required"],
-        ref:"bodyPart"
+        required: [true, "bodyPartId is required"],
+        ref: "bodyPart"
     },
-    unitValue:{
-        type:Number,
-        require : [true,"unitValue is required"]
+    unitValue: {
+        type: Number,
+        required: [true, "unitValue is required"]
     },
     active: {
         type: Boolean,
         default: "true"
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("measurment", measurmentModel)

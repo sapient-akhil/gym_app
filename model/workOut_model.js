@@ -7,32 +7,32 @@ const workOutModel = new mongoose.Schema({
     // },
     exercises_id: {
         type: Array,
-        require: [true, "exercises_id are require"],
+        required: [true, "exercises_id are require"],
         ref:"exercises"
     },
     workOutName: {
         type: String,
-        require: [true, "workOutName are require"],
+        required: [true, "workOutName are require"],
     },
     time: {
         type: String,
-        require: [true, "time are require"]
+        required: [true, "time are require"]
     },
     reps: {
         type: String,
-        require: [true, "reps are require"]
+        required: [true, "reps are require"]
     },
     set:{
         type: String,
-        require: [true, "set are require"]
+        required: [true, "set are require"]
     },
     volume:{
         type: String,
-        require: [true, "volume are require"]
+        required: [true, "volume are require"]
     },
     date:{
         type:Date,
-        require: [true, "date are require"]
+        required: [true, "date are require"]
     },
     active: {
         type: Boolean,

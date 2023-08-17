@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const mealItemsModel = new mongoose.Schema({
     clientId: {
         type: mongoose.Types.ObjectId,
-        require: [true, "clientId is require"],
+        required: [true, "clientId is require"],
     },
     breakFast: [
         {
@@ -95,6 +95,10 @@ const mealItemsModel = new mongoose.Schema({
             _id: false
         }
     ],
+    date: {
+        type: Date,
+        required: [true, "date is required"]
+    },
     active: {
         type: Boolean,
         default: "true"

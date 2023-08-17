@@ -1,4 +1,4 @@
-const clientModel = require("../model/client_model");
+const clientModel = require("../../model/client_model");
 const bcrypt = require("bcrypt");
 const createError = require("http-errors")
 
@@ -31,29 +31,7 @@ exports.createClient = async (req, res, next) => {
         next(error)
     }
 }
-exports.clientLogin = async (req, res, next) => {
 
-    try {
-        const { email, password } = req.body;
-
-        const client = await clientModel.findOne({ email });
-        if (!client) throw createError.NotFound("email id does not exists")
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) throw createError.NotFound("email or password is wrong");
-
-        // const accessToken = await signAccessTokenforUser(user);
-
-        res.status(201).send({
-            success: true,
-            message: "client is login...",
-            data: client,
-            // accessToken,
-        })
-    } catch (error) {
-        next(error)
-    }
-}
 exports.deleteClient = async (req, res, next) => {
     try {
 
@@ -126,7 +104,6 @@ exports.updateClient = async (req, res, next) => {
     try {
 
         const { id } = req.params
-
 
         const { name, mobilenumber, email, address, password } = req.body
         const hash = await bcrypt.hash(password, 10);

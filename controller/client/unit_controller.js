@@ -59,7 +59,7 @@ exports.deleteUnit = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        
+
         const unitData = await unitModel.findByIdAndUpdate(id, { active: false })
 
         if (!unitData) throw createError.NotFound("ENTER VALID ID..")

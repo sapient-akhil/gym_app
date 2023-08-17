@@ -21,7 +21,7 @@ exports.adminLogin = async (req, res, next) => {
         res.status(201).send({
             success: true,
             message: "admin is login...",
-            data:user,
+            data: user,
             accessToken
         })
 

@@ -1,6 +1,24 @@
 const measurmentModel = require("../../model/measurment_model")
 const createError = require("http-errors")
 
+exports.measurmentCreate = async (req, res, next) => {
+    try {
+        const { bodyPartId, date, unitValue } = req.body
+
+        const measurment = new measurmentModel({ bodyPartId, date, unitValue })
+
+        const measurmentData = await measurmentModel.create(measurment)
+
+        res.status(201).send({
+            success: true,
+            message: "measurmentData is created...",
+            data: measurmentData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 exports.allMeasurmentData = async (req, res, next) => {
     try {
         const measurmentData = await measurmentModel.find()
@@ -74,6 +92,45 @@ exports.bodyPartData = async (req, res, next) => {
             message: "Measurment Data...",
             data: measurmentData
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.deleteMeasurmentData = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const measurmentData = await measurmentModel.findByIdAndUpdate(id, { active: false })
+        if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: " Measurment data deleted successfully",
+            data: measurmentData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.updateMeasurmentData = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const { bodyPartId, date, unitValue } = req.body
+
+        const measurmentData = await measurmentModel.findByIdAndUpdate(id, { $set: { bodyPartId, date, unitValue } })
+        if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: "measurment data update successfully",
+            data: measurmentData
+        })
+
     } catch (error) {
         next(error)
     }

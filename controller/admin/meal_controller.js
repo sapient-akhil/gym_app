@@ -4,7 +4,7 @@ const createError = require("http-errors")
 
 exports.mealPlanCreate = async (req, res, next) => {
     try {
-        const { clientId, breakFast, morningSnack, lunch, eveningSnack, dinner } = req.body;
+        const { clientId, breakFast, morningSnack, lunch, eveningSnack, dinner, date } = req.body;
 
         // Check for duplicate mealItemsId within each meal category
 
@@ -12,26 +12,32 @@ exports.mealPlanCreate = async (req, res, next) => {
             const mealItemsIdsSet = new Set();
             for (const item of mealCategory) {
                 if (mealItemsIdsSet.has(item.mealItemsId.toString())) {
-                    throw createError.Conflict("Duplicate mealItemsId found in meal category");
+                    throw createError.Conflict("same mealItemsId found in mealPlan category");
                 }
                 mealItemsIdsSet.add(item.mealItemsId.toString());
             }
         };
 
-        // Check for duplicates within each meal category
-        checkDuplicates(breakFast);
-        checkDuplicates(morningSnack);
-        checkDuplicates(lunch);
-        checkDuplicates(eveningSnack);
-        checkDuplicates(dinner);
-        // Create the meal plan
+        const array = await JSON.parse(breakFast)
+        const array1 = await JSON.parse(morningSnack)
+        const array2 = await JSON.parse(lunch)
+        const array3 = await JSON.parse(eveningSnack)
+        const array4 = await JSON.parse(dinner)
+
+        checkDuplicates(array);
+        checkDuplicates(array1);
+        checkDuplicates(array2);
+        checkDuplicates(array3);
+        checkDuplicates(array4);
+
         const newMealPlan = new mealPlanModel({
             clientId,
-            breakFast,
-            morningSnack,
-            lunch,
-            eveningSnack,
-            dinner
+            breakFast:array,
+            morningSnack:array1,
+            lunch:array2,
+            eveningSnack:array3,
+            dinner:array4,
+            date
         });
 
         const savedMealPlan = await mealPlanModel.create(newMealPlan);
@@ -120,15 +126,43 @@ exports.updateMealPlan = async (req, res, next) => {
 
         const { id } = req.params
 
-        const { breakFast, morningSnack, lunch, eveningSnack, dinner } = req.body
+        const { breakFast, morningSnack, lunch, eveningSnack, dinner, date } = req.body
 
-        // const array = JSON.parse(breakFast);
-        // const array1 = JSON.parse(morningSnack);
-        // const array2 = JSON.parse(lunch);
-        // const array3 = JSON.parse(eveningSnack);
-        // const array4 = JSON.parse(dinner);
+        // Check for duplicate mealItemsId within each meal category
 
-        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast, morningSnack, lunch, eveningSnack, dinner } })
+        const checkDuplicates = mealCategory => {
+            const mealItemsIdsSet = new Set();
+            for (const item of mealCategory) {
+                if (mealItemsIdsSet.has(item.mealItemsId.toString())) {
+                    throw createError.Conflict("same mealItemsId found in mealPlan category");
+                }
+                mealItemsIdsSet.add(item.mealItemsId.toString());
+            }
+        };
+
+        const array = await JSON.parse(breakFast)
+        const array1 = await JSON.parse(morningSnack)
+        const array2 = await JSON.parse(lunch)
+        const array3 = await JSON.parse(eveningSnack)
+        const array4 = await JSON.parse(dinner)
+
+        checkDuplicates(array);
+        checkDuplicates(array1);
+        checkDuplicates(array2);
+        checkDuplicates(array3);
+        checkDuplicates(array4);
+
+        // const newMealPlan = new mealPlanModel({
+        //     clientId,
+        //     breakFast:array,
+        //     morningSnack:array1,
+        //     lunch:array2,
+        //     eveningSnack:array3,
+        //     dinner:array4,
+        //     date
+        // });
+
+        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast:array, morningSnack:array1, lunch:array2, eveningSnack:array3, dinner:array4, date } })
 
         if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 

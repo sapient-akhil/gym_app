@@ -40,11 +40,12 @@ module.exports = {
     }),
     mealPlanSchema: joi.object().keys({
         clientId: validate.reqId,
-        breakFast: validate.array,
-        morningSnack: validate.array,
-        lunch: validate.array,
-        eveningSnack: validate.array,
-        dinner: validate.array
+        breakFast: validate.reqstring,
+        morningSnack: validate.reqstring,
+        lunch: validate.reqstring,
+        eveningSnack: validate.reqstring,
+        dinner: validate.reqstring,
+        date:validate.date
     }),
     exercisesSchema: joi.object().keys({
         exercisesName: validate.reqstring,
