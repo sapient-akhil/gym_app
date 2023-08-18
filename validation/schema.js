@@ -15,6 +15,10 @@ module.exports = {
     bodyPartId: joi.object().keys({
         bodyPartId: validate.reqId
     }), 
+    bodyPartByDate: joi.object().keys({
+        startDate:validate.date,
+        endDate:validate.date
+    }),
     loginSchema: joi.object().keys({
         mobilenumber: validate.reqstring,
         email: validate.email
@@ -55,13 +59,14 @@ module.exports = {
         videoLink: validate.reqstring
     }),
     workOutSchema: joi.object().keys({
-        exercises_id: validate.reqstring,
+        // exercises_id: validate.reqstring,
         workOutName: validate.reqstring,
-        time: validate.reqstring,
-        reps: validate.reqstring,
-        set: validate.reqstring,
-        reps: validate.reqstring,
-        volume: validate.reqstring,
+        // time: validate.reqstring,
+        // reps: validate.reqstring,
+        // set: validate.reqstring,
+        // reps: validate.reqstring,
+        // volume: validate.reqstring,
+        workOut :validate.reqstring,
         date: validate.date
     }),
     unitSchema: joi.object().keys({

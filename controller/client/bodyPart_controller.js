@@ -21,7 +21,7 @@ exports.bodyPartCreate = async (req, res, next) => {
 
 exports.allBodyPart = async (req, res, next) => {
     try {
-        const getBodyPartData = await bodyPartModel.find({ active: true }).populate("unitId")
+        const getBodyPartData = await bodyPartModel.find({ active: true }).populate("unitId",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         res.status(200).send({
             success: true,
@@ -38,7 +38,7 @@ exports.oneBodyPart = async (req, res, next) => {
 
         const { id } = req.params
 
-        const bodyPartData = await bodyPartModel.findById(id).populate("unitId")
+        const bodyPartData = await bodyPartModel.findById(id).populate("unitId",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!bodyPartData) throw createError.NotFound("ENTER VALID ID...")
         if (bodyPartData.active === false) throw createError.NotFound("bodyPart not found...")
 
@@ -58,7 +58,7 @@ exports.deleteBodyPart = async (req, res, next) => {
 
         const { id } = req.params
 
-        const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { active: false })
+        const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!bodyPartData) throw createError.NotFound("ENTER VALID ID..")
 
@@ -79,7 +79,7 @@ exports.updateBodyPart = async (req, res, next) => {
 
         const { unitId, bodyPart } = req.body
 
-        const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { $set: { unitId, bodyPart } })
+        const bodyPartData = await bodyPartModel.findByIdAndUpdate(id, { $set: { unitId, bodyPart } }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!bodyPartData) throw createError.NotFound("ENTER VALID ID..")
 

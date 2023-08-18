@@ -4,7 +4,7 @@ const clientModel = new mongoose.Schema({
     trainer_id: {
         type: mongoose.Types.ObjectId,
         required: [true, "trainer_id is require"],
-        // ref:"trainerInfo"
+        ref:"trainerInfo"
     },
     name: {
         type: String,

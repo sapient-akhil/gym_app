@@ -25,7 +25,7 @@ exports.unitCreate = async (req, res, next) => {
 exports.allUnit = async (req, res, next) => {
     try {
 
-        const allUnit = await unitModel.find()
+        const allUnit = await unitModel.find().select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         res.status(201).send({
             success: true,
@@ -42,7 +42,7 @@ exports.oneUnit = async (req, res, next) => {
 
         const { id } = req.params
 
-        const unitData = await unitModel.findById(id)
+        const unitData = await unitModel.findById(id).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!unitData) throw createError.NotFound("ENTER VALID ID..")
         if (unitData.active === false) throw createError.NotFound("unit not found...")
 
@@ -60,7 +60,7 @@ exports.deleteUnit = async (req, res, next) => {
 
         const { id } = req.params
 
-        const unitData = await unitModel.findByIdAndUpdate(id, { active: false })
+        const unitData = await unitModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!unitData) throw createError.NotFound("ENTER VALID ID..")
 
@@ -81,7 +81,7 @@ exports.updateUnit = async (req, res, next) => {
 
         const { unit } = req.body
 
-        const unitData = await unitModel.findByIdAndUpdate(id, { $set: { unit } })
+        const unitData = await unitModel.findByIdAndUpdate(id, { $set: { unit } }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!unitData) throw createError.NotFound("ENTER VALID ID..")
 

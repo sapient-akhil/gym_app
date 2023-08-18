@@ -67,7 +67,7 @@ exports.deleteTrainerByAdmin = async (req, res, next) => {
 
         const { id } = req.params
 
-        const trainer = await trainerModel.findByIdAndUpdate(id, { active: false })
+        const trainer = await trainerModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!trainer) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
@@ -83,7 +83,7 @@ exports.deleteTrainerByAdmin = async (req, res, next) => {
 exports.allTrainer = async (req, res, next) => {
     try {
 
-        const trainer = await trainerModel.find({ active: true })
+        const trainer = await trainerModel.find({ active: true }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!trainer) throw createError.NotFound("not found trainer...")
 
         res.status(201).send({
@@ -101,7 +101,7 @@ exports.oneTrainer = async (req, res, next) => {
 
         const { id } = req.params
 
-        const trainerData = await trainerModel.findById(id)
+        const trainerData = await trainerModel.findById(id).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!trainerData) throw createError.NotFound("ENTER VALID ID...")
         if (trainerData.active === false) throw createError.NotFound("trainer not found...")
 
@@ -122,7 +122,7 @@ exports.updateTrainerByAdmin = async (req, res, next) => {
 
         const { name, qualifications, certifications, mobilenumber, email } = req.body
 
-        const existingClient = await trainerModel.findById(id)
+        const existingClient = await trainerModel.findById(id).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!existingClient) {
             throw createError.NotFound("ENTER VALID ID..");
         }

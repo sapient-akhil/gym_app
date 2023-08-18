@@ -38,6 +38,7 @@ exports.allMealItem = async (req, res, next) => {
         } : { active: true })
             .limit(perPage * 1)
             .skip((page - 1) * perPage)
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             .exec();
 
         if (mealItems.length === 0) throw createError.NotFound("Not found mealItems..")
@@ -57,7 +58,7 @@ exports.trainerMealItems = async (req, res, next) => {
 
         const { trainer_id } = req.params
 
-        const itemData = await mealItemsModel.findOne({ trainer_id })
+        const itemData = await mealItemsModel.findOne({ trainer_id }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
@@ -75,7 +76,7 @@ exports.oneMealItems = async (req, res, next) => {
 
         const { id } = req.params
 
-        const itemData = await mealItemsModel.findById(id)
+        const itemData = await mealItemsModel.findById(id).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
         if (itemData.active === false) throw createError.NotFound("item not found...")
 
@@ -93,7 +94,7 @@ exports.deleteMealItems = async (req, res, next) => {
 
         const { id } = req.params
 
-        const itemData = await mealItemsModel.findByIdAndUpdate(id, { active: false })
+        const itemData = await mealItemsModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
 
@@ -116,7 +117,9 @@ exports.updateMealItems = async (req, res, next) => {
 
         const array = JSON.parse(ingredients)
 
-        const itemData = await mealItemsModel.findByIdAndUpdate(id, { $set: { mealItem, calary, description, ingredients: array } })
+        const itemData = await mealItemsModel.findByIdAndUpdate(id,
+            { $set: { mealItem, calary, description, ingredients: array } })
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
 

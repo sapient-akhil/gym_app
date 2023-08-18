@@ -22,7 +22,7 @@ exports.adminLogin = async (req, res, next) => {
             success: true,
             message: "admin is login...",
             data: user,
-            accessToken
+            accessToken,
         })
 
     } catch (error) {

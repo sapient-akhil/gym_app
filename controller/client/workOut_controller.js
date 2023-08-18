@@ -6,7 +6,11 @@ exports.allWorkOut = async (req, res, next) => {
         // const startDate = req.body.startDate;
         // const endDate = req.body.endDate;
 
-        const allWorkOut = await workOutModel.find({ active: true }).populate("exercises_id")
+        const allWorkOut = await workOutModel.find({ active: true })
+            .populate("workOut.client_id",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("workOut.trainer_id",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("workOut.exercises_id",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         res.status(201).send({
             success: true,
@@ -23,7 +27,11 @@ exports.oneWorkOut = async (req, res, next) => {
 
         const { id } = req.params
 
-        const workOutData = await workOutModel.findById(id).populate("exercises_id")
+        const workOutData = await workOutModel.findById(id)
+            .populate("workOut.client_id",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("workOut.trainer_id",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("workOut.exercises_id",{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
         if (workOutData.active === false) throw createError.NotFound("workOut not found...")
 
@@ -36,4 +44,5 @@ exports.oneWorkOut = async (req, res, next) => {
         next(error)
     }
 }
+
 

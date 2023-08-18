@@ -46,6 +46,7 @@ exports.allExercises = async (req, res, next) => {
         } : { active: true })
             .limit(perPage * 1)
             .skip((page - 1) * perPage)
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             .exec();
 
         if (exercises.length === 0) throw createError.NotFound("Not found exercises..")
@@ -65,7 +66,7 @@ exports.oneExercise = async (req, res, next) => {
 
         const { id } = req.params
 
-        const exerciseData = await exercisesModel.findById(id)
+        const exerciseData = await exercisesModel.findById(id).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
         if (exerciseData.active === false) throw createError.NotFound("exercise not found...")
 
@@ -84,6 +85,7 @@ exports.deleteExercise = async (req, res, next) => {
         const { id } = req.params
 
         const exerciseData = await exercisesModel.findByIdAndUpdate(id, { active: false })
+        .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({
@@ -123,8 +125,9 @@ exports.updateExercise = async (req, res, next) => {
         })
         const array = JSON.parse(muscles)
 
-        const exerciseData = await exercisesModel.findByIdAndUpdate(id, { $set: { exercisesName, muscles: array, description, videoLink, photo: filePath } })
-
+        const exerciseData = await exercisesModel.findByIdAndUpdate(id,
+        { $set: { exercisesName, muscles: array, description, videoLink, photo: filePath } })
+        .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
 
         res.status(201).send({

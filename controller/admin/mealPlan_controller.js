@@ -32,11 +32,11 @@ exports.mealPlanCreate = async (req, res, next) => {
 
         const newMealPlan = new mealPlanModel({
             clientId,
-            breakFast:array,
-            morningSnack:array1,
-            lunch:array2,
-            eveningSnack:array3,
-            dinner:array4,
+            breakFast: array,
+            morningSnack: array1,
+            lunch: array2,
+            eveningSnack: array3,
+            dinner: array4,
             date
         });
 
@@ -68,11 +68,12 @@ exports.allMealPlan = async (req, res, next) => {
         // const allitems = await mealPlanModel.aggregate(pipeline)
 
         const mealPlans = await mealPlanModel.find({ active: true })
-            .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-            .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-            .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-            .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-            .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+            .populate("breakFast.mealItemsId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("morningSnack.mealItemsId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("lunch.mealItemsId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("eveningSnack.mealItemsId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("dinner.mealItemsId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         res.status(201).send({
             success: true,
@@ -89,7 +90,7 @@ exports.oneMealplan = async (req, res, next) => {
 
         const { id } = req.params
 
-        const mealPlan = await mealPlanModel.findById(id)
+        const mealPlan = await mealPlanModel.findById(id).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
         if (mealPlan.active === false) throw createError.NotFound("mealPlan not found...")
 
@@ -107,7 +108,7 @@ exports.deleteMealPlan = async (req, res, next) => {
 
         const { id } = req.params
 
-        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { active: false })
+        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 
@@ -162,7 +163,9 @@ exports.updateMealPlan = async (req, res, next) => {
         //     date
         // });
 
-        const mealPlan = await mealPlanModel.findByIdAndUpdate(id, { $set: { breakFast:array, morningSnack:array1, lunch:array2, eveningSnack:array3, dinner:array4, date } })
+        const mealPlan = await mealPlanModel.findByIdAndUpdate(id,
+            { $set: { breakFast: array, morningSnack: array1, lunch: array2, eveningSnack: array3, dinner: array4, date } })
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
 

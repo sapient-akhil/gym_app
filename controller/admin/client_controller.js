@@ -32,23 +32,6 @@ exports.createClient = async (req, res, next) => {
     }
 }
 
-exports.deleteClient = async (req, res, next) => {
-    try {
-
-        const { id } = req.params
-
-        const client = await clientModel.findByIdAndUpdate(id, { active: false })
-        if (!client) throw createError.NotFound("ENTER VALID ID..")
-
-        res.status(201).send({
-            success: true,
-            message: "client delete successfully",
-            data: client
-        })
-    } catch (error) {
-        next(error)
-    }
-}
 
 exports.allClient = async (req, res, next) => {
 
@@ -67,6 +50,8 @@ exports.allClient = async (req, res, next) => {
         } : { active: true })
             .limit(perPage * 1)
             .skip((page - 1) * perPage)
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             .exec()
 
         if (client.length === 0) throw createError.NotFound("No clients found")
@@ -87,6 +72,9 @@ exports.oneClient = async (req, res, next) => {
         const { id } = req.params
 
         const clientData = await clientModel.findById(id)
+            .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+
         if (!clientData) throw createError.NotFound("ENTER VALID ID..")
         if (clientData.active === false) throw createError.NotFound("client not found...")
 
@@ -94,6 +82,24 @@ exports.oneClient = async (req, res, next) => {
             success: true,
             message: "get one Client",
             data: clientData
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.deleteClient = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const client = await clientModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+        if (!client) throw createError.NotFound("ENTER VALID ID..")
+
+        res.status(201).send({
+            success: true,
+            message: "client delete successfully",
+            data: client
         })
     } catch (error) {
         next(error)
@@ -128,6 +134,7 @@ exports.updateClient = async (req, res, next) => {
         }
 
         const trainer = await clientModel.findByIdAndUpdate(id, { $set: { name, address, password: hash } })
+            .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!trainer) throw createError.NotFound("ENTER VALID ID..")
 

@@ -9,10 +9,10 @@ exports.allMeasurmentData = async (req, res, next) => {
                 populate: {
                     path: "unitId",
                     model: "unitModel",
-                    select: { _id: 0, active: 0, __v: 0 }
+                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 },
-                select: { _id: 0, active: 0, __v: 0 }
-            })
+                select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+            }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         res.status(200).send({
             success: true,
@@ -34,10 +34,10 @@ exports.oneBodyPartData = async (req, res, next) => {
                 populate: {
                     path: "unitId",
                     model: "unitModel",
-                    select: { _id: 0, active: 0, __v: 0 }
+                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 },
-                select: { _id: 0, active: 0, __v: 0 }
-            })
+                select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+            }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
         if (measurmentData.active === false) throw createError.NotFound("measurmentData not found...")
 
@@ -61,10 +61,10 @@ exports.bodyPartData = async (req, res, next) => {
                 populate: {
                     path: "unitId",
                     model: "unitModel",
-                    select: { _id: 0, active: 0, __v: 0 }
+                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 },
-                select: { _id: 0, active: 0, __v: 0 }
-            }).sort({ date: 1 })
+                select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+            }).sort({ date: 1 }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (measurmentData.length === 0) throw createError.NotFound("ENTER VALID ID..")
         if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
