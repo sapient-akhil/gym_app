@@ -46,7 +46,7 @@ exports.oneBodyPartData = async (req, res, next) => {
     try {
         const { id } = req.params
 
-        const measurmentData = await measurmentModel.findById(id, { date: { $gte: startDate, $lt: endDate } })
+        const measurmentData = await measurmentModel.findById(id)
             .populate({
                 path: "bodyPartId",
                 populate: {

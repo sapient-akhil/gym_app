@@ -4,11 +4,11 @@ const path = require("path")
 
 exports.workOutCreate = async (req, res, next) => {
     try {
-        const { workOutName, workOut, date } = req.body
+        const { workOut, date } = req.body
 
         const array = await JSON.parse(workOut);
 
-        const workOutt = new workOutModel({ workOutName, workOut: array, date })
+        const workOutt = new workOutModel({ workOut: array, date })
 
         const workOutData = await workOutModel.create(workOutt)
 
@@ -27,7 +27,7 @@ exports.allWorkOut = async (req, res, next) => {
         // const startDate = req.body.startDate;
         // const endDate = req.body.endDate;
 
-        const allWorkOut = await workOutModel.find({ active: true },date)
+        const allWorkOut = await workOutModel.find({ active: true })
             .populate("workOut.client_id")
             .populate("workOut.trainer_id")
             .populate("workOut.exercises_id")
@@ -88,12 +88,12 @@ exports.updateWorkOut = async (req, res, next) => {
 
         const { id } = req.params
 
-        const { workOutName, workOut, date } = req.body
+        const { workOut, date } = req.body
 
         const array = JSON.parse(workOut)
 
         const workOutData = await workOutModel.findByIdAndUpdate(id,
-            { $set: { workOutName, workOut: array, date } })
+            { $set: { workOut: array, date } })
             .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
         if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
 

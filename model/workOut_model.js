@@ -1,11 +1,7 @@
-const { ref } = require("joi");
 const mongoose = require("mongoose");
 
 const workOutModel = new mongoose.Schema({
-    workOutName: {
-        type: String,
-        required: [true, "workOutName are require"],
-    },
+    
     workOut: [
         {
             client_id: {
@@ -23,6 +19,10 @@ const workOutModel = new mongoose.Schema({
                 type: mongoose.Types.ObjectId,
                 required: [true, "exercises_id are require"],
                 ref: "exercises"
+            },
+            workOutName: {
+                type: String,
+                required: [true, "workOutName are require"],
             },
             reps: {
                 type: Number,

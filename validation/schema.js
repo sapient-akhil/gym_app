@@ -60,7 +60,7 @@ module.exports = {
     }),
     workOutSchema: joi.object().keys({
         // exercises_id: validate.reqstring,
-        workOutName: validate.reqstring,
+        // workOutName: validate.reqstring,
         // time: validate.reqstring,
         // reps: validate.reqstring,
         // set: validate.reqstring,

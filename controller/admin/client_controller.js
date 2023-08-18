@@ -133,15 +133,17 @@ exports.updateClient = async (req, res, next) => {
             }
         }
 
-        const trainer = await clientModel.findByIdAndUpdate(id, { $set: { name, address, password: hash } })
+        const client = await clientModel.findByIdAndUpdate(id, { $set: { name, address, password: hash } })
             .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
-        if (!trainer) throw createError.NotFound("ENTER VALID ID..")
+        if (!client) throw createError.NotFound("ENTER VALID ID..")
+        if (existingClient.active === false) throw createError.NotFound("client not found...")
+
 
         res.status(201).send({
             success: true,
             message: "trainer update successfully",
-            data: trainer
+            data: client
         })
     } catch (error) {
         next(error)

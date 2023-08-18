@@ -122,6 +122,7 @@ exports.updateMealItems = async (req, res, next) => {
             .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
         if (!itemData) throw createError.NotFound("ENTER VALID ID..")
+        if (itemData.active === false) throw createError.NotFound("item not found...")
 
         res.status(201).send({
             success: true,
