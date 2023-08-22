@@ -1,4 +1,4 @@
-const bodyPartModel = require("../../model/bodyPart_model")
+const bodyPartModel = require("../../services/bodyPart/bodyPart.model")
 const createError = require("http-errors")
 
 module.exports = {

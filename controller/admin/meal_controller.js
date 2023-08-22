@@ -1,5 +1,5 @@
-const mealPlanModel = require("../../model/meal_plan_model")
-const mealItemsModel = require("../../model/meal_items_model")
+const mealPlanModel = require("../../services/mealPlan/mealPlan.model")
+const mealItemsModel = require("../../services/exercises/exercises.model")
 const createError = require("http-errors")
 
 module.exports = {

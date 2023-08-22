@@ -1,4 +1,4 @@
-const workOutModel = require("../../model/workOut_model")
+const workOutModel = require("../../services/workOut/workOut.model")
 const createError = require("http-errors")
 
 

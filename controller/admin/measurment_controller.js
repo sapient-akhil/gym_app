@@ -1,4 +1,4 @@
-const measurmentModel = require("../../model/measurment_model")
+const measurmentModel = require("../../services/measurment/measurment.model")
 const createError = require("http-errors")
 
 module.exports = {

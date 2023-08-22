@@ -1,4 +1,4 @@
-const exercisesModel = require("../../model/exercises_model")
+const exercisesModel = require("../../services/exercises/exercises.model")
 const createError = require("http-errors")
 const path = require("path")
 const fs = require("fs")

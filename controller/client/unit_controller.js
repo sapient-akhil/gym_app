@@ -1,4 +1,4 @@
-const unitModel = require("../../model/unit_model")
+const unitModel = require("../../services/unit/unit.model")
 const createError = require("http-errors")
 
 module.exports={

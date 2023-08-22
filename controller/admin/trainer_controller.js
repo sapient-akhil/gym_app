@@ -1,9 +1,9 @@
-const trainerModel = require("../../model/trainer_model");
+const trainerModel = require("../../services/trainer/trainer.model");
 const path = require("path")
 const createError = require("http-errors")
 const { signAccessTokenforTrainer } = require("../../helper/token")
 const fs = require("fs")
-
+const adminservices = require("../../services/trainer/trainer.services")
 
 module.exports = {
     createTrainerByAdmin : async (req, res, next) => {
@@ -69,7 +69,7 @@ module.exports = {
     
             const { id } = req.params
     
-            const trainer = await trainerModel.findByIdAndUpdate(id, { active: false })
+            const trainer = await adminservices.deleteTrainer(id)
             if (!trainer) throw createError.NotFound("ENTER VALID ID..")
     
             res.status(201).send({

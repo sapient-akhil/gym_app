@@ -1,4 +1,4 @@
-const clientModel = require("../../model/client_model");
+const clientModel = require("../../services/trainer/trainer.services");
 const bcrypt = require("bcrypt");
 const createError = require("http-errors")
 

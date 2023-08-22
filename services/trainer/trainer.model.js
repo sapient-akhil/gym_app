@@ -26,7 +26,7 @@ const trainerModel = new mongoose.Schema({
     },
     profilePhoto: {
         type: String,
-        required: [true, "profilePhoto is require"]
+        // required: [true, "profilePhoto is require"]
     },
     role: {
         type: String,
