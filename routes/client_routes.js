@@ -44,7 +44,7 @@ const measurmentController = require("../controller/client/measurment_controller
 router.post("/measurmentCreate", Validators.forReqBody(Schema.measurmentSchema), measurmentController.measurmentCreate);
 router.get("/allMeasurmentData", measurmentController.allMeasurmentData);
 router.get("/oneBodyPart/:id", Validators.forParams(Schema.params), measurmentController.oneBodyPartData);
-router.get("/bodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.bodyPartData);
+router.get("/bodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.particularBodyPartByDate);
 router.delete("/deleteMeasurmentData/:id", Validators.forParams(Schema.params), measurmentController.deleteMeasurmentData);
 router.put("/updateMeasurmentData/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.measurmentSchema), measurmentController.updateMeasurmentData)
 
