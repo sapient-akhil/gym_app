@@ -10,9 +10,8 @@ const adminController = require("../controller/admin/admin_controller")
 router.post("/adminLogin", Validators.forReqBody(Schema.loginSchema), adminController.adminLogin)
 router.post("/createAdminBySuperAdmin", Validators.forReqBody(Schema.trainerSchema), adminController.createAdminBySuperAdmin)
 router.get("/allAdmin", adminController.allAdmin)
-router.get("/oneAdmin", Validators.forParams(Schema.params), adminController.oneAdmin)
-router.delete("/deleteAdminBySuperAdmin", Validators.forParams(Schema.params), adminController.deleteAdminBySuperAdmin)
-router.put("/updateAdminBySuperAdmin/:id", Validators.forParams(Schema.params), adminController.updateAdminBySuperAdmin)
+router.get("/oneAdmin/:id", Validators.forParams(Schema.params), adminController.oneAdmin)
+router.delete("/deleteAdminBySuperAdmin/:id", Validators.forParams(Schema.params), adminController.deleteAdminBySuperAdmin)
 
 // trainer routes
 const trainerController = require("../controller/admin/trainer_controller")
@@ -27,12 +26,12 @@ router.put("/updateTrainerByAdmin/:id", verifyAccessTokenforAdmin, Validators.fo
 // client routes
 const clientController = require("../controller/admin/client_controller")
 
-router.post("/createClient", verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientSchema), clientController.createClient)
+router.post("/createClient",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientSchema), clientController.createClient)
 // router.post("/clientLogin",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientLoginSchema), clientController.clientLogin)
-router.get("/allClient", verifyAccessTokenforTrainer, clientController.allClient)
-router.get("/oneClient/:id", verifyAccessTokenforTrainer, Validators.forParams(Schema.params), clientController.oneClient)
-router.delete("/deleteClient/:id", verifyAccessTokenforTrainer, Validators.forParams(Schema.params), clientController.deleteClient)
-router.put("/updateClient/:id", verifyAccessTokenforTrainer, Validators.forParams(Schema.params), Validators.forReqBody(Schema.clientSchema), clientController.updateClient)
+router.get("/allClient", clientController.allClient)
+router.get("/oneClient/:id", Validators.forParams(Schema.params), clientController.oneClient)
+router.delete("/deleteClient/:id", Validators.forParams(Schema.params), clientController.deleteClient)
+router.put("/updateClient/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.clientSchema), clientController.updateClient)
 
 // meal items routes
 const mealController = require("../controller/admin/items_controller")

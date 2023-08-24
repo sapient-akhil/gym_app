@@ -1,4 +1,4 @@
-const mealPlanModel = require("./exercises.model")
+const mealPlanModel = require("./mealPlan.model")
 
 module.exports = {
     findAllMealPlanData: async () => {

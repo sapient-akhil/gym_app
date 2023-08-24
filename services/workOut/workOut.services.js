@@ -1,4 +1,4 @@
-const workOutModel = require("./unit.model")
+const workOutModel = require("./workOut.model")
 
 module.exports = {
     findAllWorkOutData: async () => {

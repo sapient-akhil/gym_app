@@ -1,28 +1,32 @@
 const clientModel = require("../../services/trainer/trainer.services");
 const bcrypt = require("bcrypt");
 const createError = require("http-errors")
+const { clientServices } = require("../../services/index");
+const trainer_controller = require("./trainer_controller");
 
 module.exports = {
     createClient: async (req, res, next) => {
         try {
-            const { name, mobilenumber, email, address, password } = req.body
+            const req_data = req.body
 
-            const existEmail = await clientModel.findOne({ email })
+            const existEmail = await clientServices.findbyClientEmail(req_data.email)
             if (existEmail) throw createError.NotFound("this email is already exist..")
 
-            const existMobileNumber = await clientModel.findOne({ mobilenumber })
+            const existMobileNumber = await clientServices.findbyClientMobileNumber(req_data.mobilenumber)
             if (existMobileNumber) throw createError.NotFound("this mobilenumber is already exist..")
 
             const payload = req.payload;
             const id = payload.aud[0]._id
 
-            const hash = await bcrypt.hash(password, 10);
+            const hash = await bcrypt.hash(req_data.password, 10);
+            const passwordd = { password: hash }
+            req_data.password = passwordd.password
 
-            const user = new clientModel({ trainer_id: id, name, mobilenumber, email, address, password: hash })
+            const idd = { trainer_id: id }
+            req_data.trainer_id = idd.trainer_id
 
-            const clientData = await clientModel.create(user)
-            if (!clientData) throw createError.NotFound("client not create");
-
+            const clientData = await clientServices.updateClientData(req_data.email, req_data.mobilenumber, req_data)
+            console.log(clientData)
             res.status(201).send({
                 success: true,
                 message: "client is created...",
@@ -40,7 +44,7 @@ module.exports = {
             const page = parseInt(req.query.page || 1);
             const perPage = 8
 
-            const client = await clientModel.find(req.query.search ? {
+            const client = await clientServices.findAllClientData(req.query.search ? {
                 active: true,
                 $or:
                     [
@@ -72,9 +76,9 @@ module.exports = {
 
             const { id } = req.params
 
-            const clientData = await clientModel.findById(id)
-                .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
-                .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            const clientData = await clientServices.findByClientId(id)
+                // .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
+                // .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
 
             if (!clientData) throw createError.NotFound("ENTER VALID ID..")
             if (clientData.active === false) throw createError.NotFound("client not found...")
@@ -89,7 +93,7 @@ module.exports = {
         }
     },
 
-    deleteClient : async (req, res, next) => {
+    deleteClient: async (req, res, next) => {
         try {
 
             const { id } = req.params
@@ -107,7 +111,7 @@ module.exports = {
         }
     },
 
-    updateClient : async (req, res, next) => {
+    updateClient: async (req, res, next) => {
         try {
 
             const { id } = req.params

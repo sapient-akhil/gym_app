@@ -1,4 +1,4 @@
-const measurmentModel = require("./exercises.model")
+const measurmentModel = require("./measurment.model")
 
 module.exports = {
     findAllMeasurmentData: async () => {
