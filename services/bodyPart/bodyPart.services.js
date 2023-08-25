@@ -1,32 +1,37 @@
 const bodyPartModel = require("./bodyPart.model")
+const unitModel = require("../unit/unit.model")
 
 module.exports = {
     findAllBodyPartData: async () => {
         return new Promise(async (resolve) => {
             return resolve(
-                await bodyPartModel.find(
-                    {},
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
-                )
+                await bodyPartModel.find({ active: true }).populate("unitId")
             );
         });
     },
     findByBodyPartId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await bodyPartModel.find(
-                    { _id: id },
+                await bodyPartModel.findOne({ _id: id }).populate("unitId")
+            );
+        });
+    },
+    findByUnitId: async (unitId) => {
+        return new Promise(async (resolve) => {
+            return resolve(
+                await unitModel.findOne(
+                    { _id: unitId },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });
     },
-    updateBodyPartData: async (id) => {
+    updateBodyPartData: async (unitId, bodyPart, req_data) => {
         return new Promise(async (resolve) => {
-            await bodyPartModel.updateOne({ _id: id }, { upsert: true });
+            await bodyPartModel.updateOne({ unitId, bodyPart }, { ...req_data }, { upsert: true });
             return resolve(
                 await bodyPartModel.find(
-                    { _id: id },
+                    { unitId, bodyPart },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
                 )
             );
@@ -42,7 +47,5 @@ module.exports = {
                 )
             );
         });
-    },
-
-
+    }
 }

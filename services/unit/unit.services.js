@@ -11,6 +11,16 @@ module.exports = {
             );
         });
     },
+    existUnit: async (unit) => {
+        return new Promise(async (resolve) => {
+            return resolve(
+                await unitModel.findOne(
+                    { unit },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                )
+            );
+        });
+    },
     findByUnitId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
@@ -21,12 +31,12 @@ module.exports = {
             );
         });
     },
-    updateUnitData: async (id) => {
+    updateUnitData: async (unit,req_data) => {
         return new Promise(async (resolve) => {
-            await unitModel.updateOne({ _id: id }, { upsert: true });
+            await unitModel.updateOne({ unit }, {...req_data},{ upsert: true });
             return resolve(
                 await unitModel.find(
-                    { _id: id },
+                    { unit },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
                 )
             );

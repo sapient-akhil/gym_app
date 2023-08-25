@@ -1,17 +1,16 @@
 const unitModel = require("../../services/unit/unit.model")
 const createError = require("http-errors")
+const {unitServices} = require("../../services/index")
 
 module.exports={
     unitCreate : async (req, res, next) => {
         try {
-            const { unit } = req.body
+            const req_data = req.body
     
-            const unitCreate = new unitModel({ unit })
-    
-            const existUnit = await unitModel.findOne({ unit })
+            const existUnit = await unitServices.existUnit(req_data.unit)
             if (existUnit) throw createError.NotFound("This unit is already exist")
     
-            const unitData = await unitModel.create(unitCreate)
+            const unitData = await unitServices.updateUnitData(req_data.unit,req_data)
     
             res.status(201).send({
                 success: true,
@@ -26,7 +25,7 @@ module.exports={
     allUnit : async (req, res, next) => {
         try {
     
-            const allUnit = await unitModel.find()
+            const allUnit = await unitServices.findAllUnitData()
     
             res.status(201).send({
                 success: true,
@@ -43,8 +42,8 @@ module.exports={
     
             const { id } = req.params
     
-            const unitData = await unitModel.findById(id)
-            if (!unitData) throw createError.NotFound("ENTER VALID ID..")
+            const unitData = await unitServices.findByUnitId(id)
+            if (!unitData.length) throw createError.NotFound("ENTER VALID ID..")
             if (unitData.active === false) throw createError.NotFound("unit not found...")
     
             res.status(201).send({
@@ -68,27 +67,6 @@ module.exports={
             res.status(201).send({
                 success: true,
                 message: "unitData delete successfully",
-                data: unitData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    updateUnit : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const { unit } = req.body
-    
-            const unitData = await unitModel.findByIdAndUpdate(id, { $set: { unit } })
-    
-            if (!unitData) throw createError.NotFound("ENTER VALID ID..")
-    
-            res.status(201).send({
-                success: true,
-                message: "unitData update successfully",
                 data: unitData
             })
         } catch (error) {

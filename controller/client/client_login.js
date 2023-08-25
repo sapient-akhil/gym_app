@@ -1,20 +1,19 @@
 const clientModel = require("../../services/client/client_model");
 const bcrypt = require("bcrypt");
 const createError = require("http-errors")
+const {clientServices} = require("../../services/index")
 
 module.exports = {
     clientLogin: async (req, res, next) => {
 
         try {
-            const { email, password } = req.body;
+            const req_data = req.body;
 
-            const client = await clientModel.findOne({ email });
+            const client = await clientServices.findbyClientEmail( req_data.email );
             if (!client) throw createError.NotFound("email id does not exists")
 
-            const passwordMatch = await bcrypt.compare(password, client.password);
+            const passwordMatch = await bcrypt.compare(req_data.password, client.password);
             if (!passwordMatch) throw createError.NotFound("email or password is wrong");
-
-            // const accessToken = await signAccessTokenforUser(user);
 
             res.status(201).send({
                 success: true,

@@ -2,14 +2,12 @@ const workOutModel = require("../../services/workOut/workOut.model")
 const createError = require("http-errors")
 
 
-module.exports={
-    allWorkOut : async (req, res, next) => {
+module.exports = {
+    allWorkOut: async (req, res, next) => {
         try {
-            // const startDate = req.body.startDate;
-            // const endDate = req.body.endDate;
-    
-            const allWorkOut = await workOutModel.find({ active: true }).populate("exercises_id")
-    
+
+            const allWorkOut = await workOutServices.findAllWorkOutData()
+
             res.status(201).send({
                 success: true,
                 message: "get all allWorkOut",
@@ -19,16 +17,17 @@ module.exports={
             next(error)
         }
     },
-    
-    oneWorkOut : async (req, res, next) => {
+
+    oneWorkOut: async (req, res, next) => {
         try {
-    
+
             const { id } = req.params
-    
-            const workOutData = await workOutModel.findById(id).populate("exercises_id")
+
+            const workOutData = await workOutServices.findByWorkOutId(id)
+
             if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
             if (workOutData.active === false) throw createError.NotFound("workOut not found...")
-    
+
             res.status(201).send({
                 success: true,
                 message: "get one workout",

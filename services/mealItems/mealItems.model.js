@@ -4,6 +4,7 @@ const mealItemsModel = new mongoose.Schema({
     trainer_id: {
         type: mongoose.Types.ObjectId,
         required: [true, "trainer_id is require"],
+        ref:"trainerInfo"
     },
     mealItem: {
         type: String,

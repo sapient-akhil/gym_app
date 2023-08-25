@@ -1,19 +1,23 @@
 const workOutModel = require("../../services/workOut/workOut.model")
 const createError = require("http-errors")
+const { workOutServices } = require("../../services/index")
 const path = require("path")
 
-module.exports ={
+module.exports = {
 
-    workOutCreate : async (req, res, next) => {
+    workOutCreate: async (req, res, next) => {
         try {
-            const { workOut, date } = req.body
-    
-            const array = await JSON.parse(workOut);
-    
-            const workOutt = new workOutModel({  workOut: array, date })
-    
-            const workOutData = await workOutModel.create(workOutt)
-    
+            const req_data = req.body
+
+            const array = await JSON.parse(req_data.workOut);
+            req_data.workOut = array
+
+            const existClient = await workOutServices.existClient(req_data.client_id, req_data.date)
+            if (!existClient) {
+                throw createError.Conflict("this client is not exist");
+            }
+            const workOutData = await workOutServices.updateWorkOutData(req_data.client_id, req_data.date, req_data)
+
             res.status(201).send({
                 success: true,
                 message: "workOut is created...",
@@ -23,18 +27,12 @@ module.exports ={
             next(error)
         }
     },
-    
-    allWorkOut : async (req, res, next) => {
+
+    allWorkOut: async (req, res, next) => {
         try {
-            // const startDate = req.body.startDate;
-            // const endDate = req.body.endDate;
-    
-            const allWorkOut = await workOutModel.find({ active: true })
-                .populate("workOut.client_id")
-                .populate("workOut.trainer_id")
-                .populate("workOut.exercises_id")
-                .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-    
+
+            const allWorkOut = await workOutServices.findAllWorkOutData()
+
             res.status(201).send({
                 success: true,
                 message: "get all allWorkOut",
@@ -44,20 +42,17 @@ module.exports ={
             next(error)
         }
     },
-    
-    oneWorkOut : async (req, res, next) => {
+
+    oneWorkOut: async (req, res, next) => {
         try {
-    
+
             const { id } = req.params
-    
-            const workOutData = await workOutModel.findById(id)
-                .populate("workOut.client_id")
-                .populate("workOut.trainer_id")
-                .populate("workOut.exercises_id")
-                .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+
+            const workOutData = await workOutServices.findByWorkOutId(id)
+
             if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
             if (workOutData.active === false) throw createError.NotFound("workOut not found...")
-    
+
             res.status(201).send({
                 success: true,
                 message: "get one workout",
@@ -67,41 +62,17 @@ module.exports ={
             next(error)
         }
     },
-    deleteWorkOut : async (req, res, next) => {
+    deleteWorkOut: async (req, res, next) => {
         try {
-    
+
             const { id } = req.params
-    
-            const workOutData = await workOutModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+
+            const workOutData = await workOutServices.deleteWorkOutData(id)
             if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
-    
+
             res.status(201).send({
                 success: true,
                 message: "workout delete successfully",
-                data: workOutData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    updateWorkOut : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const { workOut, date } = req.body
-    
-            const array = JSON.parse(workOut)
-    
-            const workOutData = await workOutModel.findByIdAndUpdate(id,
-                { $set: { workOut: array, date } })
-                .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-            if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
-    
-            res.status(201).send({
-                success: true,
-                message: "workout update successfully",
                 data: workOutData
             })
         } catch (error) {

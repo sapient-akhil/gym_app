@@ -1,11 +1,35 @@
 const mealPlanModel = require("./mealPlan.model")
+const clientmodel = require("../client/client_model")
 
 module.exports = {
     findAllMealPlanData: async () => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealPlanModel.find(
-                    {},
+                await mealPlanModel.find()
+                    .populate("clientId", { active: 0, createdAt: 0, updatedAt: 0, __v: 0, _id: 0 })
+                    .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+            );
+        });
+    },
+    existClientId: async (clientId) => {
+        return new Promise(async (resolve) => {
+            return resolve(
+                await mealPlanModel.findOne(
+                    { clientId },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                )
+            );
+        });
+    },
+    existClient: async (clientId) => {
+        return new Promise(async (resolve) => {
+            return resolve(
+                await clientmodel.findOne(
+                    { clientId },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
@@ -14,19 +38,23 @@ module.exports = {
     findByMealPlanId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealPlanModel.find(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
-                )
+                await mealPlanModel.find({ _id: id })
+                    .populate("clientId", { active: 0, createdAt: 0, updatedAt: 0, __v: 0, _id: 0 })
+                    .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+
             );
         });
     },
-    updateMealPlanData: async (id) => {
+    updateMealPlanData: async (clientId, req_data) => {
         return new Promise(async (resolve) => {
-            await mealPlanModel.updateOne({ _id: id }, { upsert: true });
+            await mealPlanModel.updateOne({ clientId }, { ...req_data }, { upsert: true });
             return resolve(
                 await mealPlanModel.find(
-                    { _id: id },
+                    { clientId },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
                 )
             );

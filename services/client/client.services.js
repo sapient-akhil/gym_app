@@ -21,21 +21,42 @@ module.exports = {
             );
         });
     },
+    emailMobilnumber: async (email, mobilenumber) => {
+        return new Promise(async (resolve) => {
+            return resolve(
+                await clientModel.findOne(
+                    { email, mobilenumber },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                )
+            );
+        });
+    },
 
-    findAllClientData: async () => {
+    findAllClientData: async (search, page, perPage) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientModel.find(
-                    {},
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
-                )
+                    search ? {
+                        active: true,
+                        $or:
+                            [
+                                { name: { $regex: search, $options: 'i' } },
+                                { email: { $regex: search, $options: 'i' } },
+                                { address: { $regex: search, $options: 'i' } }
+                            ]
+                    } : { active: true })
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
+                    .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .exec()
             );
         });
     },
     findByClientId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await clientModel.find({_id:id})
+                await clientModel.find({ _id: id })
                     .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
                     .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
@@ -47,7 +68,7 @@ module.exports = {
             return resolve(
                 await clientModel.find(
                     { email, mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0 }
                 )
             );
         });

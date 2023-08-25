@@ -1,16 +1,12 @@
 const mealPlanModel = require("../../services/mealPlan/mealPlan.model")
 const createError = require("http-errors")
+const { mealPlanServices } = require("../../services/index")
 
-module.exports ={
-    allMealPlan : async (req, res, next) => {
+module.exports = {
+    allMealPlan: async (req, res, next) => {
         try {
-            const mealPlans = await mealPlanModel.find({ active: true })
-                .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-                .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-                .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-                .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-                .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
-    
+            const mealPlans = await mealPlanServices.findAllMealPlanData({ active: true })
+
             res.status(201).send({
                 success: true,
                 message: "get all mealPlans",
@@ -20,16 +16,15 @@ module.exports ={
             next(error)
         }
     },
-    
-    oneMealplan : async (req, res, next) => {
+
+    oneMealplan: async (req, res, next) => {
         try {
-    
             const { id } = req.params
-    
-            const mealPlan = await mealPlanModel.findById(id)
+
+            const mealPlan = await mealPlanServices.findByMealPlanId(id)
             if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
             if (mealPlan.active === false) throw createError.NotFound("mealPlan not found...")
-    
+
             res.status(201).send({
                 success: true,
                 message: "get one mealPlan",

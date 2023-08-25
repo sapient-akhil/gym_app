@@ -3,181 +3,211 @@ const path = require("path")
 const createError = require("http-errors")
 const { signAccessTokenforTrainer } = require("../../helper/token")
 const fs = require("fs")
-const adminservices = require("../../services/trainer/trainer.services")
+const { trainerServices } = require("../../services/index")
 
 module.exports = {
-    createTrainerByAdmin : async (req, res, next) => {
+    createTrainerByAdmin: async (req, res, next) => {
         try {
-            const { name, qualifications, certifications, mobilenumber, email } = req.body
-    
-            const existEmail = await trainerModel.findOne({ "contactdetails.email": email })
-            if (existEmail) throw createError.NotFound("this email is already exist..")
-    
-            const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber })
-            if (existMobileNumber) throw createError.NotFound("this mobilenumber is already exist..")
-    
-            const file = req.files.profilePhoto
-            const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-            if (!filePath) throw createError.NotFound("check the path..")
-            console.log(filePath)
-    
-            file.mv(filePath, err => {
-                if (err) return res.status(500).send(err)
-            })
-            const array = JSON.parse(certifications);
-    
-            const trainer = new trainerModel({ name, qualifications, certifications: array, contactdetails: { mobilenumber, email }, profilePhoto: filePath })
-    
-            const trainerData = await trainerModel.create(trainer)
-    
-            res.status(201).send({
-                success: true,
-                message: "trainer is created...",
-                data: trainerData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    trainerLogin : async (req, res, next) => {
-        try {
-            const { email, mobilenumber } = req.body;
-            console.log("email password", req.body)
-    
-            const user = await trainerModel.findOne({ "contactdetails.email": email });
-            if (!user) throw createError.NotFound("mobilenumber or email is wrong")
-    
-            const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber })
-            if (!existMobileNumber) throw createError.NotFound("mobilenumber or email is wrong")
-    
-            const accessToken = await signAccessTokenforTrainer(user);
-    
-            res.status(201).send({
-                success: true,
-                message: "trainer is login...",
-                data: user,
-                accessToken
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    deleteTrainerByAdmin : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const trainer = await adminservices.deleteTrainer(id)
-            if (!trainer) throw createError.NotFound("ENTER VALID ID..")
-    
-            res.status(201).send({
-                success: true,
-                message: "trainer delete successfully",
-                data: trainer
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    allTrainer : async (req, res, next) => {
-        try {
-    
-            const trainer = await trainerModel.find({ active: true })
-            if (!trainer) throw createError.NotFound("not found trainer...")
-    
-            res.status(201).send({
-                success: true,
-                message: "get all trainer",
-                data: trainer
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    oneTrainer : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const trainerData = await trainerModel.findById(id)
-            if (!trainerData) throw createError.NotFound("ENTER VALID ID...")
-            if (trainerData.active === false) throw createError.NotFound("trainer not found...")
-    
-            res.status(201).send({
-                success: true,
-                message: "get one trainer",
-                data: trainerData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    updateTrainerByAdmin : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const { name, qualifications, certifications, mobilenumber, email } = req.body
-    
-            const existingClient = await trainerModel.findById(id)
+            const req_data = req.body
+
+            const email = req_data.email
+            const mobilenumber = req_data.mobilenumber
+
+            const existingClient = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
+
             if (!existingClient) {
-                throw createError.NotFound("ENTER VALID ID..");
-            }
-    
-            if (email !== existingClient.contactdetails.email) {
-                const existEmail = await trainerModel.findOne({ "contactdetails.email": email });
+                const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
                 if (existEmail) {
                     throw createError.Conflict("Email already exists");
                 }
-            }
-    
-            if (mobilenumber !== existingClient.contactdetails.mobilenumber) {
-                const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber });
+                const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber);
                 if (existMobileNumber) {
-                    throw createError.Conflict("existMobileNumber already exists");
+                    throw createError.Conflict("mobileNumber already exists");
                 }
             }
-    
-            const file = req.files.profilePhoto
-            const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-            // console.log("filePath",filePath)
-    
-            const user1 = await trainerModel.findById(id)
-            // console.log("user1",user1)
-            if (user1.profilePhoto) {
-                fs.unlink(user1.profilePhoto, (err) => {
-                    if (err) {
-                        console.error('Error deleting previous image:', err);
+            if (req.files && req.files.profilePhoto) {
+                const file = req.files.profilePhoto
+
+                const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
+                if (!filePath) throw createError.NotFound("check the path..")
+
+                console.log(filePath)
+                if (existingClient) {
+                    if (existingClient.profilePhoto) {
+                        fs.unlink(existingClient.profilePhoto, (err) => {
+                            if (err) {
+                                console.error('Error deleting previous image:', err);
+                            }
+                        });
                     }
-                });
+                    existingClient.profilePhoto = filePath;
+                }
+
+                file.mv(filePath, err => {
+                    if (err) return res.status(500).send(err)
+                })
+
+                const photo = { profilePhoto: filePath }
+                req_data.profilePhoto = photo.profilePhoto
             }
-            user1.profilePhoto = filePath;
-    
-            file.mv(filePath, err => {
-                if (err) return res.status(500).send(err)
-            })
-            const array = JSON.parse(certifications)
-    
-            const trainer = await trainerModel.findByIdAndUpdate(id,
-                { $set: { name, qualifications, certifications: array, "contactdetails.mobilenumber": mobilenumber, "contactdetails.email": email, profilePhoto: filePath } })
-    
-            if (!trainer) throw createError.NotFound("ENTER VALID ID..")
-    
+
+            const array = JSON.parse(req_data.certifications);
+            req_data.certifications = array
+
+            const object = { contactdetails: { email, mobilenumber } }
+            req_data.contactdetails = object.contactdetails
+
+            const adminData = await trainerServices.updateTrainerData(object.contactdetails.email, object.contactdetails.mobilenumber, req_data)
+
             res.status(201).send({
                 success: true,
-                message: "trainer update successfully",
-                data: trainer
+                message: "admin is created...",
+                data: adminData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    trainerLogin: async (req, res, next) => {
+        try {
+            const req_data = req.body;
+
+            const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
+            if (!existEmail) throw createError.NotFound("mobilenumber or email is wrong")
+
+            const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
+            if (!existMobileNumber) throw createError.NotFound("mobilenumber or email is wrong")
+
+            const accessToken = await signAccessTokenforTrainer(existEmail);
+
+            res.status(201).send({
+                success: true,
+                message: "admin is login...",
+                data: existEmail,
+                accessToken
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    deleteTrainerByAdmin: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const admin = await trainerServices.findByTrainerId(id)
+            if (!admin) throw createError.NotFound("ENTER VALID ID..")
+
+            res.status(201).send({
+                success: true,
+                message: "admin delete successfully",
+                data: admin
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    allTrainer: async (req, res, next) => {
+        try {
+
+            const admin = await trainerServices.findAllTrainerData({ active: true })
+            if (!admin) throw createError.NotFound("not found admin...")
+
+            res.status(201).send({
+                success: true,
+                message: "get all admin",
+                data: admin
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    oneTrainer: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const adminData = await trainerServices.findByTrainerId(id)
+            if (!adminData) throw createError.NotFound("ENTER VALID ID...")
+            if (adminData.active === false) throw createError.NotFound("admin not found...")
+
+            res.status(201).send({
+                success: true,
+                message: "get one admin",
+                data: adminData
             })
         } catch (error) {
             next(error)
         }
     }
 }
+
+//     updateTrainerByAdmin: async (req, res, next) => {
+//         try {
+
+//             const { id } = req.params
+
+//             const { name, qualifications, certifications, mobilenumber, email } = req.body
+
+//             const existingClient = await trainerModel.findById(id)
+//             if (!existingClient) {
+//                 throw createError.NotFound("ENTER VALID ID..");
+//             }
+
+//             if (email !== existingClient.contactdetails.email) {
+//                 const existEmail = await trainerModel.findOne({ "contactdetails.email": email });
+//                 if (existEmail) {
+//                     throw createError.Conflict("Email already exists");
+//                 }
+//             }
+
+//             if (mobilenumber !== existingClient.contactdetails.mobilenumber) {
+//                 const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber });
+//                 if (existMobileNumber) {
+//                     throw createError.Conflict("existMobileNumber already exists");
+//                 }
+//             }
+
+//             const file = req.files.profilePhoto
+//             const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
+//             // console.log("filePath",filePath)
+
+//             const user1 = await trainerModel.findById(id)
+//             // console.log("user1",user1)
+//             if (user1.profilePhoto) {
+//                 fs.unlink(user1.profilePhoto, (err) => {
+//                     if (err) {
+//                         console.error('Error deleting previous image:', err);
+//                     }
+//                 });
+//             }
+//             user1.profilePhoto = filePath;
+
+//             file.mv(filePath, err => {
+//                 if (err) return res.status(500).send(err)
+//             })
+//             const array = JSON.parse(certifications)
+
+//             const trainer = await trainerModel.findByIdAndUpdate(id,
+//                 { $set: { name, qualifications, certifications: array, "contactdetails.mobilenumber": mobilenumber, "contactdetails.email": email, profilePhoto: filePath } })
+
+//             if (!trainer) throw createError.NotFound("ENTER VALID ID..")
+
+//             res.status(201).send({
+//                 success: true,
+//                 message: "trainer update successfully",
+//                 data: trainer
+//             })
+//         } catch (error) {
+//             next(error)
+//         }
+//     }
+// }
 
 
 

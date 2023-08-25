@@ -1,20 +1,18 @@
 const mongoose = require("mongoose");
 
-const workOutModel = new mongoose.Schema({
-    
+const workOutModel = new mongoose.Schema({  
+    client_id: {
+        type: mongoose.Types.ObjectId,
+        required: [true, "exercises_id are require"],
+        ref:"clientInfo"
+    },
+    trainer_id: {
+        type: mongoose.Types.ObjectId,
+        required: [true, "exercises_id are require"],
+        ref:"trainerInfo"
+    },
     workOut: [
         {
-            client_id: {
-                type: mongoose.Types.ObjectId,
-                required: [true, "exercises_id are require"],
-                ref:"clientInfo"
-            },
-            trainer_id: {
-                type: mongoose.Types.ObjectId,
-                required: [true, "exercises_id are require"],
-                ref:"trainerInfo"
-
-            },
             exercises_id: {
                 type: mongoose.Types.ObjectId,
                 required: [true, "exercises_id are require"],

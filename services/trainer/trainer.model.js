@@ -4,7 +4,7 @@ const trainerModel = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name is require"],
-        ref:"clientInfo"
+        // ref:"clientInfo"
     },
     qualifications: {
         type: String,

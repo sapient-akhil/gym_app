@@ -27,7 +27,7 @@ router.post("/unitCreate", Validators.forReqBody(Schema.unitSchema), unitControl
 router.get("/allUnit", unitController.allUnit);
 router.get("/oneUnit/:id", Validators.forParams(Schema.params), unitController.oneUnit);
 router.delete("/deleteUnit/:id", Validators.forParams(Schema.params), unitController.deleteUnit);
-router.put("/updateUnit/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.unitSchema), unitController.updateUnit);
+// router.put("/updateUnit/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.unitSchema), unitController.updateUnit);
 
 //bodyPart routes
 const bodyPartController = require("../controller/client/bodyPart_controller")
@@ -36,16 +36,17 @@ router.post("/bodyPartCreate", Validators.forReqBody(Schema.bodyPartSchema), bod
 router.get("/allBodyPart", bodyPartController.allBodyPart);
 router.get("/oneBodyPart/:id", Validators.forParams(Schema.params), bodyPartController.oneBodyPart);
 router.delete("/deleteBodyPart/:id", Validators.forParams(Schema.params), bodyPartController.deleteBodyPart);
-router.put("/updateBodyPart/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.bodyPartSchema), bodyPartController.updateBodyPart)
+// router.put("/updateBodyPart/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.bodyPartSchema), bodyPartController.updateBodyPart)
 
 //measurment routes
 const measurmentController = require("../controller/client/measurment_controller")
 
 router.post("/measurmentCreate", Validators.forReqBody(Schema.measurmentSchema), measurmentController.measurmentCreate);
 router.get("/allMeasurmentData", measurmentController.allMeasurmentData);
-router.get("/oneBodyPart/:id", Validators.forParams(Schema.params), measurmentController.oneBodyPartData);
-router.get("/bodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.particularBodyPartByDate);
+router.get("/oneBodyPart/:id", Validators.forParams(Schema.params), measurmentController.oneMeasurmentData);
+router.get("/particularBodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.particularBodyPart);
+router.post("/bodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.particularBodyPartByDate);
 router.delete("/deleteMeasurmentData/:id", Validators.forParams(Schema.params), measurmentController.deleteMeasurmentData);
-router.put("/updateMeasurmentData/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.measurmentSchema), measurmentController.updateMeasurmentData)
+// router.put("/updateMeasurmentData/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.measurmentSchema), measurmentController.updateMeasurmentData)
 
 module.exports = router;

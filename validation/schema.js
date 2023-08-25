@@ -66,6 +66,8 @@ module.exports = {
         // set: validate.reqstring,
         // reps: validate.reqstring,
         // volume: validate.reqstring,
+        client_id: validate.reqId,
+        trainer_id :validate.reqId,
         workOut :validate.reqstring,
         date: validate.date
     }),

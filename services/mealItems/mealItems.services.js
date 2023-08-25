@@ -1,32 +1,51 @@
 const mealItemModel = require("./mealItems.model")
 
 module.exports = {
-    findAllMealItemData: async () => {
+    findAllMealItemData: async (page,perPage,search) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await mealItemModel.find(
-                    {},
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
-                )
+                    search ? {
+                        active: true,
+                        $or:
+                            [
+                                { mealItem: { $regex: search, $options: 'i' } },
+                                { ingredients: { $regex: search, $options: 'i' } },
+                                { calary: { $regex: search, $options: 'i' } }
+                            ]
+                    } : { active: true })
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
+                    .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .exec()
             );
         });
     },
     findByMealItemId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealItemModel.find(
-                    { _id: id },
+                await mealItemModel.find({ _id: id })
+                .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+            );
+        });
+    },
+    findByMealItemsName: async (mealItem) => {
+        return new Promise(async (resolve) => {
+            return resolve(
+                await mealItemModel.findOne(
+                    { mealItem },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });
     },
-    updateMealItemData: async (id) => {
+    updateMealItemData: async (mealItem, req_data) => {
         return new Promise(async (resolve) => {
-            await mealItemModel.updateOne({ _id: id }, { upsert: true });
+            await mealItemModel.updateOne({ mealItem }, { ...req_data }, { upsert: true });
             return resolve(
                 await mealItemModel.find(
-                    { _id: id },
+                    { mealItem },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
                 )
             );

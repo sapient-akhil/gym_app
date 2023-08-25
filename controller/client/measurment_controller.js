@@ -1,15 +1,18 @@
 const measurmentModel = require("../../services/measurment/measurment.model")
 const createError = require("http-errors")
+const { measurmentServices } = require("../../services/index")
 
-module.exports ={
-    measurmentCreate : async (req, res, next) => {
+module.exports = {
+    measurmentCreate: async (req, res, next) => {
         try {
-            const { bodyPartId, date, unitValue } = req.body
-    
-            const measurment = new measurmentModel({ bodyPartId, date, unitValue })
-    
-            const measurmentData = await measurmentModel.create(measurment)
-    
+            const req_data = req.body
+
+            const existBodyPartId = await measurmentServices.findBybodyPartId(req_data.bodyPartId)
+            if (!existBodyPartId) {
+                throw createError.Conflict("no any bodyPart with this bodyPartId");
+            }
+            const measurmentData = await measurmentServices.updateMeasurmentData(req_data.bodyPartId, req_data.unitValue, req_data)
+            console.log("measurmentData", measurmentData)
             res.status(201).send({
                 success: true,
                 message: "measurmentData is created...",
@@ -19,20 +22,10 @@ module.exports ={
             next(error)
         }
     },
-    
-    allMeasurmentData : async (req, res, next) => {
+
+    allMeasurmentData: async (req, res, next) => {
         try {
-            const measurmentData = await measurmentModel.find()
-                .populate({
-                    path: "bodyPartId",
-                    populate: {
-                        path: "unitId",
-                        model: "unitModel",
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    },
-                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-    
+            const measurmentData = await measurmentServices.findAllMeasurmentData()
             res.status(200).send({
                 success: true,
                 message: "Measurment Data...",
@@ -42,24 +35,16 @@ module.exports ={
             next(error)
         }
     },
-    
-    oneBodyPartData : async (req, res, next) => {
+
+    oneMeasurmentData: async (req, res, next) => {
         try {
             const { id } = req.params
-    
-            const measurmentData = await measurmentModel.findById(id)
-                .populate({
-                    path: "bodyPartId",
-                    populate: {
-                        path: "unitId",
-                        model: "unitModel",
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    },
-                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-            if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+
+            const measurmentData = await measurmentServices.oneMeasurmentData(id)
+
+            if (!measurmentData.length) throw createError.NotFound("ENTER VALID ID..")
             if (measurmentData.active === false) throw createError.NotFound("measurmentData not found...")
-    
+
             res.status(200).send({
                 success: true,
                 message: "Measurment Data...",
@@ -69,25 +54,15 @@ module.exports ={
             next(error)
         }
     },
-    
-    particularBodyPart : async (req, res, next) => {
+
+    particularBodyPart: async (req, res, next) => {
         try {
             const { bodyPartId } = req.params
-    
-            const measurmentData = await measurmentModel.find({ bodyPartId })
-                .populate({
-                    path: "bodyPartId",
-                    populate: {
-                        path: "unitId",
-                        model: "unitModel",
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    },
-                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                }).sort({ date: 1 }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-    
-            if (measurmentData.length === 0) throw createError.NotFound("ENTER VALID ID..")
+
+            const measurmentData = await measurmentServices.findByParticularBodyPart({ bodyPartId })
+            if (!measurmentData.length) throw createError.NotFound("ENTER VALID ID..")
             if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
-    
+
             res.status(200).send({
                 success: true,
                 message: "Measurment Data...",
@@ -97,26 +72,18 @@ module.exports ={
             next(error)
         }
     },
-    
-    particularBodyPartByDate : async (req, res, next) => {
+
+    particularBodyPartByDate: async (req, res, next) => {
         try {
             const { bodyPartId } = req.params
-            const { startDate, endDate } = req.body
-    
-            const measurmentData = await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate } })
-                .populate({
-                    path: "bodyPartId",
-                    populate: {
-                        path: "unitId",
-                        model: "unitModel",
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    },
-                    select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                }).sort({ date: 1 }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-    
+            const req_data = req.body
+
+            const measurmentData = await measurmentServices.
+                findByParticularBodyPartByDate(bodyPartId, req_data.startDate, req_data.endDate)
+
             if (measurmentData.length === 0) throw createError.NotFound("ENTER VALID ID..")
             if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
-    
+
             res.status(200).send({
                 success: true,
                 message: "Measurment Data...",
@@ -126,41 +93,19 @@ module.exports ={
             next(error)
         }
     },
-    
-    deleteMeasurmentData : async (req, res, next) => {
+
+    deleteMeasurmentData: async (req, res, next) => {
         try {
-    
             const { id } = req.params
-    
-            const measurmentData = await measurmentModel.findByIdAndUpdate(id, { active: false }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+
+            const measurmentData = await measurmentServices.deleteMeasurmentData(id)
             if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
-    
+
             res.status(201).send({
                 success: true,
                 message: " Measurment data deleted successfully",
                 data: measurmentData
             })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    updateMeasurmentData : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const { bodyPartId, date, unitValue } = req.body
-    
-            const measurmentData = await measurmentModel.findByIdAndUpdate(id, { $set: { bodyPartId, date, unitValue } }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-            if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
-    
-            res.status(201).send({
-                success: true,
-                message: "measurment data update successfully",
-                data: measurmentData
-            })
-    
         } catch (error) {
             next(error)
         }

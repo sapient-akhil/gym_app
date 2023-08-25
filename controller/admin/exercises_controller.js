@@ -2,24 +2,47 @@ const exercisesModel = require("../../services/exercises/exercises.model")
 const createError = require("http-errors")
 const path = require("path")
 const fs = require("fs")
+const { exercisesServices } = require("../../services/index")
 
 module.exports = {
     exercisesCreate: async (req, res, next) => {
         try {
-            const { exercisesName, muscles, description, videoLink } = req.body
-            const array = JSON.parse(muscles);
+            const req_data = req.body
+            const array = JSON.parse(req_data.muscles);
+            req_data.muscles = array
 
-            const file = req.files.photo
-            const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-            console.log(filePath)
+            const existExercisesName = await exercisesServices.findByExercisesName(req_data.exercisesName);
+            if (existExercisesName) {
+                throw createError.Conflict("existExercisesName already exists");
+            }
 
-            file.mv(filePath, err => {
-                if (err) return res.status(500).send(err)
-            })
+            if (req.files && req.files.photo) {
+                const file = req.files.photo
 
-            const exercise = new exercisesModel({ exercisesName, muscles: array, description, videoLink, photo: filePath })
+                const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
+                if (!filePath) throw createError.NotFound("check the path..")
 
-            const exerciseData = await exercisesModel.create(exercise)
+                console.log(filePath)
+                if (existExercisesName) {
+                    if (existExercisesName.photo) {
+                        fs.unlink(existExercisesName.photo, (err) => {
+                            if (err) {
+                                console.error('Error deleting previous image:', err);
+                            }
+                        });
+                    }
+                    existExercisesName.photo = filePath;
+                }
+
+                file.mv(filePath, err => {
+                    if (err) return res.status(500).send(err)
+                })
+
+                const photo = { photo: filePath }
+                req_data.photo = photo.photo
+            }
+
+            const exerciseData = await exercisesServices.updateExercisesData(req_data.exercisesName, req_data)
 
             res.status(201).send({
                 success: true,
@@ -35,20 +58,9 @@ module.exports = {
         try {
             const page = parseInt(req.query.page || 1);
             const perPage = 3
+            const search = req.query.search
 
-            const exercises = await exercisesModel.find(req.query.search ? {
-                active: true,
-                $or:
-                    [
-                        { exercisesName: { $regex: req.query.search, $options: 'i' } },
-                        { description: { $regex: req.query.search, $options: 'i' } },
-                        { videoLink: { $regex: req.query.search, $options: 'i' } }
-                    ]
-            } : { active: true })
-                .limit(perPage * 1)
-                .skip((page - 1) * perPage)
-                .exec();
-
+            const exercises = await exercisesServices.findAllExercisesData(page, perPage, search)
             if (exercises.length === 0) throw createError.NotFound("Not found exercises..")
 
             res.status(201).send({
@@ -66,8 +78,8 @@ module.exports = {
 
             const { id } = req.params
 
-            const exerciseData = await exercisesModel.findById(id)
-            if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
+            const exerciseData = await exercisesServices.findByExercisesId(id)
+            if (!exerciseData.length) throw createError.NotFound("ENTER VALID ID..")
             if (exerciseData.active === false) throw createError.NotFound("exercise not found...")
 
             res.status(201).send({
@@ -95,49 +107,9 @@ module.exports = {
         } catch (error) {
             next(error)
         }
-    },
-
-    updateExercise: async (req, res, next) => {
-        try {
-
-            const { id } = req.params
-
-            const { exercisesName, muscles, description, videoLink } = req.body
-
-            const file = req.files.photo
-            const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-            // console.log("filePath",filePath)
-
-            const user1 = await exercisesModel.findById(id)
-            // console.log("user1",user1)
-            if (user1.photo) {
-                fs.unlink(user1.photo, (err) => {
-                    if (err) {
-                        console.error('Error deleting previous image:', err);
-                    }
-                });
-            }
-            user1.photo = filePath;
-
-            file.mv(filePath, err => {
-                if (err) return res.status(500).send(err)
-            })
-            const array = JSON.parse(muscles)
-
-            const exerciseData = await exercisesModel.findByIdAndUpdate(id, { $set: { exercisesName, muscles: array, description, videoLink, photo: filePath } })
-
-            if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
-
-            res.status(201).send({
-                success: true,
-                message: "exercise update successfully",
-                data: exerciseData
-            })
-        } catch (error) {
-            next(error)
-        }
     }
 }
+
 
 
 
