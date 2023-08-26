@@ -38,7 +38,6 @@ module.exports = {
         trainer_id: validate.id,
         mealItem: validate.reqstring,
         calary: validate.reqstring,
-        // quantityUnits: validate.reqstring,
         description: validate.reqstring,
         ingredients: validate.reqstring
     }),
@@ -54,25 +53,16 @@ module.exports = {
     exercisesSchema: joi.object().keys({
         exercisesName: validate.reqstring,
         muscles: validate.reqstring,
-        // photo: validate.reqstring,
         description: validate.reqstring,
         videoLink: validate.reqstring
     }),
     workOutSchema: joi.object().keys({
-        // exercises_id: validate.reqstring,
-        // workOutName: validate.reqstring,
-        // time: validate.reqstring,
-        // reps: validate.reqstring,
-        // set: validate.reqstring,
-        // reps: validate.reqstring,
-        // volume: validate.reqstring,
         client_id: validate.reqId,
         trainer_id :validate.reqId,
         workOut :validate.reqstring,
         date: validate.date
     }),
     unitSchema: joi.object().keys({
-        // id: validate.reqId,
         unit: validate.reqstring,
     }),
     bodyPartSchema: joi.object().keys({

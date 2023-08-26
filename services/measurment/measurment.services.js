@@ -11,25 +11,26 @@ module.exports = {
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { _id: 0, active: 0, __v: 0 }
+                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                         },
-                        select: { _id: 0, active: 0, __v: 0 }
-                    })
+                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+
             );
         });
     },
     oneMeasurmentData: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ _id: id })
+                await measurmentModel.find({ _id: id },{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate({
                         path: "bodyPartId",
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { _id: 0, active: 0, __v: 0 }
+                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                         },
-                        select: { _id: 0, active: 0, __v: 0 }
+                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                     })
             );
         });
@@ -37,15 +38,15 @@ module.exports = {
     findByParticularBodyPart: async (bodyPartId) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find(bodyPartId)
+                await measurmentModel.find(bodyPartId,{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .populate({
                         path: "bodyPartId",
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { _id: 0, active: 0, __v: 0 }
+                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                         },
-                        select: { _id: 0, active: 0, __v: 0 }
+                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                     }).sort({ date: 1 })
             );
         });
@@ -53,7 +54,7 @@ module.exports = {
     findByParticularBodyPartByDate: async (bodyPartId,startDate,endDate) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate } })
+                await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate }},{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .populate({
                         path: "bodyPartId",
                         populate: {
@@ -72,7 +73,7 @@ module.exports = {
             return resolve(
                 await bodyPartModel.findOne(
                     { _id: bodyPartId },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 } }
                 )
             );
         });
@@ -83,7 +84,7 @@ module.exports = {
             return resolve(
                 await measurmentModel.find(
                     { bodyPartId, unitValue },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 } }
                 )
             );
         });
@@ -94,7 +95,7 @@ module.exports = {
             return resolve(
                 await measurmentModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0,__id:0 }
                 )
             );
         });

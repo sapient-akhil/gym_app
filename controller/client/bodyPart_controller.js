@@ -22,7 +22,7 @@ module.exports = {
             const { id } = req.params
 
             const bodyPartData = await bodyPartServices.findByBodyPartId(id)
-             if (!bodyPartData.length) throw createError.NotFound("The bodyPartData with the provided ID could not be found. Please ensure the ID is correct and try again")
+             if (!bodyPartData) throw createError.NotFound("The bodyPartData with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (bodyPartData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(201).send({
@@ -39,7 +39,7 @@ module.exports = {
             const req_data = req.body
 
             const existUnitId = await bodyPartServices.findByUnitId(req_data.unitId)
-            if (!existUnitId.length) {
+            if (!existUnitId) {
                 throw createError.Conflict("no any unit with this unitId");
             }
             const bodyPartData = await bodyPartServices.updateBodyPartData(req_data.unitId, req_data.bodyPart, req_data)
@@ -59,7 +59,7 @@ module.exports = {
             const { id } = req.params
 
             const bodyPartData = await bodyPartServices.deleteBodyPartData(id)
-            if (!bodyPartData.length) throw createError.NotFound("The bodyPartData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (!bodyPartData) throw createError.NotFound("The bodyPartData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

@@ -7,7 +7,7 @@ module.exports = {
             return resolve(
                 await trainerModel.findOne(
                     { "contactdetails.email": email },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             )
         });
@@ -18,7 +18,7 @@ module.exports = {
             return resolve(
                 await trainerModel.findOne(
                     { "contactdetails.mobilenumber": mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -28,7 +28,7 @@ module.exports = {
             return resolve(
                 await trainerModel.find(
                     {},
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -38,7 +38,7 @@ module.exports = {
             return resolve(
                 await trainerModel.findOne(
                     { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -46,9 +46,9 @@ module.exports = {
     findByTrainerId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await trainerModel.find(
+                await trainerModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -56,22 +56,21 @@ module.exports = {
     updateTrainerData: async (email, mobilenumber, req_data) => {
         return new Promise(async (resolve) => {
             await trainerModel.updateOne({ "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber }, { ...req_data }, { upsert: true });
-            // console.log("wsfew")
             return resolve(
                 await trainerModel.find(
                     { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
     },
     deleteTrainerData: async (id) => {
         return new Promise(async (resolve) => {
-            await trainerModel.updateOne({ _id: id }, { active: false });
+            await trainerModel.updateOne({ _id: id }, { active: false }, { new: true });
             return resolve(
                 await trainerModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });

@@ -59,7 +59,7 @@ module.exports={
     
             const { id } = req.params
     
-            const unitData = await unitModel.findByIdAndUpdate(id)
+            const unitData = await unitServices.deleteUnitData(id)
     
             if (!unitData) throw createError.NotFound("The unitData with the provided ID could not be found. Please ensure the ID is correct and try again")
     

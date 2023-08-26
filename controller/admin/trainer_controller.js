@@ -16,7 +16,7 @@ module.exports = {
             const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
             if (!existMobileNumber) throw createError.Conflict("mobilenumber or email is wrong")
 
-            const accessToken = await signAccessToken(existEmail.role,existEmail.name);
+            const accessToken = await signAccessToken(existEmail._id,existEmail.role,existEmail.name);
 
             res.status(201).send({
                 success: true,
@@ -51,7 +51,7 @@ module.exports = {
 
             const adminData = await trainerServices.findByTrainerId(id)
             if (!adminData) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (adminData.active === false) throw createError.NotFound("trainer not found...")
+            if (adminData.active === false) throw createError.NotFound("this trainer is deleted...")
 
             res.status(201).send({
                 success: true,
@@ -129,7 +129,7 @@ module.exports = {
 
             const { id } = req.params
 
-            const trainer = await trainerServices.findByTrainerId(id)
+            const trainer = await trainerServices.deleteTrainerData(id)
             if (!trainer) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
@@ -142,70 +142,6 @@ module.exports = {
         }
     }  
 }
-
-//     updateTrainerByAdmin: async (req, res, next) => {
-//         try {
-
-//             const { id } = req.params
-
-//             const { name, qualifications, certifications, mobilenumber, email } = req.body
-
-//             const existingClient = await trainerModel.findById(id)
-//             if (!existingClient) {
-//                 throw createError.NotFound("ENTER VALID ID..");
-//             }
-
-//             if (email !== existingClient.contactdetails.email) {
-//                 const existEmail = await trainerModel.findOne({ "contactdetails.email": email });
-//                 if (existEmail) {
-//                     throw createError.Conflict("Email already exists");
-//                 }
-//             }
-
-//             if (mobilenumber !== existingClient.contactdetails.mobilenumber) {
-//                 const existMobileNumber = await trainerModel.findOne({ "contactdetails.mobilenumber": mobilenumber });
-//                 if (existMobileNumber) {
-//                     throw createError.Conflict("existMobileNumber already exists");
-//                 }
-//             }
-
-//             const file = req.files.profilePhoto
-//             const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-//             // console.log("filePath",filePath)
-
-//             const user1 = await trainerModel.findById(id)
-//             // console.log("user1",user1)
-//             if (user1.profilePhoto) {
-//                 fs.unlink(user1.profilePhoto, (err) => {
-//                     if (err) {
-//                         console.error('Error deleting previous image:', err);
-//                     }
-//                 });
-//             }
-//             user1.profilePhoto = filePath;
-
-//             file.mv(filePath, err => {
-//                 if (err) return res.status(500).send(err)
-//             })
-//             const array = JSON.parse(certifications)
-
-//             const trainer = await trainerModel.findByIdAndUpdate(id,
-//                 { $set: { name, qualifications, certifications: array, "contactdetails.mobilenumber": mobilenumber, "contactdetails.email": email, profilePhoto: filePath } })
-
-//             if (!trainer) throw createError.NotFound("ENTER VALID ID..")
-
-//             res.status(201).send({
-//                 success: true,
-//                 message: "trainer update successfully",
-//                 data: trainer
-//             })
-//         } catch (error) {
-//             next(error)
-//         }
-//     }
-// }
-
-
 
 
 // exports.getClientMeal = async (req, res, next) => {

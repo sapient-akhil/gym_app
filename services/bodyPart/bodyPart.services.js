@@ -5,14 +5,14 @@ module.exports = {
     findAllBodyPartData: async () => {
         return new Promise(async (resolve) => {
             return resolve(
-                await bodyPartModel.find({ active: true }).populate("unitId")
+                await bodyPartModel.find({ active: true },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}).populate("unitId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
         });
     },
     findByBodyPartId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await bodyPartModel.findOne({ _id: id }).populate("unitId")
+                await bodyPartModel.findOne({ _id: id },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}).populate("unitId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
         });
     },
@@ -21,7 +21,7 @@ module.exports = {
             return resolve(
                 await unitModel.findOne(
                     { _id: unitId },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -32,7 +32,7 @@ module.exports = {
             return resolve(
                 await bodyPartModel.find(
                     { unitId, bodyPart },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -43,7 +43,7 @@ module.exports = {
             return resolve(
                 await bodyPartModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });

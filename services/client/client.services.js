@@ -6,7 +6,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { email },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             )
         });
@@ -16,7 +16,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -26,12 +26,11 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { email, mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
     },
-
     findAllClientData: async (search, page, perPage) => {
         return new Promise(async (resolve) => {
             return resolve(
@@ -56,7 +55,7 @@ module.exports = {
     findByClientId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await clientModel.find({ _id: id })
+                await clientModel.find({ _id: id },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
                     .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
@@ -68,7 +67,7 @@ module.exports = {
             return resolve(
                 await clientModel.find(
                     { email, mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -79,7 +78,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0,_id:0 }
                 )
             );
         });

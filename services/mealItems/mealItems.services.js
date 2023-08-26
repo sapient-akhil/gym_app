@@ -1,7 +1,7 @@
 const mealItemModel = require("./mealItems.model")
 
 module.exports = {
-    findAllMealItemData: async (page,perPage,search) => {
+    findAllMealItemData: async (page, perPage, search) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await mealItemModel.find(
@@ -13,7 +13,7 @@ module.exports = {
                                 { ingredients: { $regex: search, $options: 'i' } },
                                 { calary: { $regex: search, $options: 'i' } }
                             ]
-                    } : { active: true })
+                    } : { active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .limit(perPage * 1)
                     .skip((page - 1) * perPage)
                     .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
@@ -24,9 +24,9 @@ module.exports = {
     findByMealItemId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealItemModel.find({ _id: id })
-                .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-                .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await mealItemModel.find({ _id: id }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
         });
     },
@@ -35,7 +35,7 @@ module.exports = {
             return resolve(
                 await mealItemModel.findOne(
                     { mealItem },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -46,7 +46,7 @@ module.exports = {
             return resolve(
                 await mealItemModel.find(
                     { mealItem },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -57,7 +57,7 @@ module.exports = {
             return resolve(
                 await mealItemModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });

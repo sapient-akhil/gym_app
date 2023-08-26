@@ -10,7 +10,7 @@ module.exports = {
             const req_data = req.body;
 
             const client = await clientServices.findbyClientEmail( req_data.email );
-            if (!client) throw createError.NotFound("email id does not exists")
+            if (!client) throw createError.NotFound("email or password is wrong")
 
             const passwordMatch = await bcrypt.compare(req_data.password, client.password);
             if (!passwordMatch) throw createError.NotFound("email or password is wrong");

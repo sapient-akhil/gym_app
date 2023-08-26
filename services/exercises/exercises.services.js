@@ -1,7 +1,7 @@
 const exercisesModel = require("./exercises.model")
 
 module.exports = {
-    findAllExercisesData: async (page,perPage,search) => {
+    findAllExercisesData: async (page, perPage, search) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await exercisesModel.find(
@@ -13,10 +13,10 @@ module.exports = {
                                 { description: { $regex: search, $options: 'i' } },
                                 { videoLink: { $regex: search, $options: 'i' } }
                             ]
-                    } : { active: true })
-                        .limit(perPage * 1)
-                        .skip((page - 1) * perPage)
-                        .exec()
+                    } : { active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
+                    .exec()
             );
         });
     },
@@ -45,8 +45,8 @@ module.exports = {
             await exercisesModel.updateOne({ exercisesName }, { ...req_data }, { upsert: true });
             return resolve(
                 await exercisesModel.find(
-                    { exercisesName},
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { exercisesName },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -57,7 +57,7 @@ module.exports = {
             return resolve(
                 await exercisesModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });

@@ -61,7 +61,7 @@ module.exports = {
                 }
             }
             const payload = req.payload;
-            const id = payload.aud[0]._id
+            const id = payload._id
 
             const hash = await bcrypt.hash(req_data.password, 10);
             const passwordd = { password: hash }
@@ -87,7 +87,7 @@ module.exports = {
             const { id } = req.params
 
             const client = await clientServices.deleteClientData(id)
-            if (!client.length) throw createError.NotFound("The client data with the provided ID could not be found. Please ensure the ID is correct and try again.")
+            if (!client) throw createError.NotFound("The client data with the provided ID could not be found. Please ensure the ID is correct and try again.")
 
             res.status(201).send({
                 success: true,

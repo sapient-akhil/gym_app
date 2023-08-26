@@ -95,7 +95,7 @@ module.exports = {
 
             const { id } = req.params
 
-            const exerciseData = await exercisesModel.findByIdAndUpdate(id)
+            const exerciseData = await exercisesServices.deleteExercisesData(id)
             if (!exerciseData) throw createError.NotFound("The exerciseData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({

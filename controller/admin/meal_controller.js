@@ -75,10 +75,6 @@ module.exports = {
             req_data.eveningSnack = array3
             req_data.dinner = array4
 
-            const existClient = await mealPlanServices.existClientId(req_data.clientId)
-            if (!existClient) {
-                throw createError.Conflict("no any client found with this id");
-            }
             const savedMealPlan = await mealPlanServices.updateMealPlanData(req_data.clientId, req_data);
 
             res.status(201).send({
@@ -97,7 +93,7 @@ module.exports = {
 
             const mealPlan = await mealPlanServices.deleteMealPlanData(id)
 
-            if (!mealPlan.length) throw createError.NotFound("The mealPlan with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (!mealPlan) throw createError.NotFound("The mealPlan with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

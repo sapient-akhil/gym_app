@@ -1,5 +1,6 @@
 const workOutModel = require("../../services/workOut/workOut.model")
 const createError = require("http-errors")
+const { workOutServices } = require("../../services/index")
 
 
 module.exports = {

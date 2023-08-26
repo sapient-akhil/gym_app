@@ -7,74 +7,67 @@ const { verifyAccessTokenforAdmin, verifyAccessTokenforTrainer } = require("../h
 //admin routes
 const adminController = require("../controller/admin/admin_controller")
 
-router.post("/adminLogin", Validators.forReqBody(Schema.loginSchema), adminController.adminLogin)
-router.post("/createAdminBySuperAdmin", Validators.forReqBody(Schema.trainerSchema), adminController.createUpdateAdmin)
-router.get("/allAdmin", adminController.allAdmin)
-router.get("/oneAdmin/:id", Validators.forParams(Schema.params), adminController.oneAdmin)
-router.delete("/deleteAdminBySuperAdmin/:id", Validators.forParams(Schema.params), adminController.deleteAdmin)
+router.post("/admin-login", Validators.forReqBody(Schema.loginSchema), adminController.adminLogin)
+router.post("/create-update-admin", Validators.forReqBody(Schema.trainerSchema), adminController.createUpdateAdmin)
+router.get("/all-admin", adminController.allAdmin)
+router.get("/one-admin/:id", Validators.forParams(Schema.params), adminController.oneAdmin)
+router.delete("/delete-admin/:id", Validators.forParams(Schema.params), adminController.deleteAdmin)
 
 // trainer routes
 const trainerController = require("../controller/admin/trainer_controller")
 
-router.post("/trainerLogin", Validators.forReqBody(Schema.loginSchema), trainerController.trainerLogin)
-router.post("/createTrainerByAdmin", Validators.forReqBody(Schema.trainerSchema), trainerController.createUpdateTrainerByAdmin)
-router.get("/allTrainer", verifyAccessTokenforAdmin, trainerController.allTrainer)
-router.get("/oneTrainer/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), trainerController.oneTrainer)
-router.delete("/deleteTrainerByAdmin/:id", Validators.forParams(Schema.params), trainerController.deleteTrainerByAdmin)
-// router.put("/updateTrainerByAdmin/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), Validators.forReqBody(Schema.trainerSchema), trainerController.updateTrainerByAdmin)
+router.post("/trainer-login", Validators.forReqBody(Schema.loginSchema), trainerController.trainerLogin)
+router.post("/create-update-trainer", Validators.forReqBody(Schema.trainerSchema), trainerController.createUpdateTrainerByAdmin)
+router.get("/all-trainer", trainerController.allTrainer)
+router.get("/one-trainer/:id", Validators.forParams(Schema.params), trainerController.oneTrainer)
+router.delete("/delete-trainer/:id", Validators.forParams(Schema.params), trainerController.deleteTrainerByAdmin)
 
 // client routes
 const clientController = require("../controller/admin/client_controller")
 
-router.post("/createClient",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientSchema), clientController.createUpdateClient)
-// router.post("/clientLogin",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientLoginSchema), clientController.clientLogin)
-router.get("/allClient",verifyAccessTokenforTrainer, clientController.allClient)
-router.get("/oneClient/:id", Validators.forParams(Schema.params), clientController.oneClient)
-router.delete("/deleteClient/:id", Validators.forParams(Schema.params), clientController.deleteClient)
-// router.put("/updateClient/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.clientSchema), clientController.updateClient)
+router.post("/create-update-client",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.clientSchema), clientController.createUpdateClient)
+router.get("/all-client", clientController.allClient)
+router.get("/one-client/:id", Validators.forParams(Schema.params), clientController.oneClient)
+router.delete("/delete-client/:id", Validators.forParams(Schema.params), clientController.deleteClient)
 
 // meal items routes
 const mealController = require("../controller/admin/items_controller")
 
-router.post("/mealItemCreate", Validators.forReqBody(Schema.mealItemSchema), mealController.createUpdateMealItem);
-router.get("/allMealItem", mealController.allMealItem);
-router.get("/oneMealItem/:id", Validators.forParams(Schema.params), mealController.oneMealItems);
-router.get("/trainerMealItems/:trainer_id", mealController.trainerMealItems)
-router.delete("/deleteMealItems/:id", Validators.forParams(Schema.params), mealController.deleteMealItems)
-// router.put("/updateMealItems/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.mealItemSchema), mealController.updateMealItems)
+router.post("/create-update-mealItem", Validators.forReqBody(Schema.mealItemSchema), mealController.createUpdateMealItem);
+router.get("/all-mealItem", mealController.allMealItem);
+router.get("/one-mealItem/:id", Validators.forParams(Schema.params), mealController.oneMealItems);
+router.get("/trainer-mealItems/:trainer_id", mealController.trainerMealItems)
+router.delete("/delete-mealItems/:id", Validators.forParams(Schema.params), mealController.deleteMealItems)
 
 // meal plan routes
 const mealPlanController = require("../controller/admin/meal_controller");
 
-router.post("/mealPlanCreate", Validators.forReqBody(Schema.mealPlanSchema), mealPlanController.createUpdateMealPlan);
-router.get("/allMealPlan", mealPlanController.allMealPlan);
-router.get("/oneMealplan/:id", Validators.forParams(Schema.params), mealPlanController.oneMealplan);
-router.delete("/deleteMealPlan/:id", Validators.forParams(Schema.params), mealPlanController.deleteMealPlan);
-// router.put("/updateMealPlan/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.mealPlanSchema), mealPlanController.updateMealPlan);
+router.post("/create-update-mealPlan", Validators.forReqBody(Schema.mealPlanSchema), mealPlanController.createUpdateMealPlan);
+router.get("/all-mealPlan", mealPlanController.allMealPlan);
+router.get("/one-mealplan/:id", Validators.forParams(Schema.params), mealPlanController.oneMealplan);
+router.delete("/delete-mealPlan/:id", Validators.forParams(Schema.params), mealPlanController.deleteMealPlan);
 
 // exercises routes
 const exercisesController = require("../controller/admin/exercises_controller")
 
-router.post("/exercisesCreate", Validators.forReqBody(Schema.exercisesSchema), exercisesController.createUpdateExercise);
-router.get("/allExercises", exercisesController.allExercises);
-router.get("/oneExercise/:id", Validators.forParams(Schema.params), exercisesController.oneExercise);
-router.delete("/deleteExercise/:id", Validators.forParams(Schema.params), exercisesController.deleteExercise);
-// router.put("/updateExercise/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.exercisesSchema), exercisesController.updateExercise);
+router.post("/create-update-exercises", Validators.forReqBody(Schema.exercisesSchema), exercisesController.createUpdateExercise);
+router.get("/all-exercises", exercisesController.allExercises);
+router.get("/one-exercise/:id", Validators.forParams(Schema.params), exercisesController.oneExercise);
+router.delete("/delete-exercise/:id", Validators.forParams(Schema.params), exercisesController.deleteExercise);
 
 //workout routes
 const workOutController = require("../controller/admin/workOut_controller")
 
-router.post("/workOutCreate",verifyAccessTokenforTrainer, Validators.forReqBody(Schema.workOutSchema), workOutController.workOutCreate);
-router.get("/allWorkOut", workOutController.allWorkOut);
-router.get("/oneWorkOut/:id", Validators.forParams(Schema.params), workOutController.oneWorkOut);
-router.delete("/deleteWorkOut/:id", Validators.forParams(Schema.params), workOutController.deleteWorkOut);
-// router.put("/updateWorkOut/:id", Validators.forParams(Schema.params), Validators.forReqBody(Schema.workOutSchema), workOutController.updateWorkOut);
+router.post("/create-update-workOut", Validators.forReqBody(Schema.workOutSchema), workOutController.createUpdateWorkOut);
+router.get("/all-workOut", workOutController.allWorkOut);
+router.get("/one-workOut/:id", Validators.forParams(Schema.params), workOutController.oneWorkOut);
+router.delete("/delete-workOut/:id", Validators.forParams(Schema.params), workOutController.deleteWorkOut);
 
 //measurment routes
 const measurmentController = require("../controller/admin/measurment_controller")
 
-router.get("/allMeasurmentData", measurmentController.allMeasurmentData);
-router.get("/oneMeasurmentData/:id", Validators.forParams(Schema.params), measurmentController.oneMeasurmentData);
+router.get("/all-measurmentData", measurmentController.allMeasurmentData);
+router.get("/one-measurmentData/:id", Validators.forParams(Schema.params), measurmentController.oneMeasurmentData);
 router.get("/bodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.particularBodyPartData);
 
 module.exports = router;

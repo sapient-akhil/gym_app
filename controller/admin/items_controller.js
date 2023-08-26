@@ -28,12 +28,12 @@ module.exports = {
             const { id } = req.params
 
             const itemData = await mealItemsServices.findByMealItemId(id)
-            if (!itemData) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (!itemData.length) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (itemData.active === false) throw createError.NotFound("item not found...")
 
             res.status(201).send({
                 success: true,
-                message: "get all mealItems",
+                message: "get one mealItems",
                 data: itemData
             })
         } catch (error) {
@@ -67,7 +67,7 @@ module.exports = {
 
             const { trainer_id } = req.params
 
-            const itemData = await mealItemsModel.findOne({ trainer_id })
+            const itemData = await mealItemsServices.findByMealItemId({ trainer_id })
             if (!itemData) throw createError.NotFound("The trainer_id with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
@@ -84,8 +84,8 @@ module.exports = {
 
             const { id } = req.params
 
-            const itemData = await mealItemsModel.findByIdAndUpdate(id)
-            if (!itemData.length) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            const itemData = await mealItemsServices.deleteMealItemData(id)
+            if (!itemData) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

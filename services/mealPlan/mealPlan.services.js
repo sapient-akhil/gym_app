@@ -12,16 +12,16 @@ module.exports = {
                     .populate("lunch.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
                     .populate("eveningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
                     .populate("dinner.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
+                    .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
         });
     },
     existClientId: async (clientId) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealPlanModel.findOne(
+                await clientmodel.findOne(
                     { clientId },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
-                )
+                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
             );
         });
     },
@@ -30,7 +30,7 @@ module.exports = {
             return resolve(
                 await clientmodel.findOne(
                     { clientId },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );
         });
@@ -38,7 +38,7 @@ module.exports = {
     findByMealPlanId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealPlanModel.find({ _id: id })
+                await mealPlanModel.find({ _id: id },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("clientId", { active: 0, createdAt: 0, updatedAt: 0, __v: 0, _id: 0 })
                     .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
                     .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
@@ -66,7 +66,7 @@ module.exports = {
             return resolve(
                 await mealPlanModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0,_id:0 }
                 )
             );
         });

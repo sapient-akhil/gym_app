@@ -1,4 +1,3 @@
-const adminModel = require("../../services/trainer/trainer.model");
 const { signAccessToken } = require("../../helper/token")
 const createError = require("http-errors")
 const path = require("path")
@@ -129,8 +128,8 @@ module.exports = {
 
             const { id } = req.params
 
-            const admin = await trainerServices.findByTrainerId(id)
-            if (!admin.length) throw createError.NotFound("The admin data with the provided ID could not be found. Please ensure the ID is correct and try again.")
+            const admin = await trainerServices.deleteTrainerData(id)
+            if (!admin) throw createError.NotFound("The admin data with the provided ID could not be found. Please ensure the ID is correct and try again.")
 
             res.status(201).send({
                 success: true,

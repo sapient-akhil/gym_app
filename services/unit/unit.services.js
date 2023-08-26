@@ -6,7 +6,7 @@ module.exports = {
             return resolve(
                 await unitModel.find(
                     {},
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );
         });
@@ -16,7 +16,7 @@ module.exports = {
             return resolve(
                 await unitModel.findOne(
                     { unit },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );
         });
@@ -26,7 +26,7 @@ module.exports = {
             return resolve(
                 await unitModel.find(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );
         });
@@ -37,7 +37,7 @@ module.exports = {
             return resolve(
                 await unitModel.find(
                     { unit },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, password: 0 }
+                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );
         });
@@ -48,7 +48,7 @@ module.exports = {
             return resolve(
                 await unitModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0,_id:0 }
                 )
             );
         });

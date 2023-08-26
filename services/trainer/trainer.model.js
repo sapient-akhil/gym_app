@@ -4,7 +4,6 @@ const trainerModel = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name is require"],
-        // ref:"clientInfo"
     },
     qualifications: {
         type: String,
@@ -26,7 +25,6 @@ const trainerModel = new mongoose.Schema({
     },
     profilePhoto: {
         type: String,
-        // required: [true, "profilePhoto is require"]
     },
     role: {
         type: String,
