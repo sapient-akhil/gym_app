@@ -4,7 +4,39 @@ const createError = require("http-errors")
 const { mealPlanServices } = require("../../services/index")
 
 module.exports = {
-    mealPlanCreate: async (req, res, next) => {
+    allMealPlan: async (req, res, next) => {
+        try {
+
+            const mealPlans = await mealPlanServices.findAllMealPlanData({ active: true })
+                
+            res.status(201).send({
+                success: true,
+                message: "get all mealPlans",
+                data: mealPlans
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneMealplan: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const mealPlan = await mealPlanServices.findByMealPlanId(id)
+            if (!mealPlan.length) throw createError.NotFound("The mealPlan with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (mealPlan.active === false) throw createError.NotFound("mealPlan not found...")
+
+            res.status(201).send({
+                success: true,
+                message: "get one mealPlan",
+                data: mealPlan
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdateMealPlan: async (req, res, next) => {
         try {
             const req_data = req.body;
 
@@ -12,6 +44,7 @@ module.exports = {
             if (existClientId) {
                 throw createError.Conflict("existClientId already exists");
             }
+
             // Check for duplicate mealItemsId within each meal category
 
             const checkDuplicates = mealCategory => {
@@ -57,61 +90,14 @@ module.exports = {
             next(error)
         }
     },
-
-    allMealPlan: async (req, res, next) => {
-        try {
-
-            // const pipeline = [];
-
-            // pipeline.push({
-            //     $lookup: {
-            //         from: "mealitems",
-            //         localField: "id",
-            //         foreignField: "breakFast",
-            //         as: "dswd"
-            //     }
-            // })
-            // const allitems = await mealPlanModel.aggregate(pipeline)
-
-            const mealPlans = await mealPlanServices.findAllMealPlanData({ active: true })
-                
-
-            res.status(201).send({
-                success: true,
-                message: "get all mealPlans",
-                data: mealPlans
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
-    oneMealplan: async (req, res, next) => {
-        try {
-
-            const { id } = req.params
-
-            const mealPlan = await mealPlanServices.findByMealPlanId(id)
-            if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
-            if (mealPlan.active === false) throw createError.NotFound("mealPlan not found...")
-
-            res.status(201).send({
-                success: true,
-                message: "get one mealPlan",
-                data: mealPlan
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
     deleteMealPlan: async (req, res, next) => {
         try {
 
             const { id } = req.params
 
-            const mealPlan = await mealPlanServices.deleteMealPlanData(id, { active: false })
+            const mealPlan = await mealPlanServices.deleteMealPlanData(id)
 
-            if (!mealPlan) throw createError.NotFound("ENTER VALID ID..")
+            if (!mealPlan.length) throw createError.NotFound("The mealPlan with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

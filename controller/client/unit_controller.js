@@ -3,7 +3,39 @@ const createError = require("http-errors")
 const {unitServices} = require("../../services/index")
 
 module.exports={
-    unitCreate : async (req, res, next) => {
+    allUnit : async (req, res, next) => {
+        try {
+    
+            const allUnit = await unitServices.findAllUnitData()
+    
+            res.status(201).send({
+                success: true,
+                message: "get all Unit",
+                data: allUnit
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneUnit : async (req, res, next) => {
+        try {
+    
+            const { id } = req.params
+    
+            const unitData = await unitServices.findByUnitId(id)
+            if (!unitData.length) throw createError.NotFound("The unitData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (unitData.active === false) throw createError.NotFound("unit not found...")
+    
+            res.status(201).send({
+                success: true,
+                message: "get one unitMData",
+                data: unitData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdateUnit : async (req, res, next) => {
         try {
             const req_data = req.body
     
@@ -22,47 +54,14 @@ module.exports={
         }
     },
     
-    allUnit : async (req, res, next) => {
-        try {
-    
-            const allUnit = await unitServices.findAllUnitData()
-    
-            res.status(201).send({
-                success: true,
-                message: "get all Unit",
-                data: allUnit
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-    
-    oneUnit : async (req, res, next) => {
-        try {
-    
-            const { id } = req.params
-    
-            const unitData = await unitServices.findByUnitId(id)
-            if (!unitData.length) throw createError.NotFound("ENTER VALID ID..")
-            if (unitData.active === false) throw createError.NotFound("unit not found...")
-    
-            res.status(201).send({
-                success: true,
-                message: "get one unitMData",
-                data: unitData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
     deleteUnit : async (req, res, next) => {
         try {
     
             const { id } = req.params
     
-            const unitData = await unitModel.findByIdAndUpdate(id, { active: false })
+            const unitData = await unitModel.findByIdAndUpdate(id)
     
-            if (!unitData) throw createError.NotFound("ENTER VALID ID..")
+            if (!unitData) throw createError.NotFound("The unitData with the provided ID could not be found. Please ensure the ID is correct and try again")
     
             res.status(201).send({
                 success: true,

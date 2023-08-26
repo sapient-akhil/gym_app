@@ -5,7 +5,46 @@ const { clientServices } = require("../../services/index");
 const trainer_controller = require("./trainer_controller");
 
 module.exports = {
-    createClient: async (req, res, next) => {
+
+    allClient: async (req, res, next) => {
+
+        try {
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+
+            const client = await clientServices.findAllClientData(search, page, perPage)
+            if (!client.length) throw createError.NotFound("No clients found")
+
+            res.status(201).send({
+                success: true,
+                message: "get all client",
+                data: client
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneClient: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const clientData = await clientServices.findByClientId(id)
+
+            if (!clientData.length) throw createError.NotFound("The client data with the provided ID could not be found. Please ensure the ID is correct and try again.")
+            if (clientData.active === false) throw createError.NotFound("client not found...")
+
+            res.status(201).send({
+                success: true,
+                message: "get one Client",
+                data: clientData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdateClient: async (req, res, next) => {
         try {
             const req_data = req.body
 
@@ -21,7 +60,6 @@ module.exports = {
                     throw createError.Conflict("mobileNumber already exists");
                 }
             }
-
             const payload = req.payload;
             const id = payload.aud[0]._id
 
@@ -43,54 +81,13 @@ module.exports = {
             next(error)
         }
     },
-
-    allClient: async (req, res, next) => {
-
-        try {
-            const page = parseInt(req.query.page || 1);
-            const perPage = 3
-            const search = req.query.search
-            
-            const client = await clientServices.findAllClientData(search,page,perPage)
-            if (client.length === 0) throw createError.NotFound("No clients found")
-
-            res.status(201).send({
-                success: true,
-                message: "get all client",
-                data: client
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
-    oneClient: async (req, res, next) => {
-        try {
-
-            const { id } = req.params
-
-            const clientData = await clientServices.findByClientId(id)
-
-            if (!clientData.length) throw createError.NotFound("ENTER VALID ID..")
-            if (clientData.active === false) throw createError.NotFound("client not found...")
-
-            res.status(201).send({
-                success: true,
-                message: "get one Client",
-                data: clientData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
     deleteClient: async (req, res, next) => {
         try {
 
             const { id } = req.params
 
             const client = await clientServices.deleteClientData(id)
-            if (!client) throw createError.NotFound("ENTER VALID ID..")
+            if (!client.length) throw createError.NotFound("The client data with the provided ID could not be found. Please ensure the ID is correct and try again.")
 
             res.status(201).send({
                 success: true,

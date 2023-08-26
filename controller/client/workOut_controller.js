@@ -25,7 +25,7 @@ module.exports = {
 
             const workOutData = await workOutServices.findByWorkOutId(id)
 
-            if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
+            if (!workOutData) throw createError.NotFound("The workOutData with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (workOutData.active === false) throw createError.NotFound("workOut not found...")
 
             res.status(201).send({

@@ -15,14 +15,13 @@ module.exports = {
             next(error)
         }
     },
-
     oneMeasurmentData: async (req, res, next) => {
         try {
             const { id } = req.params
 
             const measurmentData = await measurmentServices.oneMeasurmentData(id)
                 
-            if (!measurmentData.length) throw createError.NotFound("ENTER VALID ID..")
+            if (!measurmentData.length) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (measurmentData.active === false) throw createError.NotFound("measurmentData not found...")
 
             res.status(200).send({
@@ -34,13 +33,12 @@ module.exports = {
             next(error)
         }
     },
-
     particularBodyPartData: async (req, res, next) => {
         try {
             const { bodyPartId } = req.params
 
             const measurmentData = await measurmentServices.findByParticularBodyPart({ bodyPartId })
-            if (!measurmentData.length) throw createError.NotFound("ENTER VALID ID..")
+            if (!measurmentData.length) throw createError.NotFound("The bodyPartId with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(200).send({

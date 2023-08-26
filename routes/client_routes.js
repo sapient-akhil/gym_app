@@ -23,7 +23,7 @@ router.get("/oneWorkOut/:id", Validators.forParams(Schema.params), workOutContro
 //unit routes
 const unitController = require("../controller/client/unit_controller")
 
-router.post("/unitCreate", Validators.forReqBody(Schema.unitSchema), unitController.unitCreate);
+router.post("/unitCreate", Validators.forReqBody(Schema.unitSchema), unitController.createUpdateUnit);
 router.get("/allUnit", unitController.allUnit);
 router.get("/oneUnit/:id", Validators.forParams(Schema.params), unitController.oneUnit);
 router.delete("/deleteUnit/:id", Validators.forParams(Schema.params), unitController.deleteUnit);
@@ -32,7 +32,7 @@ router.delete("/deleteUnit/:id", Validators.forParams(Schema.params), unitContro
 //bodyPart routes
 const bodyPartController = require("../controller/client/bodyPart_controller")
 
-router.post("/bodyPartCreate", Validators.forReqBody(Schema.bodyPartSchema), bodyPartController.bodyPartCreate);
+router.post("/bodyPartCreate", Validators.forReqBody(Schema.bodyPartSchema), bodyPartController.createUpdateBodyPart);
 router.get("/allBodyPart", bodyPartController.allBodyPart);
 router.get("/oneBodyPart/:id", Validators.forParams(Schema.params), bodyPartController.oneBodyPart);
 router.delete("/deleteBodyPart/:id", Validators.forParams(Schema.params), bodyPartController.deleteBodyPart);
@@ -41,7 +41,7 @@ router.delete("/deleteBodyPart/:id", Validators.forParams(Schema.params), bodyPa
 //measurment routes
 const measurmentController = require("../controller/client/measurment_controller")
 
-router.post("/measurmentCreate", Validators.forReqBody(Schema.measurmentSchema), measurmentController.measurmentCreate);
+router.post("/measurmentCreate", Validators.forReqBody(Schema.measurmentSchema), measurmentController.createUpdatemeasurment);
 router.get("/allMeasurmentData", measurmentController.allMeasurmentData);
 router.get("/oneBodyPart/:id", Validators.forParams(Schema.params), measurmentController.oneMeasurmentData);
 router.get("/particularBodyPart/:bodyPartId", Validators.forParams(Schema.bodyPartId), measurmentController.particularBodyPart);

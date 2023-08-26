@@ -13,7 +13,7 @@ module.exports = {
             req_data.workOut = array
 
             const existClient = await workOutServices.existClient(req_data.client_id, req_data.date)
-            if (!existClient) {
+            if (!existClient.length) {
                 throw createError.Conflict("this client is not exist");
             }
             const workOutData = await workOutServices.updateWorkOutData(req_data.client_id, req_data.date, req_data)
@@ -27,7 +27,6 @@ module.exports = {
             next(error)
         }
     },
-
     allWorkOut: async (req, res, next) => {
         try {
 
@@ -42,7 +41,6 @@ module.exports = {
             next(error)
         }
     },
-
     oneWorkOut: async (req, res, next) => {
         try {
 
@@ -50,7 +48,7 @@ module.exports = {
 
             const workOutData = await workOutServices.findByWorkOutId(id)
 
-            if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
+            if (!workOutData.length) throw createError.NotFound("The workOutData with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (workOutData.active === false) throw createError.NotFound("workOut not found...")
 
             res.status(201).send({
@@ -68,7 +66,7 @@ module.exports = {
             const { id } = req.params
 
             const workOutData = await workOutServices.deleteWorkOutData(id)
-            if (!workOutData) throw createError.NotFound("ENTER VALID ID..")
+            if (!workOutData.length) throw createError.NotFound("The workOutData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

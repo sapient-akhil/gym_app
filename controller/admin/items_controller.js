@@ -3,7 +3,44 @@ const createError = require("http-errors")
 const { mealItemsServices } = require("../../services/index")
 
 module.exports = {
-    mealItemCreate: async (req, res, next) => {
+
+    allMealItem: async (req, res, next) => {
+        try {
+            const page = parseInt({ active: true }, req.query.page || 1);
+            const perPage = 7
+            const search = req.query.search
+
+            const mealItems = await mealItemsServices.findAllMealItemData(page, perPage, search)
+            if (mealItems.length === 0) throw createError.NotFound("Not found mealItems..")
+
+            res.status(201).send({
+                success: true,
+                message: "get mealItems",
+                data: mealItems
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneMealItems: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const itemData = await mealItemsServices.findByMealItemId(id)
+            if (!itemData) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (itemData.active === false) throw createError.NotFound("item not found...")
+
+            res.status(201).send({
+                success: true,
+                message: "get all mealItems",
+                data: itemData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdateMealItem: async (req, res, next) => {
         try {
             const req_data = req.body
 
@@ -25,52 +62,13 @@ module.exports = {
             next(error)
         }
     },
-
-    allMealItem: async (req, res, next) => {
-        try {
-            const page = parseInt({ active: true }, req.query.page || 1);
-            const perPage = 7
-            const search = req.query.search
-
-            const mealItems = await mealItemsServices.findAllMealItemData(page, perPage, search)
-            if (mealItems.length === 0) throw createError.NotFound("Not found mealItems..")
-
-            res.status(201).send({
-                success: true,
-                message: "get mealItems",
-                data: mealItems
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
     trainerMealItems: async (req, res, next) => {
         try {
 
             const { trainer_id } = req.params
 
             const itemData = await mealItemsModel.findOne({ trainer_id })
-            if (!itemData) throw createError.NotFound("ENTER VALID ID..")
-
-            res.status(201).send({
-                success: true,
-                message: "get all mealItems",
-                data: itemData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
-    oneMealItems: async (req, res, next) => {
-        try {
-
-            const { id } = req.params
-
-            const itemData = await mealItemsServices.findByMealItemId(id)
-            if (!itemData) throw createError.NotFound("ENTER VALID ID..")
-            if (itemData.active === false) throw createError.NotFound("item not found...")
+            if (!itemData) throw createError.NotFound("The trainer_id with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,
@@ -86,9 +84,8 @@ module.exports = {
 
             const { id } = req.params
 
-            const itemData = await mealItemsModel.findByIdAndUpdate(id, { active: false })
-
-            if (!itemData) throw createError.NotFound("ENTER VALID ID..")
+            const itemData = await mealItemsModel.findByIdAndUpdate(id)
+            if (!itemData.length) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

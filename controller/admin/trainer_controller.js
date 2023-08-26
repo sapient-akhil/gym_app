@@ -1,12 +1,68 @@
 const trainerModel = require("../../services/trainer/trainer.model");
 const path = require("path")
 const createError = require("http-errors")
-const { signAccessTokenforTrainer } = require("../../helper/token")
+const { signAccessToken } = require("../../helper/token")
 const fs = require("fs")
 const { trainerServices } = require("../../services/index")
 
 module.exports = {
-    createTrainerByAdmin: async (req, res, next) => {
+    trainerLogin: async (req, res, next) => {
+        try {
+            const req_data = req.body;
+
+            const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
+            if (!existEmail) throw createError.Conflict("mobilenumber or email is wrong")
+
+            const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
+            if (!existMobileNumber) throw createError.Conflict("mobilenumber or email is wrong")
+
+            const accessToken = await signAccessToken(existEmail.role,existEmail.name);
+
+            res.status(201).send({
+                success: true,
+                message: "trainer is login...",
+                data: existEmail,
+                accessToken
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    },
+    allTrainer: async (req, res, next) => {
+        try {
+
+            const trainer = await trainerServices.findAllTrainerData()
+            if (!trainer) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
+
+            res.status(201).send({
+                success: true,
+                message: "get all trainer",
+                data: trainer
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneTrainer: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const adminData = await trainerServices.findByTrainerId(id)
+            if (!adminData) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (adminData.active === false) throw createError.NotFound("trainer not found...")
+
+            res.status(201).send({
+                success: true,
+                message: "get one trainer",
+                data: adminData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdateTrainerByAdmin: async (req, res, next) => {
         try {
             const req_data = req.body
 
@@ -29,7 +85,7 @@ module.exports = {
                 const file = req.files.profilePhoto
 
                 const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-                if (!filePath) throw createError.NotFound("check the path..")
+                if (!filePath) throw createError.NotFound("check the path when image is upload..")
 
                 console.log(filePath)
                 if (existingClient) {
@@ -61,90 +117,30 @@ module.exports = {
 
             res.status(201).send({
                 success: true,
-                message: "admin is created...",
+                message: "trainer is created...",
                 data: adminData
             })
         } catch (error) {
             next(error)
         }
     },
-
-    trainerLogin: async (req, res, next) => {
-        try {
-            const req_data = req.body;
-
-            const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
-            if (!existEmail) throw createError.NotFound("mobilenumber or email is wrong")
-
-            const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
-            if (!existMobileNumber) throw createError.NotFound("mobilenumber or email is wrong")
-
-            const accessToken = await signAccessTokenforTrainer(existEmail);
-
-            res.status(201).send({
-                success: true,
-                message: "admin is login...",
-                data: existEmail,
-                accessToken
-            })
-
-        } catch (error) {
-            next(error)
-        }
-    },
-
     deleteTrainerByAdmin: async (req, res, next) => {
         try {
 
             const { id } = req.params
 
-            const admin = await trainerServices.findByTrainerId(id)
-            if (!admin) throw createError.NotFound("ENTER VALID ID..")
+            const trainer = await trainerServices.findByTrainerId(id)
+            if (!trainer) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,
-                message: "admin delete successfully",
-                data: admin
+                message: "trainer delete successfully",
+                data: trainer
             })
         } catch (error) {
             next(error)
         }
-    },
-
-    allTrainer: async (req, res, next) => {
-        try {
-
-            const admin = await trainerServices.findAllTrainerData({ active: true })
-            if (!admin) throw createError.NotFound("not found admin...")
-
-            res.status(201).send({
-                success: true,
-                message: "get all admin",
-                data: admin
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
-    oneTrainer: async (req, res, next) => {
-        try {
-
-            const { id } = req.params
-
-            const adminData = await trainerServices.findByTrainerId(id)
-            if (!adminData) throw createError.NotFound("ENTER VALID ID...")
-            if (adminData.active === false) throw createError.NotFound("admin not found...")
-
-            res.status(201).send({
-                success: true,
-                message: "get one admin",
-                data: adminData
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
+    }  
 }
 
 //     updateTrainerByAdmin: async (req, res, next) => {

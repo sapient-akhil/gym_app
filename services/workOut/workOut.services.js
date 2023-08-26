@@ -35,7 +35,7 @@ module.exports = {
     },
     updateWorkOutData: async (client_id, date, req_data) => {
         return new Promise(async (resolve) => {
-            await workOutModel.updateOne({ client_id, dat }, { ...req_data }, { upsert: true });
+            await workOutModel.updateOne({ client_id, date }, { ...req_data }, { upsert: true });
             return resolve(
                 await workOutModel.find(
                     { client_id },

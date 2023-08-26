@@ -19,7 +19,6 @@ module.exports = {
                 success: true,
                 message: "client is login...",
                 data: client,
-                // accessToken,
             })
         } catch (error) {
             next(error)

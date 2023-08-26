@@ -3,7 +3,37 @@ const createError = require("http-errors")
 const { measurmentServices } = require("../../services/index")
 
 module.exports = {
-    measurmentCreate: async (req, res, next) => {
+    allMeasurmentData: async (req, res, next) => {
+        try {
+            const measurmentData = await measurmentServices.findAllMeasurmentData()
+            res.status(200).send({
+                success: true,
+                message: "Measurment Data...",
+                data: measurmentData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneMeasurmentData: async (req, res, next) => {
+        try {
+            const { id } = req.params
+
+            const measurmentData = await measurmentServices.oneMeasurmentData(id)
+
+            if (!measurmentData.length) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (measurmentData.active === false) throw createError.NotFound("measurmentData not found...")
+
+            res.status(200).send({
+                success: true,
+                message: "Measurment Data...",
+                data: measurmentData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdatemeasurment: async (req, res, next) => {
         try {
             const req_data = req.body
 
@@ -22,45 +52,12 @@ module.exports = {
             next(error)
         }
     },
-
-    allMeasurmentData: async (req, res, next) => {
-        try {
-            const measurmentData = await measurmentServices.findAllMeasurmentData()
-            res.status(200).send({
-                success: true,
-                message: "Measurment Data...",
-                data: measurmentData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
-    oneMeasurmentData: async (req, res, next) => {
-        try {
-            const { id } = req.params
-
-            const measurmentData = await measurmentServices.oneMeasurmentData(id)
-
-            if (!measurmentData.length) throw createError.NotFound("ENTER VALID ID..")
-            if (measurmentData.active === false) throw createError.NotFound("measurmentData not found...")
-
-            res.status(200).send({
-                success: true,
-                message: "Measurment Data...",
-                data: measurmentData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
     particularBodyPart: async (req, res, next) => {
         try {
             const { bodyPartId } = req.params
 
             const measurmentData = await measurmentServices.findByParticularBodyPart({ bodyPartId })
-            if (!measurmentData.length) throw createError.NotFound("ENTER VALID ID..")
+            if (!measurmentData.length) throw createError.NotFound("The bodyPartId with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(200).send({
@@ -72,7 +69,6 @@ module.exports = {
             next(error)
         }
     },
-
     particularBodyPartByDate: async (req, res, next) => {
         try {
             const { bodyPartId } = req.params
@@ -81,7 +77,7 @@ module.exports = {
             const measurmentData = await measurmentServices.
                 findByParticularBodyPartByDate(bodyPartId, req_data.startDate, req_data.endDate)
 
-            if (measurmentData.length === 0) throw createError.NotFound("ENTER VALID ID..")
+            if (measurmentData.length === 0) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
             if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(200).send({
@@ -93,13 +89,12 @@ module.exports = {
             next(error)
         }
     },
-
     deleteMeasurmentData: async (req, res, next) => {
         try {
             const { id } = req.params
 
             const measurmentData = await measurmentServices.deleteMeasurmentData(id)
-            if (!measurmentData) throw createError.NotFound("ENTER VALID ID..")
+            if (!measurmentData) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,

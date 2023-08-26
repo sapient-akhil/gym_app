@@ -5,7 +5,44 @@ const fs = require("fs")
 const { exercisesServices } = require("../../services/index")
 
 module.exports = {
-    exercisesCreate: async (req, res, next) => {
+
+    allExercises: async (req, res, next) => {
+        try {
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+
+            const exercises = await exercisesServices.findAllExercisesData(page, perPage, search)
+            if (exercises.length === 0) throw createError.NotFound("Not found exercises..")
+
+            res.status(201).send({
+                success: true,
+                message: "get Exercises",
+                data: exercises
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    oneExercise: async (req, res, next) => {
+        try {
+
+            const { id } = req.params
+
+            const exerciseData = await exercisesServices.findByExercisesId(id)
+            if (!exerciseData.length) throw createError.NotFound("The exerciseData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (exerciseData.active === false) throw createError.NotFound("exercise not found...")
+
+            res.status(201).send({
+                success: true,
+                message: "get one exercise",
+                data: exerciseData
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createUpdateExercise: async (req, res, next) => {
         try {
             const req_data = req.body
             const array = JSON.parse(req_data.muscles);
@@ -20,7 +57,7 @@ module.exports = {
                 const file = req.files.photo
 
                 const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-                if (!filePath) throw createError.NotFound("check the path..")
+                if (!filePath) throw createError.NotFound("check the path when photo is upload ..")
 
                 console.log(filePath)
                 if (existExercisesName) {
@@ -53,51 +90,13 @@ module.exports = {
             next(error)
         }
     },
-
-    allExercises: async (req, res, next) => {
-        try {
-            const page = parseInt(req.query.page || 1);
-            const perPage = 3
-            const search = req.query.search
-
-            const exercises = await exercisesServices.findAllExercisesData(page, perPage, search)
-            if (exercises.length === 0) throw createError.NotFound("Not found exercises..")
-
-            res.status(201).send({
-                success: true,
-                message: "get Exercises",
-                data: exercises
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
-
-    oneExercise: async (req, res, next) => {
-        try {
-
-            const { id } = req.params
-
-            const exerciseData = await exercisesServices.findByExercisesId(id)
-            if (!exerciseData.length) throw createError.NotFound("ENTER VALID ID..")
-            if (exerciseData.active === false) throw createError.NotFound("exercise not found...")
-
-            res.status(201).send({
-                success: true,
-                message: "get one exercise",
-                data: exerciseData
-            })
-        } catch (error) {
-            next(error)
-        }
-    },
     deleteExercise: async (req, res, next) => {
         try {
 
             const { id } = req.params
 
-            const exerciseData = await exercisesModel.findByIdAndUpdate(id, { active: false })
-            if (!exerciseData) throw createError.NotFound("ENTER VALID ID..")
+            const exerciseData = await exercisesModel.findByIdAndUpdate(id)
+            if (!exerciseData) throw createError.NotFound("The exerciseData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,
