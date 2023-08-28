@@ -11,12 +11,13 @@ module.exports = {
             const req_data = req.body;
 
             const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
+            console.log(existEmail)
             if (!existEmail) throw createError.Conflict("mobilenumber or email is wrong")
 
             const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
             if (!existMobileNumber) throw createError.Conflict("mobilenumber or email is wrong")
 
-            const accessToken = await signAccessToken(existEmail._id,existEmail.role,existEmail.name);
+            const accessToken = await signAccessToken(existEmail.role,existEmail.name);
 
             res.status(201).send({
                 success: true,

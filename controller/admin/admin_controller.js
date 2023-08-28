@@ -68,9 +68,9 @@ module.exports = {
             const email = req_data.email
             const mobilenumber = req_data.mobilenumber
 
-            const existingClient = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
+            const existingAdmin = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
 
-            if (!existingClient) {
+            if (!existingAdmin) {
                 const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
                 if (existEmail) {
                     throw createError.Conflict("Email already exists");
@@ -136,6 +136,71 @@ module.exports = {
                 message: "admin delete successfully",
                 data: admin
             })
+        } catch (error) {
+            next(error)
+        }
+    },
+    checkSuperAdmin: async (req, res, next) => {
+        try {
+
+            const req_data = req.body
+            const admin = await trainerServices.findSuperAdminExistOrNOt(req_data.role)
+            if (!admin) throw createError.NotFound("no any superAdmin is present.")
+
+            res.status(201).send({
+                success: true,
+                message: "get superAdmin",
+                data: admin
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    createSuperAdmin: async (req, res, next) => {
+
+        try {
+            const req_data = req.body;
+
+            const superAdmin = await trainerServices.findSuperAdminExistOrNOt(req_data.role)
+            if (superAdmin) {
+                throw createError.Conflict("superAdmin is already exist");
+            }
+            const existingSuperAdmin = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
+
+            if (!existingSuperAdmin) {
+                const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
+                if (existEmail) {
+                    throw createError.Conflict("Email already exists");
+                }
+                const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber);
+                if (existMobileNumber) {
+                    throw createError.Conflict("mobileNumber already exists");
+                }
+            }
+            if (req.files && req.files.profilePhoto) {
+                const file = req.files.profilePhoto
+
+                const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
+                if (!filePath) throw createError.NotFound("check the path when image is upload..")
+
+                file.mv(filePath, err => {
+                    if (err) return res.status(500).send(err)
+                })
+
+                req_data.profilePhoto = filePath
+            }
+            const array = JSON.parse(req_data.certifications);
+            req_data.certifications = array
+
+            req_data.contactdetails = { email: req_data.email, mobilenumber: req_data.mobilenumber }
+
+            const superAdminData = await trainerServices.createSuperAdmin(req_data)
+            res.status(201).send({
+                success: true,
+                message: "superAdmin created successfully",
+                data: superAdminData,
+            });
+
         } catch (error) {
             next(error)
         }

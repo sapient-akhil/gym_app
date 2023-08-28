@@ -75,4 +75,14 @@ module.exports = {
             );
         });
     },
+    findSuperAdminExistOrNOt: async () => {
+        return new Promise(async (resolve) => {
+            return resolve(await trainerModel.countDocuments({ role: "superadmin" }));
+        });
+    },
+    createSuperAdmin: async (req_data) => {
+        return new Promise(async (resolve) => {
+            return resolve(await trainerModel.insertMany({ role: "superadmin", ...req_data }));
+        });
+    }
 }

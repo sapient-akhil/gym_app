@@ -3,10 +3,10 @@ const createError = require('http-errors')
 
 module.exports = {
 
-    signAccessToken: (_id,role, name) => {
+    signAccessToken: (role, name) => {
         return new Promise((resolve, reject) => {
-            const payload = { _id,role, name }
-            const secret = process.env.TOKEN_SECRET
+            const payload = { role, name }
+            const secret = process.env.JWT_SECRET_KEY
             const options = {
                 expiresIn: 900
             }
@@ -26,7 +26,7 @@ module.exports = {
         const authHeader = req.headers['authorization']
         const bearerToken = authHeader.split(' ')
         const token = bearerToken[1]
-        JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+        JWT.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
             if (err) {
                 return next(createError.Unauthorized(err.message));
             }
@@ -46,13 +46,34 @@ module.exports = {
         const authHeader = req.headers['authorization']
         const bearerToken = authHeader.split(' ')
         const token = bearerToken[1]
-        JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+        JWT.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
             if (err) {
                 return next(createError.Unauthorized(err.message));
             }
 
             if (payload.role !== 'trainer') {
                 const message = 'Only trainers can access this route';
+                return next(createError.Unauthorized(message));
+            }
+
+            req.payload = payload;
+            console.log(payload);
+            next();
+        })
+    },
+
+    verifyAccessTokenforSuperAdmin: (req, res, next) => {
+        if (!req.headers['authorization']) return next(createError.Unauthorized())
+        const authHeader = req.headers['authorization']
+        const bearerToken = authHeader.split(' ')
+        const token = bearerToken[1]
+        JWT.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
+            if (err) {
+                return next(createError.Unauthorized(err.message));
+            }
+
+            if (payload.role !== 'superadmin') {
+                const message = 'Only superadmin can access this route';
                 return next(createError.Unauthorized(message));
             }
 
