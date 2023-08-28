@@ -6,7 +6,7 @@ module.exports = {
     signAccessToken: (_id,role, name) => {
         return new Promise((resolve, reject) => {
             const payload = { _id,role, name }
-            const secret = process.env.USER_ACCESS_TOKEN_SECRET
+            const secret = process.env.TOKEN_SECRET
             const options = {
                 expiresIn: 900
             }
@@ -26,7 +26,7 @@ module.exports = {
         const authHeader = req.headers['authorization']
         const bearerToken = authHeader.split(' ')
         const token = bearerToken[1]
-        JWT.verify(token, process.env.USER_ACCESS_TOKEN_SECRET, (err, payload) => {
+        JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
             if (err) {
                 return next(createError.Unauthorized(err.message));
             }
@@ -46,7 +46,7 @@ module.exports = {
         const authHeader = req.headers['authorization']
         const bearerToken = authHeader.split(' ')
         const token = bearerToken[1]
-        JWT.verify(token, process.env.USER_ACCESS_TOKEN_SECRET, (err, payload) => {
+        JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
             if (err) {
                 return next(createError.Unauthorized(err.message));
             }
