@@ -1,7 +1,5 @@
-const workOutModel = require("../../services/workOut/workOut.model")
 const createError = require("http-errors")
 const { workOutServices } = require("../../services/index")
-const path = require("path")
 
 module.exports = {
 
@@ -47,9 +45,7 @@ module.exports = {
             const { id } = req.params
 
             const workOutData = await workOutServices.findByWorkOutId(id)
-
             if (!workOutData) throw createError.NotFound("The workOutData with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (workOutData.active === false) throw createError.NotFound("workOut not found...")
 
             res.status(201).send({
                 success: true,

@@ -5,7 +5,7 @@ module.exports = {
     findAllWorkOutData: async () => {
         return new Promise(async (resolve) => {
             return resolve(
-                await workOutModel.find()
+                await workOutModel.find({active: true})
                     .populate("client_id",{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("trainer_id",{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("workOut.exercises_id",{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
@@ -15,7 +15,7 @@ module.exports = {
     findByWorkOutId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await workOutModel.findOne({ _id: id })
+                await workOutModel.findOne({ _id: id,active: true })
                     .populate("client_id",{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("trainer_id",{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("workOut.exercises_id",{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
@@ -27,7 +27,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientModel.findOne(
-                    { _id: client_id },
+                    { _id: client_id,active: true },
                     {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );

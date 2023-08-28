@@ -5,8 +5,8 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await unitModel.find(
-                    {},
-                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
+                    { active: true },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -15,8 +15,8 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await unitModel.findOne(
-                    { unit },
-                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
+                    { unit, active: true },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -25,19 +25,19 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await unitModel.find(
-                    { _id: id },
-                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
+                    { _id: id, active: true },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
     },
-    updateUnitData: async (unit,req_data) => {
+    createUpdateUnitData: async (unit, req_data) => {
         return new Promise(async (resolve) => {
-            await unitModel.updateOne({ unit }, {...req_data},{ upsert: true });
+            await unitModel.updateOne({ unit }, { ...req_data }, { upsert: true });
             return resolve(
                 await unitModel.find(
                     { unit },
-                    {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
@@ -48,7 +48,7 @@ module.exports = {
             return resolve(
                 await unitModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0,_id:0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });

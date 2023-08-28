@@ -1,4 +1,3 @@
-const measurmentModel = require("../../services/measurment/measurment.model")
 const createError = require("http-errors")
 const { measurmentServices } = require("../../services/index")
 
@@ -20,9 +19,7 @@ module.exports = {
             const { id } = req.params
 
             const measurmentData = await measurmentServices.oneMeasurmentData(id)
-
             if (!measurmentData.length) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (measurmentData.active === false) throw createError.NotFound("measurmentData not found...")
 
             res.status(200).send({
                 success: true,
@@ -41,7 +38,7 @@ module.exports = {
             if (!existBodyPartId) {
                 throw createError.Conflict("no any bodyPart with this bodyPartId");
             }
-            const measurmentData = await measurmentServices.updateMeasurmentData(req_data.bodyPartId, req_data.unitValue, req_data)
+            const measurmentData = await measurmentServices.createUpdateMeasurmentData(req_data.bodyPartId, req_data.unitValue, req_data)
             console.log("measurmentData", measurmentData)
             res.status(201).send({
                 success: true,
@@ -58,7 +55,6 @@ module.exports = {
 
             const measurmentData = await measurmentServices.findByParticularBodyPart({ bodyPartId })
             if (!measurmentData.length) throw createError.NotFound("The bodyPartId with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(200).send({
                 success: true,
@@ -74,11 +70,9 @@ module.exports = {
             const { bodyPartId } = req.params
             const req_data = req.body
 
-            const measurmentData = await measurmentServices.
-                findByParticularBodyPartByDate(bodyPartId, req_data.startDate, req_data.endDate)
+            const measurmentData = await measurmentServices.findByParticularBodyPartByDate(bodyPartId, req_data.startDate, req_data.endDate)
 
             if (measurmentData.length === 0) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (measurmentData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(200).send({
                 success: true,

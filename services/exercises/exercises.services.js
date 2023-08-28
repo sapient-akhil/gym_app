@@ -24,7 +24,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await exercisesModel.find(
-                    { _id: id },
+                    { _id: id, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
@@ -34,7 +34,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await exercisesModel.findOne(
-                    { exercisesName },
+                    { exercisesName, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );

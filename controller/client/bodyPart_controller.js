@@ -1,4 +1,3 @@
-const bodyPartModel = require("../../services/bodyPart/bodyPart.model")
 const createError = require("http-errors")
 const { bodyPartServices } = require("../../services/index")
 
@@ -23,7 +22,6 @@ module.exports = {
 
             const bodyPartData = await bodyPartServices.findByBodyPartId(id)
              if (!bodyPartData) throw createError.NotFound("The bodyPartData with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (bodyPartData.active === false) throw createError.NotFound("bodyPart not found...")
 
             res.status(201).send({
                 success: true,
@@ -42,11 +40,11 @@ module.exports = {
             if (!existUnitId) {
                 throw createError.Conflict("no any unit with this unitId");
             }
-            const bodyPartData = await bodyPartServices.updateBodyPartData(req_data.unitId, req_data.bodyPart, req_data)
+            const bodyPartData = await bodyPartServices.createUpdateBodyPartData(req_data.unitId, req_data.bodyPart, req_data)
 
             res.status(201).send({
                 success: true,
-                message: "bodyPart is created...",
+                message: "bodyPart is loaded...",
                 data: bodyPartData
             })
         } catch (error) {

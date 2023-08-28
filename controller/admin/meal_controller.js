@@ -1,5 +1,3 @@
-const mealPlanModel = require("../../services/mealPlan/mealPlan.model")
-const mealItemsModel = require("../../services/exercises/exercises.model")
 const createError = require("http-errors")
 const { mealPlanServices } = require("../../services/index")
 
@@ -7,7 +5,7 @@ module.exports = {
     allMealPlan: async (req, res, next) => {
         try {
 
-            const mealPlans = await mealPlanServices.findAllMealPlanData({ active: true })
+            const mealPlans = await mealPlanServices.findAllMealPlanData()
                 
             res.status(201).send({
                 success: true,
@@ -25,7 +23,6 @@ module.exports = {
 
             const mealPlan = await mealPlanServices.findByMealPlanId(id)
             if (!mealPlan.length) throw createError.NotFound("The mealPlan with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (mealPlan.active === false) throw createError.NotFound("mealPlan not found...")
 
             res.status(201).send({
                 success: true,
@@ -75,12 +72,12 @@ module.exports = {
             req_data.eveningSnack = array3
             req_data.dinner = array4
 
-            const savedMealPlan = await mealPlanServices.updateMealPlanData(req_data.clientId, req_data);
+            const mealPlan = await mealPlanServices.createUpdateMealPlanData(req_data.clientId, req_data);
 
             res.status(201).send({
                 success: true,
-                message: "mealPlan is created...",
-                data: savedMealPlan
+                message: "mealPlan is loaded...",
+                data: mealPlan
             })
         } catch (error) {
             next(error)

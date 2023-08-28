@@ -1,4 +1,3 @@
-const mealItemsModel = require("../../services/mealItems/mealItems.model")
 const createError = require("http-errors")
 const { mealItemsServices } = require("../../services/index")
 
@@ -15,7 +14,7 @@ module.exports = {
 
             res.status(201).send({
                 success: true,
-                message: "get mealItems",
+                message: "get all mealItems",
                 data: mealItems
             })
         } catch (error) {
@@ -29,11 +28,10 @@ module.exports = {
 
             const itemData = await mealItemsServices.findByMealItemId(id)
             if (!itemData.length) throw createError.NotFound("The itemData with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (itemData.active === false) throw createError.NotFound("item not found...")
 
             res.status(201).send({
                 success: true,
-                message: "get one mealItems",
+                message: "get one mealItem",
                 data: itemData
             })
         } catch (error) {
@@ -51,11 +49,11 @@ module.exports = {
             if (existMealItems) {
                 throw createError.Conflict("existMealItems already exists");
             }
-            const item = await mealItemsServices.updateMealItemData(req_data.mealItem, req_data)
+            const item = await mealItemsServices.createUpdateMealItemData(req_data.mealItem, req_data)
 
             res.status(201).send({
                 success: true,
-                message: "mealItems is created...",
+                message: "mealItems is loaded...",
                 data: item
             })
         } catch (error) {

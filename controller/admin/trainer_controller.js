@@ -1,4 +1,3 @@
-const trainerModel = require("../../services/trainer/trainer.model");
 const path = require("path")
 const createError = require("http-errors")
 const { signAccessToken } = require("../../helper/token")
@@ -11,13 +10,13 @@ module.exports = {
             const req_data = req.body;
 
             const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
-            console.log(existEmail)
+            console.log("existEmail", existEmail)
             if (!existEmail) throw createError.Conflict("mobilenumber or email is wrong")
 
             const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
             if (!existMobileNumber) throw createError.Conflict("mobilenumber or email is wrong")
 
-            const accessToken = await signAccessToken(existEmail.role,existEmail.name);
+            const accessToken = await signAccessToken(existEmail.role, existEmail.name);
 
             res.status(201).send({
                 success: true,
@@ -50,14 +49,13 @@ module.exports = {
 
             const { id } = req.params
 
-            const adminData = await trainerServices.findByTrainerId(id)
-            if (!adminData) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (adminData.active === false) throw createError.NotFound("this trainer is deleted...")
+            const trainerData = await trainerServices.findByTrainerId(id)
+            if (!trainerData) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
                 success: true,
                 message: "get one trainer",
-                data: adminData
+                data: trainerData
             })
         } catch (error) {
             next(error)
@@ -70,9 +68,9 @@ module.exports = {
             const email = req_data.email
             const mobilenumber = req_data.mobilenumber
 
-            const existingClient = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
+            const existingTrainer = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
 
-            if (!existingClient) {
+            if (!existingTrainer) {
                 const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
                 if (existEmail) {
                     throw createError.Conflict("Email already exists");
@@ -89,15 +87,15 @@ module.exports = {
                 if (!filePath) throw createError.NotFound("check the path when image is upload..")
 
                 console.log(filePath)
-                if (existingClient) {
-                    if (existingClient.profilePhoto) {
-                        fs.unlink(existingClient.profilePhoto, (err) => {
+                if (existingTrainer) {
+                    if (existingTrainer.profilePhoto) {
+                        fs.unlink(existingTrainer.profilePhoto, (err) => {
                             if (err) {
                                 console.error('Error deleting previous image:', err);
                             }
                         });
                     }
-                    existingClient.profilePhoto = filePath;
+                    existingTrainer.profilePhoto = filePath;
                 }
 
                 file.mv(filePath, err => {
@@ -114,12 +112,12 @@ module.exports = {
             const object = { contactdetails: { email, mobilenumber } }
             req_data.contactdetails = object.contactdetails
 
-            const adminData = await trainerServices.updateTrainerData(object.contactdetails.email, object.contactdetails.mobilenumber, req_data)
+            const trainerData = await trainerServices.createUpdateTrainerData(object.contactdetails.email, object.contactdetails.mobilenumber, req_data)
 
             res.status(201).send({
                 success: true,
-                message: "trainer is created...",
-                data: adminData
+                message: "trainer is loaded...",
+                data: trainerData
             })
         } catch (error) {
             next(error)
@@ -141,7 +139,7 @@ module.exports = {
         } catch (error) {
             next(error)
         }
-    }  
+    }
 }
 
 

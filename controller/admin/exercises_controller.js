@@ -1,4 +1,3 @@
-const exercisesModel = require("../../services/exercises/exercises.model")
 const createError = require("http-errors")
 const path = require("path")
 const fs = require("fs")
@@ -31,7 +30,6 @@ module.exports = {
 
             const exerciseData = await exercisesServices.findByExercisesId(id)
             if (!exerciseData.length) throw createError.NotFound("The exerciseData with the provided ID could not be found. Please ensure the ID is correct and try again")
-            if (exerciseData.active === false) throw createError.NotFound("exercise not found...")
 
             res.status(201).send({
                 success: true,
@@ -83,7 +81,7 @@ module.exports = {
 
             res.status(201).send({
                 success: true,
-                message: "exercises is created...",
+                message: "exercises is loaded...",
                 data: exerciseData
             })
         } catch (error) {

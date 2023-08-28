@@ -1,4 +1,3 @@
-const clientModel = require("../../services/client/client_model");
 const bcrypt = require("bcrypt");
 const createError = require("http-errors")
 const {clientServices} = require("../../services/index")

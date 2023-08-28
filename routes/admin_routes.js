@@ -19,7 +19,7 @@ router.delete("/delete-admin/:id", verifyAccessTokenforSuperAdmin, Validators.fo
 const trainerController = require("../controller/admin/trainer_controller")
 
 router.post("/trainer-login", Validators.forReqBody(Schema.loginSchema), trainerController.trainerLogin)
-router.post("/create-update-trainer", Validators.forReqBody(Schema.trainerSchema), trainerController.createUpdateTrainerByAdmin)
+router.post("/create-update-trainer",verifyAccessTokenforAdmin, Validators.forReqBody(Schema.trainerSchema), trainerController.createUpdateTrainerByAdmin)
 router.get("/all-trainer", verifyAccessTokenforAdmin, trainerController.allTrainer)
 router.get("/one-trainer/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), trainerController.oneTrainer)
 router.delete("/delete-trainer/:id", verifyAccessTokenforAdmin, Validators.forParams(Schema.params), trainerController.deleteTrainerByAdmin)

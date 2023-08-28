@@ -24,7 +24,7 @@ module.exports = {
     findByMealItemId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealItemModel.find({ _id: id }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await mealItemModel.find({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
@@ -34,13 +34,13 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await mealItemModel.findOne(
-                    { mealItem },
+                    { mealItem, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
     },
-    updateMealItemData: async (mealItem, req_data) => {
+    createUpdateMealItemData: async (mealItem, req_data) => {
         return new Promise(async (resolve) => {
             await mealItemModel.updateOne({ mealItem }, { ...req_data }, { upsert: true });
             return resolve(

@@ -5,8 +5,8 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientModel.findOne(
-                    { email },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
+                    { email, active: true },
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             )
         });
@@ -15,7 +15,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientModel.findOne(
-                    { mobilenumber },
+                    { mobilenumber, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
@@ -25,7 +25,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientModel.findOne(
-                    { email, mobilenumber },
+                    { email, mobilenumber, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
@@ -55,13 +55,13 @@ module.exports = {
     findByClientId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await clientModel.find({ _id: id },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
+                await clientModel.find({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
                     .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
             );
         });
     },
-    updateClientData: async (email, mobilenumber, req_data) => {
+    createUpdateClientData: async (email, mobilenumber, req_data) => {
         return new Promise(async (resolve) => {
             await clientModel.updateOne({ email, mobilenumber }, { ...req_data }, { upsert: true });
             return resolve(
@@ -78,7 +78,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0,_id:0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
                 )
             );
         });

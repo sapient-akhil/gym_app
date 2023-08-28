@@ -5,7 +5,7 @@ module.exports = {
     findAllMeasurmentData: async () => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find()
+                await measurmentModel.find({ active: true })
                     .populate({
                         path: "bodyPartId",
                         populate: {
@@ -22,7 +22,7 @@ module.exports = {
     oneMeasurmentData: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ _id: id },{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
+                await measurmentModel.find({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
                     .populate({
                         path: "bodyPartId",
                         populate: {
@@ -38,7 +38,7 @@ module.exports = {
     findByParticularBodyPart: async (bodyPartId) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find(bodyPartId,{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await measurmentModel.find(bodyPartId, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0, active: true })
                     .populate({
                         path: "bodyPartId",
                         populate: {
@@ -51,10 +51,10 @@ module.exports = {
             );
         });
     },
-    findByParticularBodyPartByDate: async (bodyPartId,startDate,endDate) => {
+    findByParticularBodyPartByDate: async (bodyPartId, startDate, endDate) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate }},{ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate } }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0, active: true })
                     .populate({
                         path: "bodyPartId",
                         populate: {
@@ -72,13 +72,13 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await bodyPartModel.findOne(
-                    { _id: bodyPartId },
+                    { _id: bodyPartId, active: true },
                     { select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 } }
                 )
             );
         });
     },
-    updateMeasurmentData: async (bodyPartId, unitValue, req_data) => {
+    createUpdateMeasurmentData: async (bodyPartId, unitValue, req_data) => {
         return new Promise(async (resolve) => {
             await measurmentModel.updateOne({ bodyPartId, unitValue }, { ...req_data }, { upsert: true });
             return resolve(
@@ -95,7 +95,7 @@ module.exports = {
             return resolve(
                 await measurmentModel.findOne(
                     { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0,__id:0 }
+                    { createdAt: 0, updatedAt: 0, __v: 0, __id: 0 }
                 )
             );
         });

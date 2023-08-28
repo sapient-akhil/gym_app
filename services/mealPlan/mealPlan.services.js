@@ -5,7 +5,7 @@ module.exports = {
     findAllMealPlanData: async () => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealPlanModel.find()
+                await mealPlanModel.find({active: true})
                     .populate("clientId", { active: 0, createdAt: 0, updatedAt: 0, __v: 0, _id: 0 })
                     .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
                     .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
@@ -20,7 +20,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientmodel.findOne(
-                    { clientId },
+                    { clientId, active: true },
                     {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
             );
         });
@@ -29,7 +29,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await clientmodel.findOne(
-                    { clientId },
+                    { clientId, active: true },
                     {createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0}
                 )
             );
@@ -38,7 +38,7 @@ module.exports = {
     findByMealPlanId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealPlanModel.find({ _id: id },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
+                await mealPlanModel.find({ _id: id, active: true },{createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0})
                     .populate("clientId", { active: 0, createdAt: 0, updatedAt: 0, __v: 0, _id: 0 })
                     .populate("breakFast.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
                     .populate("morningSnack.mealItemsId", { mealItem: 1, calary: 1, description: 1, ingredients: 1, _id: 0 })
@@ -49,7 +49,7 @@ module.exports = {
             );
         });
     },
-    updateMealPlanData: async (clientId, req_data) => {
+    createUpdateMealPlanData: async (clientId, req_data) => {
         return new Promise(async (resolve) => {
             await mealPlanModel.updateOne({ clientId }, { ...req_data }, { upsert: true });
             return resolve(

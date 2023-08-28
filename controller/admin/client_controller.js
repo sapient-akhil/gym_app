@@ -1,8 +1,6 @@
-const clientModel = require("../../services/trainer/trainer.services");
 const bcrypt = require("bcrypt");
 const createError = require("http-errors")
 const { clientServices } = require("../../services/index");
-const trainer_controller = require("./trainer_controller");
 
 module.exports = {
 
@@ -31,9 +29,7 @@ module.exports = {
             const { id } = req.params
 
             const clientData = await clientServices.findByClientId(id)
-
             if (!clientData.length) throw createError.NotFound("The client data with the provided ID could not be found. Please ensure the ID is correct and try again.")
-            if (clientData.active === false) throw createError.NotFound("client not found...")
 
             res.status(201).send({
                 success: true,
@@ -70,11 +66,11 @@ module.exports = {
             const idd = { trainer_id: id }
             req_data.trainer_id = idd.trainer_id
 
-            const clientData = await clientServices.updateClientData(req_data.email, req_data.mobilenumber, req_data)
+            const clientData = await clientServices.createUpdateClientData(req_data.email, req_data.mobilenumber, req_data)
             console.log(clientData)
             res.status(201).send({
                 success: true,
-                message: "client is created...",
+                message: "client is loaded...",
                 data: clientData
             })
         } catch (error) {

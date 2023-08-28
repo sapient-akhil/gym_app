@@ -6,7 +6,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.findOne(
-                    { "contactdetails.email": email },
+                    { "contactdetails.email": email, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             )
@@ -17,7 +17,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.findOne(
-                    { "contactdetails.mobilenumber": mobilenumber },
+                    { "contactdetails.mobilenumber": mobilenumber, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
@@ -27,7 +27,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.find(
-                    {},
+                    { active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
@@ -37,7 +37,7 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.findOne(
-                    { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber },
+                    { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
@@ -47,13 +47,13 @@ module.exports = {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.findOne(
-                    { _id: id },
+                    { _id: id, active: true },
                     { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
                 )
             );
         });
     },
-    updateTrainerData: async (email, mobilenumber, req_data) => {
+    createUpdateTrainerData: async (email, mobilenumber, req_data) => {
         return new Promise(async (resolve) => {
             await trainerModel.updateOne({ "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber }, { ...req_data }, { upsert: true });
             return resolve(
@@ -80,7 +80,7 @@ module.exports = {
             return resolve(await trainerModel.countDocuments({ role: "superadmin" }));
         });
     },
-    createSuperAdmin: async (req_data) => {
+    createUpdateSuperAdmin: async (req_data) => {
         return new Promise(async (resolve) => {
             return resolve(await trainerModel.insertMany({ role: "superadmin", ...req_data }));
         });

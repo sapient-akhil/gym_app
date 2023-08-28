@@ -32,12 +32,12 @@ module.exports = {
     allAdmin: async (req, res, next) => {
         try {
 
-            const admin = await trainerServices.findAllTrainerData()
+            const adminData = await trainerServices.findAllTrainerData()
 
             res.status(201).send({
                 success: true,
                 message: "get all adminData",
-                data: admin
+                data: adminData
             })
         } catch (error) {
             next(error)
@@ -50,7 +50,6 @@ module.exports = {
 
             const adminData = await trainerServices.findByTrainerId(id)
             if (!adminData.length) throw createError.NotFound("The admin data with the provided ID could not be found. Please ensure the ID is correct and try again.")
-            if (adminData.active === false) throw createError.NotFound("admin not found...")
 
             res.status(201).send({
                 success: true,
@@ -87,15 +86,15 @@ module.exports = {
                 if (!filePath) throw createError.NotFound("check the path when image is upload..")
 
                 console.log(filePath)
-                if (existingClient) {
-                    if (existingClient.profilePhoto) {
-                        fs.unlink(existingClient.profilePhoto, (err) => {
+                if (existingAdmin) {
+                    if (existingAdmin.profilePhoto) {
+                        fs.unlink(existingAdmin.profilePhoto, (err) => {
                             if (err) {
                                 console.error('Error deleting previous image:', err);
                             }
                         });
                     }
-                    existingClient.profilePhoto = filePath;
+                    existingAdmin.profilePhoto = filePath;
                 }
 
                 file.mv(filePath, err => {
@@ -112,11 +111,11 @@ module.exports = {
             const object = { contactdetails: { email, mobilenumber } }
             req_data.contactdetails = object.contactdetails
 
-            const adminData = await trainerServices.updateTrainerData(object.contactdetails.email, object.contactdetails.mobilenumber, req_data)
+            const adminData = await trainerServices.createUpdateTrainerData(object.contactdetails.email, object.contactdetails.mobilenumber, req_data)
 
             res.status(201).send({
                 success: true,
-                message: "admin is created...",
+                message: "admin is loaded...",
                 data: adminData
             })
         } catch (error) {
@@ -194,7 +193,7 @@ module.exports = {
 
             req_data.contactdetails = { email: req_data.email, mobilenumber: req_data.mobilenumber }
 
-            const superAdminData = await trainerServices.createSuperAdmin(req_data)
+            const superAdminData = await trainerServices.createUpdateSuperAdmin(req_data)
             res.status(201).send({
                 success: true,
                 message: "superAdmin created successfully",
