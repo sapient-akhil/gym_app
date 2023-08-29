@@ -4,8 +4,10 @@ const { mealPlanServices } = require("../../services/index")
 module.exports = {
     allMealPlan: async (req, res, next) => {
         try {
-
-            const mealPlans = await mealPlanServices.findAllMealPlanData()
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+            const mealPlans = await mealPlanServices.findAllMealPlanData(page, perPage, search)
                 
             res.status(201).send({
                 success: true,

@@ -1,4 +1,5 @@
 const mealItemModel = require("./mealItems.model")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
     findAllMealItemData: async (page, perPage, search) => {
@@ -13,10 +14,10 @@ module.exports = {
                                 { ingredients: { $regex: search, $options: 'i' } },
                                 { calary: { $regex: search, $options: 'i' } }
                             ]
-                    } : { active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    } : { active: true }, projectionFields)
                     .limit(perPage * 1)
                     .skip((page - 1) * perPage)
-                    .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .populate("trainer_id", projectionFields)
                     .exec()
             );
         });
@@ -24,9 +25,9 @@ module.exports = {
     findByMealItemId: async (id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await mealItemModel.find({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-                    .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-                    .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await mealItemModel.find({ _id: id, active: true }, projectionFields)
+                    .populate("trainer_id", projectionFields)
+                    .select(projectionFields)
             );
         });
     },
@@ -35,7 +36,7 @@ module.exports = {
             return resolve(
                 await mealItemModel.findOne(
                     { mealItem, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
@@ -46,18 +47,18 @@ module.exports = {
             return resolve(
                 await mealItemModel.find(
                     { mealItem },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    deleteMealItemData: async (id) => {
+    deleteMealItemData: async (_id) => {
         return new Promise(async (resolve) => {
-            await mealItemModel.updateOne({ _id: id }, { active: false });
+            await mealItemModel.updateOne({ _id }, { active: false });
             return resolve(
                 await mealItemModel.findOne(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id },
+                    projectionFields
                 )
             );
         });

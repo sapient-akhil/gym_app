@@ -5,8 +5,10 @@ const { workOutServices } = require("../../services/index")
 module.exports = {
     allWorkOut: async (req, res, next) => {
         try {
-
-            const allWorkOut = await workOutServices.findAllWorkOutData()
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+            const allWorkOut = await workOutServices.findAllWorkOutData(search,perPage,page)
 
             res.status(201).send({
                 success: true,

@@ -1,18 +1,23 @@
-const bodyPartModel = require("./bodyPart.model")
+const bodyPartModel = require("./bodypart.model")
 const unitModel = require("../unit/unit.model")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
-    findAllBodyPartData: async () => {
+    findAllBodyPartData: async (search, page, perPage) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await bodyPartModel.find({ active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }).populate("unitId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-            );
+                await bodyPartModel.find(search ? { active: true, bodyPart: { $regex: search, $options: 'i' } } : { active: true })
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
+                    .select(projectionFields)
+                    .populate("unitId", projectionFields)
+            )
         });
     },
-    findByBodyPartId: async (id) => {
+    findByBodyPartId: async (_id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await bodyPartModel.findOne({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }).populate("unitId", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await bodyPartModel.findOne({ _id, active: true }, projectionFields).populate("unitId", projectionFields)
             );
         });
     },
@@ -21,7 +26,7 @@ module.exports = {
             return resolve(
                 await unitModel.findOne(
                     { _id: unitId, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
@@ -32,18 +37,18 @@ module.exports = {
             return resolve(
                 await bodyPartModel.find(
                     { unitId, bodyPart },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    deleteBodyPartData: async (id) => {
+    deleteBodyPartData: async (_id) => {
         return new Promise(async (resolve) => {
-            await bodyPartModel.updateOne({ _id: id }, { active: false });
+            await bodyPartModel.updateOne({ _id }, { active: false });
             return resolve(
                 await bodyPartModel.findOne(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id },
+                    projectionFields
                 )
             );
         });

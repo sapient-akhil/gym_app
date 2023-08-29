@@ -4,7 +4,12 @@ const { measurmentServices } = require("../../services/index")
 module.exports = {
     allMeasurmentData: async (req, res, next) => {
         try {
-            const measurmentData = await measurmentServices.findAllMeasurmentData()
+
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+
+            const measurmentData = await measurmentServices.findAllMeasurmentData(page, perPage, search)
             res.status(200).send({
                 success: true,
                 message: "all Measurment Data...",

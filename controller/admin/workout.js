@@ -27,8 +27,11 @@ module.exports = {
     },
     allWorkOut: async (req, res, next) => {
         try {
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
 
-            const allWorkOut = await workOutServices.findAllWorkOutData()
+            const allWorkOut = await workOutServices.findAllWorkOutData(page, perPage, search)
 
             res.status(201).send({
                 success: true,

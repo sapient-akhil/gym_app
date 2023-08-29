@@ -1,36 +1,38 @@
 const measurmentModel = require("./measurment.model")
-const bodyPartModel = require("../bodyPart/bodyPart.model")
+const bodyPartModel = require("../bodyPart/bodypart.model")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
-    findAllMeasurmentData: async () => {
+    findAllMeasurmentData: async (page, perPage, search) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ active: true })
+                await measurmentModel.find(search ? { active: true, unitValue: { $eq: search } } : { active: true })
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
                     .populate({
                         path: "bodyPartId",
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                            select: projectionFields
                         },
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-
+                        select: projectionFields
+                    })
             );
         });
     },
-    oneMeasurmentData: async (id) => {
+    oneMeasurmentData: async (_id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await measurmentModel.find({ _id, active: true }, projectionFields)
                     .populate({
                         path: "bodyPartId",
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                            select: projectionFields
                         },
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                        select: projectionFields
                     })
             );
         });
@@ -38,32 +40,32 @@ module.exports = {
     findByParticularBodyPart: async (bodyPartId) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find(bodyPartId, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0, active: true })
+                await measurmentModel.find(bodyPartId)
                     .populate({
                         path: "bodyPartId",
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                            select: projectionFields
                         },
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    }).sort({ date: 1 })
+                        select: projectionFields
+                    }).sort({ date: 1 }).select(projectionFields)
             );
         });
     },
     findByParticularBodyPartByDate: async (bodyPartId, startDate, endDate) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate } }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0, active: true })
+                await measurmentModel.find({ bodyPartId, date: { $gte: startDate, $lt: endDate } }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: true })
                     .populate({
                         path: "bodyPartId",
                         populate: {
                             path: "unitId",
                             model: "unitModel",
-                            select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                            select: projectionFields
                         },
-                        select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                    }).sort({ date: 1 }).select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                        select: projectionFields
+                    }).sort({ date: 1 }).select(projectionFields)
 
             );
         });
@@ -73,7 +75,7 @@ module.exports = {
             return resolve(
                 await bodyPartModel.findOne(
                     { _id: bodyPartId, active: true },
-                    { select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 } }
+                    { select: projectionFields }
                 )
             );
         });
@@ -84,17 +86,17 @@ module.exports = {
             return resolve(
                 await measurmentModel.find(
                     { bodyPartId, unitValue },
-                    { select: { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 } }
+                    { select: projectionFields }
                 )
             );
         });
     },
-    deleteMeasurmentData: async (id) => {
+    deleteMeasurmentData: async (_id) => {
         return new Promise(async (resolve) => {
-            await measurmentModel.updateOne({ _id: id }, { active: false });
+            await measurmentModel.updateOne({ _id }, { active: false });
             return resolve(
                 await measurmentModel.findOne(
-                    { _id: id },
+                    { _id },
                     { createdAt: 0, updatedAt: 0, __v: 0, __id: 0 }
                 )
             );

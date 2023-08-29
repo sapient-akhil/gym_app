@@ -10,14 +10,11 @@ const bodyParser = require("body-parser")
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get("/", (req, res) => {
+app.all("/", (req, res) => {
     res.send("gym is open...")
 });
-
-app.all('/', (req, res) => { return res.status(200).send("mongodb Connected...") })
-
-app.use("/admin", require("./routes/admin_routes"));
-app.use("/client", require("./routes/client_routes"));
+app.use("/admin", require("./routes/admin.routes"));
+app.use("/client", require("./routes/client.routes"));
 
 app.use(async (req, res, next) => {
     const err = createError.BadRequest("URL not found")

@@ -1,8 +1,10 @@
-const { signAccessToken } = require("../../helper/token")
 const createError = require("http-errors")
 const path = require("path")
 const { trainerServices } = require("../../services/index")
 const fs = require("fs")
+const jwt = require("jsonwebtoken")
+const JWTSecretKey = process.env.JWT_SECRET_KEY;
+
 module.exports = {
 
     adminLogin: async (req, res, next) => {
@@ -16,7 +18,12 @@ module.exports = {
             const existMobileNumber = await trainerServices.findbyTrainerMobileNumber(req_data.mobilenumber)
             if (!existMobileNumber) throw createError.Conflict("mobilenumber or email is wrong")
 
-            const accessToken = await signAccessToken(existEmail.role, existEmail.name);
+            const payload = {
+                role: existEmail.role,
+                name: existEmail.name
+            };
+            
+            const accessToken = jwt.sign(payload, JWTSecretKey, { expiresIn: 86400 });
 
             res.status(201).send({
                 success: true,
@@ -32,7 +39,10 @@ module.exports = {
     allAdmin: async (req, res, next) => {
         try {
 
-            const adminData = await trainerServices.findAllTrainerData()
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+            const adminData = await trainerServices.findAllTrainerData(page, perPage, search)
 
             res.status(201).send({
                 success: true,
@@ -63,9 +73,6 @@ module.exports = {
     createUpdateAdmin: async (req, res, next) => {
         try {
             const req_data = req.body
-
-            const email = req_data.email
-            const mobilenumber = req_data.mobilenumber
 
             const existingAdmin = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
 
@@ -105,13 +112,11 @@ module.exports = {
                 req_data.profilePhoto = photo.profilePhoto
             }
 
-            const array = JSON.parse(req_data.certifications);
-            req_data.certifications = array
+            req_data.certifications = JSON.parse(req_data.certifications);
 
-            const object = { contactdetails: { email, mobilenumber } }
-            req_data.contactdetails = object.contactdetails
+            req_data.contactdetails = { email: req_data.email, mobilenumber: req_data.mobilenumber }
 
-            const adminData = await trainerServices.createUpdateTrainerData(object.contactdetails.email, object.contactdetails.mobilenumber, req_data)
+            const adminData = await trainerServices.createUpdateTrainerData(req_data.contactdetails.email, req_data.contactdetails.mobilenumber, req_data)
 
             res.status(201).send({
                 success: true,
@@ -188,8 +193,7 @@ module.exports = {
 
                 req_data.profilePhoto = filePath
             }
-            const array = JSON.parse(req_data.certifications);
-            req_data.certifications = array
+            req_data.certifications = JSON.parse(req_data.certifications);
 
             req_data.contactdetails = { email: req_data.email, mobilenumber: req_data.mobilenumber }
 

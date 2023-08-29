@@ -4,7 +4,10 @@ const { measurmentServices } = require("../../services/index")
 module.exports = {
     allMeasurmentData: async (req, res, next) => {
         try {
-            const measurmentData = await measurmentServices.findAllMeasurmentData()
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+            const measurmentData = await measurmentServices.findAllMeasurmentData(page, perPage, search)
             res.status(200).send({
                 success: true,
                 message: "Measurment Data...",
@@ -72,7 +75,7 @@ module.exports = {
 
             const measurmentData = await measurmentServices.findByParticularBodyPartByDate(bodyPartId, req_data.startDate, req_data.endDate)
 
-            if (measurmentData.length === 0) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
+            if (!measurmentData.length) throw createError.NotFound("The measurmentData with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(200).send({
                 success: true,

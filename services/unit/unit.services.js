@@ -1,13 +1,15 @@
 const unitModel = require("./unit.model")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
-    findAllUnitData: async () => {
+    findAllUnitData: async (search, page, perPage) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await unitModel.find(
-                    { active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                )
+                await unitModel.find(search ? { active: true, unit: { $regex: search, $options: 'i' }, } : { active: true })
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
+                    .select(projectionFields)
+                    .exec()
             );
         });
     },
@@ -16,17 +18,17 @@ module.exports = {
             return resolve(
                 await unitModel.findOne(
                     { unit, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    findByUnitId: async (id) => {
+    findByUnitId: async (_id) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await unitModel.find(
-                    { _id: id, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    { _id, active: true },
+                    projectionFields
                 )
             );
         });
@@ -37,18 +39,18 @@ module.exports = {
             return resolve(
                 await unitModel.find(
                     { unit },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    deleteUnitData: async (id) => {
+    deleteUnitData: async (_id) => {
         return new Promise(async (resolve) => {
-            await unitModel.updateOne({ _id: id }, { active: false });
+            await unitModel.updateOne({ _id }, { active: false });
             return resolve(
                 await unitModel.findOne(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id },
+                    projectionFields
                 )
             );
         });

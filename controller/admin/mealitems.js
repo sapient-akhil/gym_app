@@ -5,8 +5,8 @@ module.exports = {
 
     allMealItem: async (req, res, next) => {
         try {
-            const page = parseInt({ active: true }, req.query.page || 1);
-            const perPage = 7
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
             const search = req.query.search
 
             const mealItems = await mealItemsServices.findAllMealItemData(page, perPage, search)

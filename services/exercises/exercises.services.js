@@ -1,4 +1,5 @@
 const exercisesModel = require("./exercises.model")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
     findAllExercisesData: async (page, perPage, search) => {
@@ -13,19 +14,19 @@ module.exports = {
                                 { description: { $regex: search, $options: 'i' } },
                                 { videoLink: { $regex: search, $options: 'i' } }
                             ]
-                    } : { active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    } : { active: true },  projectionFields )
                     .limit(perPage * 1)
                     .skip((page - 1) * perPage)
                     .exec()
             );
         });
     },
-    findByExercisesId: async (id) => {
+    findByExercisesId: async (_id) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await exercisesModel.find(
-                    { _id: id, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id, active: true },
+                     projectionFields 
                 )
             );
         });
@@ -35,7 +36,7 @@ module.exports = {
             return resolve(
                 await exercisesModel.findOne(
                     { exercisesName, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                     projectionFields 
                 )
             );
         });
@@ -46,18 +47,18 @@ module.exports = {
             return resolve(
                 await exercisesModel.find(
                     { exercisesName },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                     projectionFields 
                 )
             );
         });
     },
-    deleteExercisesData: async (id) => {
+    deleteExercisesData: async (_id) => {
         return new Promise(async (resolve) => {
-            await exercisesModel.updateOne({ _id: id }, { active: false });
+            await exercisesModel.updateOne({ _id }, { active: false });
             return resolve(
                 await exercisesModel.findOne(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id },
+                     projectionFields 
                 )
             );
         });

@@ -31,8 +31,10 @@ module.exports = {
     },
     allTrainer: async (req, res, next) => {
         try {
-
-            const trainer = await trainerServices.findAllTrainerData()
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+            const trainer = await trainerServices.findAllTrainerData(page,perPage,search)
             if (!trainer) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")
 
             res.status(201).send({
@@ -47,7 +49,7 @@ module.exports = {
     oneTrainer: async (req, res, next) => {
         try {
 
-            const { id } = req.params
+            const  id  = req.params.id
 
             const trainerData = await trainerServices.findByTrainerId(id)
             if (!trainerData) throw createError.NotFound("The trainer with the provided ID could not be found. Please ensure the ID is correct and try again")

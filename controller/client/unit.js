@@ -4,8 +4,11 @@ const { unitServices } = require("../../services/index")
 module.exports = {
     allUnit: async (req, res, next) => {
         try {
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
 
-            const allUnit = await unitServices.findAllUnitData()
+            const allUnit = await unitServices.findAllUnitData(search, page, perPage)
 
             res.status(201).send({
                 success: true,

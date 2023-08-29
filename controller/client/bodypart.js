@@ -4,7 +4,10 @@ const { bodyPartServices } = require("../../services/index")
 module.exports = {
     allBodyPart: async (req, res, next) => {
         try {
-            const getBodyPartData = await bodyPartServices.findAllBodyPartData()
+            const page = parseInt(req.query.page || 1);
+            const perPage = 3
+            const search = req.query.search
+            const getBodyPartData = await bodyPartServices.findAllBodyPartData(search, page, perPage)
 
             res.status(200).send({
                 success: true,

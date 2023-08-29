@@ -1,5 +1,5 @@
 const trainerModel = require("./trainer.model")
-const mongoose = require("mongoose")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
     findbyTrainerEmail: async (email) => {
@@ -7,7 +7,7 @@ module.exports = {
             return resolve(
                 await trainerModel.findOne(
                     { "contactdetails.email": email, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             )
         });
@@ -18,19 +18,28 @@ module.exports = {
             return resolve(
                 await trainerModel.findOne(
                     { "contactdetails.mobilenumber": mobilenumber, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    findAllTrainerData: async () => {
+    findAllTrainerData: async (page, perPage, search) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.find(
-                    { active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
-                )
-            );
+                    search ? {
+                        active: true,
+                        $or:
+                            [
+                                { name: { $regex: search, $options: 'i' } },
+                                { "contactdetails.email": { $regex: search, $options: 'i' } },
+                                { "contactdetails.mobilenumber": { $regex: search, $options: 'i' } }
+                            ]
+                    } : { active: true }, projectionFields)
+                    .limit(perPage * 1)
+                    .skip((page - 1) * perPage)
+                    .exec()
+            )
         });
     },
     emailmobilnumber: async (email, mobilenumber) => {
@@ -38,17 +47,17 @@ module.exports = {
             return resolve(
                 await trainerModel.findOne(
                     { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    findByTrainerId: async (id) => {
+    findByTrainerId: async (_id) => {
         return new Promise(async (resolve) => {
             return resolve(
                 await trainerModel.findOne(
-                    { _id: id, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    { _id, active: true },
+                    projectionFields
                 )
             );
         });
@@ -59,18 +68,18 @@ module.exports = {
             return resolve(
                 await trainerModel.find(
                     { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    deleteTrainerData: async (id) => {
+    deleteTrainerData: async (_id) => {
         return new Promise(async (resolve) => {
-            await trainerModel.updateOne({ _id: id }, { active: false }, { new: true });
+            await trainerModel.updateOne({ _id }, { active: false }, { new: true });
             return resolve(
                 await trainerModel.findOne(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id },
+                    projectionFields
                 )
             );
         });

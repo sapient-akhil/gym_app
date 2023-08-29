@@ -1,5 +1,5 @@
 module.exports = {
-    bodyPartServices: require("./bodyPart/bodyPart.services"),
+    bodyPartServices: require("./bodyPart/bodypart.services"),
     clientServices:require("./client/client.services"),
     exercisesServices:require("./exercises/exercises.services"),
     mealItemsServices:require("./mealItems/mealItems.services"),
@@ -7,6 +7,6 @@ module.exports = {
     measurmentServices:require("./measurment/measurment.services"),
     trainerServices:require("./trainer/trainer.services"),
     unitServices:require("./unit/unit.services"),
-    workOutServices:require("./workOut/workOut.services"),   
+    workOutServices:require("./workOut/workout.services"),   
 }
 

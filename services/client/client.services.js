@@ -1,4 +1,5 @@
-const clientModel = require("./client_model")
+const clientModel = require("./client.model")
+const projectionFields = { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
 
 module.exports = {
     findbyClientEmail: async (email) => {
@@ -6,7 +7,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { email, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             )
         });
@@ -16,7 +17,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { mobilenumber, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
@@ -26,7 +27,7 @@ module.exports = {
             return resolve(
                 await clientModel.findOne(
                     { email, mobilenumber, active: true },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
@@ -46,18 +47,18 @@ module.exports = {
                     } : { active: true })
                     .limit(perPage * 1)
                     .skip((page - 1) * perPage)
-                    .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-                    .populate("trainer_id", { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                    .select(projectionFields)
+                    .populate("trainer_id", projectionFields)
                     .exec()
             );
         });
     },
-    findByClientId: async (id) => {
+    findByClientId: async (_id) => {
         return new Promise(async (resolve) => {
             return resolve(
-                await clientModel.find({ _id: id, active: true }, { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
-                    .populate("trainer_id", ({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }))
-                    .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 })
+                await clientModel.find({ _id, active: true }, projectionFields)
+                    .populate("trainer_id", projectionFields)
+                    .select(projectionFields)
             );
         });
     },
@@ -67,18 +68,18 @@ module.exports = {
             return resolve(
                 await clientModel.find(
                     { email, mobilenumber },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0, active: 0 }
+                    projectionFields
                 )
             );
         });
     },
-    deleteClientData: async (id) => {
+    deleteClientData: async (_id) => {
         return new Promise(async (resolve) => {
-            await clientModel.updateOne({ _id: id }, { active: false });
+            await clientModel.updateOne({ _id }, { active: false });
             return resolve(
                 await clientModel.findOne(
-                    { _id: id },
-                    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 }
+                    { _id },
+                    projectionFields
                 )
             );
         });
