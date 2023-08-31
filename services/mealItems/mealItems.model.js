@@ -9,16 +9,11 @@ const mealItemsModel = new mongoose.Schema({
     mealItem: {
         type: String,
         required: [true, "mealItems are require"],
-        // ref:"mealplans"
     },
     calary: {
         type: String,
         required: [true, "calary are require"]
     },
-    // quantityUnits: {
-    //     type: String,
-    //     require: [true, "quantityUnits are require"]
-    // },
     description: {
         type: String,
         required: [true, "description are require"]

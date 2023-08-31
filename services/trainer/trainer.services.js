@@ -12,7 +12,6 @@ module.exports = {
             )
         });
     },
-
     findbyTrainerMobileNumber: async (mobilenumber) => {
         return new Promise(async (resolve) => {
             return resolve(
@@ -89,9 +88,15 @@ module.exports = {
             return resolve(await trainerModel.countDocuments({ role: "superadmin" }));
         });
     },
-    createUpdateSuperAdmin: async (req_data) => {
+    createUpdateSuperAdmin: async (email, mobilenumber, req_data) => {
         return new Promise(async (resolve) => {
-            return resolve(await trainerModel.insertMany({ role: "superadmin", ...req_data }));
+            await trainerModel.updateOne({ "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber }, { role: "superadmin", ...req_data }, { upsert: true });
+            return resolve(
+                await trainerModel.find(
+                    { "contactdetails.email": email, "contactdetails.mobilenumber": mobilenumber },
+                    projectionFields
+                )
+            );
         });
     }
 }

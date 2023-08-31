@@ -21,7 +21,6 @@ module.exports = {
             next()
         })
     },
-
     verifyAccessTokenforTrainer: (req, res, next) => {
         if (!req.headers['authorization']) return next(createError.Unauthorized())
         const token = req.headers['authorization']
@@ -41,7 +40,6 @@ module.exports = {
             next();
         })
     },
-
     verifyAccessTokenforSuperAdmin: (req, res, next) => {
         if (!req.headers['authorization']) return next(createError.Unauthorized())
         const token = req.headers['authorization']
@@ -61,7 +59,6 @@ module.exports = {
             next();
         })
     }
-
 }
 
 

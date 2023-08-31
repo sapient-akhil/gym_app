@@ -1,7 +1,6 @@
 const createError = require("http-errors")
-const path = require("path")
 const { trainerServices } = require("../../services/index")
-const fs = require("fs")
+const uploadProfilePhoto = require("../../common/image.controller")
 const jwt = require("jsonwebtoken")
 const JWTSecretKey = process.env.JWT_SECRET_KEY;
 
@@ -22,8 +21,8 @@ module.exports = {
                 role: existEmail.role,
                 name: existEmail.name
             };
-            
-            const accessToken = jwt.sign(payload, JWTSecretKey, { expiresIn: 86400 });
+
+            const accessToken = jwt.sign(payload, JWTSecretKey, { expiresIn: 600 });
 
             res.status(201).send({
                 success: true,
@@ -74,9 +73,9 @@ module.exports = {
         try {
             const req_data = req.body
 
-            const existingAdmin = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
+            const roleData = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
 
-            if (!existingAdmin) {
+            if (!roleData) {
                 const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
                 if (existEmail) {
                     throw createError.Conflict("Email already exists");
@@ -86,31 +85,9 @@ module.exports = {
                     throw createError.Conflict("mobileNumber already exists");
                 }
             }
-            if (req.files && req.files.profilePhoto) {
-                const file = req.files.profilePhoto
 
-                const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-                if (!filePath) throw createError.NotFound("check the path when image is upload..")
-
-                console.log(filePath)
-                if (existingAdmin) {
-                    if (existingAdmin.profilePhoto) {
-                        fs.unlink(existingAdmin.profilePhoto, (err) => {
-                            if (err) {
-                                console.error('Error deleting previous image:', err);
-                            }
-                        });
-                    }
-                    existingAdmin.profilePhoto = filePath;
-                }
-
-                file.mv(filePath, err => {
-                    if (err) return res.status(500).send(err)
-                })
-
-                const photo = { profilePhoto: filePath }
-                req_data.profilePhoto = photo.profilePhoto
-            }
+            // IMAGE UPLOAD AND WHEN IMAGE IS UPDATE OLD IMAGE DELETE FUNCTION
+            uploadProfilePhoto(req, res, roleData, req_data);
 
             req_data.certifications = JSON.parse(req_data.certifications);
 
@@ -166,12 +143,10 @@ module.exports = {
             const req_data = req.body;
 
             const superAdmin = await trainerServices.findSuperAdminExistOrNOt(req_data.role)
-            if (superAdmin) {
-                throw createError.Conflict("superAdmin is already exist");
-            }
-            const existingSuperAdmin = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
 
-            if (!existingSuperAdmin) {
+            const roleData = await trainerServices.emailmobilnumber(req_data.email, req_data.mobilenumber)
+
+            if (!roleData) {
                 const existEmail = await trainerServices.findbyTrainerEmail(req_data.email);
                 if (existEmail) {
                     throw createError.Conflict("Email already exists");
@@ -180,24 +155,20 @@ module.exports = {
                 if (existMobileNumber) {
                     throw createError.Conflict("mobileNumber already exists");
                 }
+                if (superAdmin) {
+                    throw createError.Conflict("superAdmin is already exist");
+                }
             }
-            if (req.files && req.files.profilePhoto) {
-                const file = req.files.profilePhoto
 
-                const filePath = path.join(__dirname, "../../uploads", `${Date.now() + '_' + file.name}`)
-                if (!filePath) throw createError.NotFound("check the path when image is upload..")
+            // IMAGE UPLOAD AND WHEN IMAGE IS UPDATE OLD IMAGE DELETE FUNCTION
+            uploadProfilePhoto(req, res, roleData, req_data);
 
-                file.mv(filePath, err => {
-                    if (err) return res.status(500).send(err)
-                })
-
-                req_data.profilePhoto = filePath
-            }
             req_data.certifications = JSON.parse(req_data.certifications);
 
             req_data.contactdetails = { email: req_data.email, mobilenumber: req_data.mobilenumber }
 
-            const superAdminData = await trainerServices.createUpdateSuperAdmin(req_data)
+            const superAdminData = await trainerServices.createUpdateSuperAdmin(req_data.contactdetails.email, req_data.contactdetails.mobilenumber, req_data)
+
             res.status(201).send({
                 success: true,
                 message: "superAdmin created successfully",
