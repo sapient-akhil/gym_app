@@ -24,7 +24,7 @@ const trainerModel = new mongoose.Schema({
         }
     },
     profilePhoto: {
-        type: String,
+        type: Array,
     },
     role: {
         type: String,

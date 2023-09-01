@@ -2,6 +2,7 @@ const createError = require("http-errors")
 const { trainerServices } = require("../../services/index")
 const jwt = require("jsonwebtoken")
 const JWTSecretKey = process.env.JWT_SECRET_KEY;
+const uploadProfilePhoto = require("../../common/image.controller")
 
 module.exports = {
     trainerLogin: async (req, res, next) => {
@@ -87,7 +88,9 @@ module.exports = {
             }
 
             // IMAGE UPLOAD AND WHEN IMAGE IS UPDATE OLD IMAGE DELETE FUNCTION
-            uploadProfilePhoto(req, res, roleData, req_data);
+            const upload = uploadProfilePhoto(req, res, roleData);
+            console.log("upload", upload);
+            req_data.profilePhoto = upload
 
             const array = JSON.parse(req_data.certifications);
             req_data.certifications = array

@@ -87,7 +87,8 @@ module.exports = {
             }
 
             // IMAGE UPLOAD AND WHEN IMAGE IS UPDATE OLD IMAGE DELETE FUNCTION
-            uploadProfilePhoto(req, res, roleData, req_data);
+            const upload = uploadProfilePhoto(req, res, roleData);
+            req_data.profilePhoto = upload
 
             req_data.certifications = JSON.parse(req_data.certifications);
 
@@ -161,12 +162,12 @@ module.exports = {
             }
 
             // IMAGE UPLOAD AND WHEN IMAGE IS UPDATE OLD IMAGE DELETE FUNCTION
-            uploadProfilePhoto(req, res, roleData, req_data);
-
+            const upload = uploadProfilePhoto(req, res, roleData);
+            req_data.profilePhoto = upload
+            
             req_data.certifications = JSON.parse(req_data.certifications);
 
             req_data.contactdetails = { email: req_data.email, mobilenumber: req_data.mobilenumber }
-
             const superAdminData = await trainerServices.createUpdateSuperAdmin(req_data.contactdetails.email, req_data.contactdetails.mobilenumber, req_data)
 
             res.status(201).send({
